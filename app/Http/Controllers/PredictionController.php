@@ -101,12 +101,16 @@ class PredictionController extends Controller
             'away_score' => ['required', 'integer', 'min:0', 'max:99'],
         ]);
 
-        Prediction::where('user_id', auth()->id())
+        $updated = Prediction::where('user_id', auth()->id())
             ->where('game_id', $game->id)
             ->update([
                 'home_score' => $validated['home_score'],
                 'away_score' => $validated['away_score'],
             ]);
+
+        if (! $updated) {
+            return back()->with('error', 'پیش‌بینی‌ای برای ویرایش یافت نشد.');
+        }
 
         return back()->with('success', 'پیش‌بینی شما ویرایش شد.');
     }
