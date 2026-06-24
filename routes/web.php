@@ -1,53 +1,64 @@
 <?php
-// routes/web.php
-use App\Http\Controllers\MatchPredictionController;
-use App\Http\Controllers\TournamentPredictionController;
-use App\Http\Controllers\Admin\AdminMatchController;
+
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\GameController as AdminGameController;
+use App\Http\Controllers\Admin\TeamController as AdminTeamController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AuthController; // کنترلر لاگین/ثبت نام شما
+use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\PredictionController;
 use Illuminate\Support\Facades\Route;
 
-// مسیر صفحه اصلی
-Route::get('/', function () { return view('welcome'); })->name('home');
+// ─── صفحه خوش‌آمدگویی ─────────────────────────────────────────────────────────
+Route::get('/', fn () => redirect()->route('login'))->name('home');
 
-// مسیرهای احراز هویت کاربران
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// ─── احراز هویت ───────────────────────────────────────────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
 
-// هاب مسیرهای کاربران تایید شده (بر پایه سشن کاربری شما)
-Route::middleware(['user.session.auth'])->group(function () {
-    
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-    Route::get('/leaderboard', [AuthController::class, 'leaderboard'])->name('leaderboard');
-
-    // بخش اول: پیش‌بینی مسابقات بازی به بازی
-    Route::get('/matches', [MatchPredictionController::class, 'index'])->name('matches');
-    Route::get('/matches/{id}/predict', [MatchPredictionController::class, 'predict'])->name('match.predict');
-    Route::post('/matches/{id}/predict', [MatchPredictionController::class, 'storePrediction']);
-
-    // بخش دوم: پیش‌بینی کل تورنمنت (ساختار درختی جام)
-    Route::get('/tournament-prediction', [TournamentPredictionController::class, 'index'])->name('tournament.prediction');
-    Route::post('/tournament-prediction', [TournamentPredictionController::class, 'store']);
+    Route::get('/register', [RegisterController::class, 'showForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.attempt');
 });
-// routes/web.php
 
-Route::middleware([\App\Http\Middleware\UserSessionAuth::class])->group(function () {
-    // روت جدید داشبورد متصل به کنترلر دینامیک
+Route::post('/logout', [LoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+// ─── بخش کاربران ──────────────────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // روت جدید لیدربرد متصل به کنترلر دینامیک
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
 
-    // سایر مسیرهای مسابقات...
-    Route::get('/matches', [MatchPredictionController::class, 'index'])->name('matches');
-    Route::get('/matches/{id}/predict', [MatchPredictionController::class, 'predict'])->name('match.predict');
-    Route::post('/matches/{id}/predict', [MatchPredictionController::class, 'storePrediction']);
-});
-// پنل ادمین
-Route::middleware(['admin.session.auth'])->prefix('admin')->name('admin.')->group(function () {
-    // مسیرهای مدیریت بازی‌ها و تیم‌ها توسط ادمین...
-    Route::post('/matches/{id}/result', [AdminMatchController::class, 'submitResult'])->name('matches.result.submit');
+    // پیش‌بینی بازی‌ها
+    Route::prefix('games')->name('games.')->group(function () {
+        Route::get('/', [PredictionController::class, 'index'])->name('index');
+        Route::get('/{game}', [PredictionController::class, 'show'])->name('show');
+        Route::post('/{game}/predict', [PredictionController::class, 'store'])->name('predict');
+        Route::put('/{game}/predict', [PredictionController::class, 'update'])->name('predict.update');
+    });
 });
 
+// ─── پنل ادمین ────────────────────────────────────────────────────────────────
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        // داشبورد
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/recalculate-scores', [AdminDashboardController::class, 'recalculateScores'])
+            ->name('recalculate');
+
+        // مدیریت تیم‌ها
+        Route::resource('teams', AdminTeamController::class);
+
+        // مدیریت بازی‌ها
+        Route::resource('games', AdminGameController::class);
+
+        // ثبت نتیجه بازی (اکشن جداگانه)
+        Route::post('/games/{game}/result', [AdminGameController::class, 'submitResult'])
+            ->name('games.result');
+    });

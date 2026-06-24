@@ -1,76 +1,87 @@
-@extends('layouts.app')
-
+@extends('layouts.guest')
 @section('title', 'ثبت‌نام')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-green-100">
-    <div class="max-w-md w-full">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
-                        <circle cx="10" cy="10" r="3" fill="currentColor"/>
-                    </svg>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900">ثبت‌نام در سیستم</h2>
-                <p class="text-gray-600 mt-2">حساب کاربری خود را ایجاد کنید</p>
-            </div>
 
-            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('ثبت‌نام در Build Mode فعال می‌شود')" class="space-y-6">
-                @csrf
-                
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">نام و نام خانوادگی</label>
-                    <input type="text" id="name" name="name" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                        placeholder="نام و نام خانوادگی خود را وارد کنید">
-                </div>
+<h2 class="text-xl font-bold font-heading text-brand-text mb-1">ثبت‌نام</h2>
+<p class="text-sm text-brand-muted mb-7">حساب کاربری خود را بسازید</p>
 
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">ایمیل</label>
-                    <input type="email" id="email" name="email" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                        placeholder="example@worldcup.com">
-                </div>
+@if($errors->any())
+    <div class="bg-red-950/60 border border-red-800/50 text-red-300 text-sm rounded-xl px-4 py-3 mb-6 space-y-1">
+        @foreach($errors->all() as $error)
+            <p class="flex items-center gap-2">
+                <span class="w-1 h-1 rounded-full bg-red-400 flex-shrink-0"></span>
+                {{ $error }}
+            </p>
+        @endforeach
+    </div>
+@endif
 
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">رمز عبور</label>
-                    <input type="password" id="password" name="password" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                        placeholder="حداقل 8 کاراکتر">
-                </div>
+<form action="{{ route('register.attempt') }}" method="POST" class="space-y-4">
+    @csrf
 
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">تکرار رمز عبور</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                        placeholder="رمز عبور را دوباره وارد کنید">
-                </div>
+    <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">نام و نام خانوادگی</label>
+        <input type="text" name="name" value="{{ old('name') }}" required
+               placeholder="نام کامل شما"
+               class="w-full bg-brand-card border border-brand-border text-brand-text text-sm rounded-xl px-4 py-3
+                      placeholder:text-brand-subtle outline-none
+                      focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-150">
+    </div>
 
-                <div class="flex items-start">
-                    <input id="terms" name="terms" type="checkbox" required
-                        class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1">
-                    <label for="terms" class="mr-2 block text-sm text-gray-700">
-                        قوانین و مقررات سیستم پیش‌بینی را می‌پذیرم
-                    </label>
-                </div>
+    <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">ایمیل</label>
+        <input type="email" name="email" value="{{ old('email') }}" required
+               placeholder="name@company.com"
+               class="w-full bg-brand-card border border-brand-border text-brand-text text-sm rounded-xl px-4 py-3
+                      placeholder:text-brand-subtle outline-none
+                      focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-150">
+    </div>
 
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-green-600 to-green-800 text-white py-3 px-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform hover:scale-[1.02]">
-                    ثبت‌نام
-                </button>
-            </form>
+    <div>
+        <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">
+            دپارتمان
+            <span class="text-brand-subtle font-normal normal-case tracking-normal mr-1">(اختیاری)</span>
+        </label>
+        <input type="text" name="department" value="{{ old('department') }}"
+               placeholder="مثلاً: فناوری اطلاعات"
+               class="w-full bg-brand-card border border-brand-border text-brand-text text-sm rounded-xl px-4 py-3
+                      placeholder:text-brand-subtle outline-none
+                      focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-150">
+    </div>
 
-            <div class="mt-6 text-center">
-                <p class="text-gray-600">
-                    قبلاً ثبت‌نام کرده‌اید؟
-                    <a href="{{ route('login') }}" class="font-medium text-green-700 hover:text-green-800">
-                        وارد شوید
-                    </a>
-                </p>
-            </div>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">رمز عبور</label>
+            <input type="password" name="password" required
+                   placeholder="حداقل ۸ کاراکتر"
+                   class="w-full bg-brand-card border border-brand-border text-brand-text text-sm rounded-xl px-4 py-3
+                          placeholder:text-brand-subtle outline-none
+                          focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-150">
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">تکرار رمز</label>
+            <input type="password" name="password_confirmation" required
+                   placeholder="••••••••"
+                   class="w-full bg-brand-card border border-brand-border text-brand-text text-sm rounded-xl px-4 py-3
+                          placeholder:text-brand-subtle outline-none
+                          focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all duration-150">
         </div>
     </div>
-</div>
+
+    <button type="submit"
+            class="w-full bg-brand-green hover:bg-brand-green-dim text-black text-sm font-bold
+                   py-3 rounded-xl transition-colors duration-150 cursor-pointer mt-2
+                   focus:outline-none focus:ring-2 focus:ring-brand-green/50 focus:ring-offset-2 focus:ring-offset-brand-surface">
+        ساخت حساب کاربری
+    </button>
+</form>
+
+<p class="text-center text-sm text-brand-muted mt-6">
+    قبلاً ثبت‌نام کرده‌اید؟
+    <a href="{{ route('login') }}" class="text-brand-green hover:text-green-400 font-semibold transition-colors">
+        وارد شوید
+    </a>
+</p>
+
 @endsection
