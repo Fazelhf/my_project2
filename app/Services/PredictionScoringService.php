@@ -144,7 +144,7 @@ class PredictionScoringService
     public function getGameStats(Game $game): array
     {
         $predictions = Prediction::where('game_id', $game->id)
-            ->selectRaw('points_earned, COUNT(*) as count')
+            ->selectRaw('points_earned, COUNT(*) as cnt')
             ->groupBy('points_earned')
             ->get()
             ->keyBy('points_earned');
@@ -159,11 +159,11 @@ class PredictionScoringService
             'scored'    => $scored,
             'pending'   => $total - $scored,
             'breakdown' => [
-                10 => $predictions[10]->count ?? 0,
-                7  => $predictions[7]->count ?? 0,
-                5  => $predictions[5]->count ?? 0,
-                2  => $predictions[2]->count ?? 0,
-                0  => $predictions[0]->count ?? 0,
+                10 => $predictions[10]->cnt ?? 0,
+                7  => $predictions[7]->cnt ?? 0,
+                5  => $predictions[5]->cnt ?? 0,
+                2  => $predictions[2]->cnt ?? 0,
+                0  => $predictions[0]->cnt ?? 0,
             ],
         ];
     }
