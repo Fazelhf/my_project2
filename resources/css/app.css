@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap');
 
 @import 'tailwindcss';
 
@@ -8,34 +8,242 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans:    'Open Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-heading: 'Poppins',   ui-sans-serif, system-ui, sans-serif;
+    --font-sans:      'Barlow', ui-sans-serif, system-ui, sans-serif;
+    --font-heading:   'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+    --font-display:   'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-    --color-brand-bg:        #020617;
-    --color-brand-surface:   #0F172A;
-    --color-brand-card:      #1E293B;
-    --color-brand-border:    #334155;
-    --color-brand-text:      #F8FAFC;
-    --color-brand-muted:     #94A3B8;
-    --color-brand-subtle:    #475569;
-    --color-brand-green:     #22C55E;
-    --color-brand-green-dim: #16A34A;
-    --color-brand-green-glow:#22C55E26;
-    --color-brand-red:       #F87171;
-    --color-brand-blue:      #60A5FA;
-    --color-brand-amber:     #FBBF24;
+    --color-brand-bg:         #020617;
+    --color-brand-surface:    #0A0F1E;
+    --color-brand-card:       #111827;
+    --color-brand-card2:      #1a2234;
+    --color-brand-border:     #1E2D45;
+    --color-brand-border2:    #2D4060;
+    --color-brand-text:       #F1F5F9;
+    --color-brand-muted:      #8AAABB;
+    --color-brand-subtle:     #4A6070;
+
+    /* Primary — Champion Gold */
+    --color-brand-gold:       #F59E0B;
+    --color-brand-gold-dim:   #D97706;
+    --color-brand-gold-glow:  #F59E0B30;
+    --color-brand-gold-pale:  #FEF3C7;
+
+    /* Green — Success / Exact */
+    --color-brand-green:      #10B981;
+    --color-brand-green-dim:  #059669;
+    --color-brand-green-glow: #10B98130;
+
+    /* Accents */
+    --color-brand-blue:       #3B82F6;
+    --color-brand-purple:     #8B5CF6;
+    --color-brand-red:        #EF4444;
+    --color-brand-amber:      #F59E0B;
+    --color-brand-cyan:       #06B6D4;
+
+    --animate-fade-in: fade-in 0.4s ease both;
+    --animate-slide-up: slide-up 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    --animate-glow-pulse: glow-pulse 3s ease-in-out infinite;
+    --animate-shimmer: shimmer 2.5s linear infinite;
+    --animate-float: float 4s ease-in-out infinite;
+    --animate-counter: counter 0.8s cubic-bezier(0.16,1,0.3,1) both;
 }
 
 /* ── Hide Alpine until init ─────────────────────────────── */
 [x-cloak] { display: none !important; }
 
-/* ── Scrollbar ──────────────────────────────────────────── */
-::-webkit-scrollbar            { width: 5px; height: 5px; }
+/* ── Custom Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar            { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track      { background: transparent; }
-::-webkit-scrollbar-thumb      { background: #334155; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover{ background: #475569; }
+::-webkit-scrollbar-thumb      { background: #1E2D45; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover{ background: #2D4060; }
 
 /* ── Number inputs — hide spinners ─────────────────────── */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
+
+/* ── Keyframes ─────────────────────────────────────────── */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px 0px #F59E0B20; }
+    50%       { box-shadow: 0 0 40px 4px #F59E0B40; }
+}
+
+@keyframes green-pulse {
+    0%, 100% { box-shadow: 0 0 20px 0px #10B98120; }
+    50%       { box-shadow: 0 0 40px 4px #10B98140; }
+}
+
+@keyframes shimmer {
+    from { background-position: -200% center; }
+    to   { background-position: 200% center; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-8px); }
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes border-dance {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+}
+
+@keyframes count-up {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Utility Classes ───────────────────────────────────── */
+
+/* Animated gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 40%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gradient-text-gold {
+    background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 50%, #F97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Gradient border card */
+.card-glow {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.card-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, #F59E0B40, #10B98120, transparent 60%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Shimmer effect */
+.shimmer-text {
+    background: linear-gradient(90deg, #F59E0B 0%, #FCD34D 25%, #F59E0B 50%, #FCD34D 75%, #F59E0B 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+    position: relative;
+}
+.noise-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0.4;
+}
+
+/* Hexagon football pattern */
+.pattern-bg {
+    background-color: #020617;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill='%231E2D45' fill-opacity='0.15'%3E%3Cpolygon fill-rule='evenodd' points='13.99 9.25 7.38 4.47 7.38 18.02 0 13.76 0 30.49 7.38 26.24 7.38 39.78 13.99 35.01 20.59 39.78 20.59 26.24 28 30.49 28 13.76 20.59 18.02 20.59 4.47'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Glass card */
+.glass-card {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 45, 69, 0.8);
+}
+
+/* Stadium glow effect */
+.stadium-glow {
+    box-shadow:
+        0 0 0 1px rgba(245, 158, 11, 0.15),
+        0 0 30px rgba(245, 158, 11, 0.08),
+        0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Neon border animation */
+.neon-border {
+    border: 1px solid transparent;
+    background: linear-gradient(#111827, #111827) padding-box,
+                linear-gradient(135deg, #F59E0B, #10B981, #3B82F6, #F59E0B) border-box;
+    background-size: 300% 300%;
+    animation: border-dance 4s ease infinite;
+}
+
+/* Score badge glow */
+.score-gold  { background: linear-gradient(135deg, #92400E40, #78350F40); border: 1px solid #F59E0B40; color: #FCD34D; }
+.score-green { background: linear-gradient(135deg, #064E3B40, #05302540); border: 1px solid #10B98140; color: #6EE7B7; }
+.score-blue  { background: linear-gradient(135deg, #1E3A5F40, #1E3A5F40); border: 1px solid #3B82F640; color: #93C5FD; }
+.score-gray  { background: rgba(255,255,255,0.05); border: 1px solid #1E2D45; color: #8AAABB; }
+.score-red   { background: linear-gradient(135deg, #450A0A40, #450A0A40); border: 1px solid #EF444440; color: #FCA5A5; }
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.30s; }
+
+/* Match card status indicator */
+.status-live {
+    animation: green-pulse 2s ease-in-out infinite;
+}
+
+/* Trophy podium */
+.podium-1 { background: linear-gradient(180deg, #92400E30 0%, transparent 100%); border-color: #F59E0B50; }
+.podium-2 { background: linear-gradient(180deg, #37415130 0%, transparent 100%); border-color: #94A3B850; }
+.podium-3 { background: linear-gradient(180deg, #7C2D1230 0%, transparent 100%); border-color: #C2410C50; }
+
+/* Stat counter animation */
+.animate-count {
+    animation: count-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Floating ball decoration */
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-float-delay { animation: float 4s ease-in-out 1s infinite; }
+
+/* Hero gradient */
+.hero-gradient {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1200 0%, transparent 70%),
+                radial-gradient(ellipse 60% 50% at 80% 50%, #0a2010 0%, transparent 60%),
+                #020617;
+}
+
+/* Nav active glow */
+.nav-active {
+    background: linear-gradient(135deg, #F59E0B15, #10B98115);
+    border: 1px solid #F59E0B25;
+}
