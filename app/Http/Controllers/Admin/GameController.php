@@ -59,6 +59,13 @@ class GameController extends Controller
             ->with('success', 'بازی جدید با موفقیت ثبت شد.');
     }
 
+    public function show(Game $game): View
+    {
+        $game->load(['homeTeam', 'awayTeam']);
+
+        return view('admin.games.show', compact('game'));
+    }
+
     public function edit(Game $game): View
     {
         $teams = Team::ordered()->get();
