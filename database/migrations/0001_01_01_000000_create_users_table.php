@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -17,6 +14,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('department', 100)->nullable()->comment('بخش/واحد سازمانی کارمند');
+            $table->string('avatar')->nullable()->comment('مسیر تصویر پروفایل');
+            $table->boolean('is_admin')->default(false)->comment('آیا کاربر دسترسی ادمین دارد');
+            $table->unsignedInteger('total_score')->default(0)->comment('مجموع امتیازات کسب‌شده');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -37,9 +38,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
