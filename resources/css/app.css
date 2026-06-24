@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
 
@@ -8,8 +8,8 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-heading: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-sans:    'Open Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Poppins',   ui-sans-serif, system-ui, sans-serif;
 
     --color-brand-bg:        #020617;
     --color-brand-surface:   #0F172A;
@@ -17,12 +17,25 @@
     --color-brand-border:    #334155;
     --color-brand-text:      #F8FAFC;
     --color-brand-muted:     #94A3B8;
+    --color-brand-subtle:    #475569;
     --color-brand-green:     #22C55E;
     --color-brand-green-dim: #16A34A;
+    --color-brand-green-glow:#22C55E26;
+    --color-brand-red:       #F87171;
+    --color-brand-blue:      #60A5FA;
+    --color-brand-amber:     #FBBF24;
 }
 
-/* اسکرول‌بار تمیز برای dark mode */
-::-webkit-scrollbar            { width: 6px; height: 6px; }
-::-webkit-scrollbar-track      { background: #0F172A; }
-::-webkit-scrollbar-thumb      { background: #334155; border-radius: 3px; }
+/* ── Hide Alpine until init ─────────────────────────────── */
+[x-cloak] { display: none !important; }
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar            { width: 5px; height: 5px; }
+::-webkit-scrollbar-track      { background: transparent; }
+::-webkit-scrollbar-thumb      { background: #334155; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover{ background: #475569; }
+
+/* ── Number inputs — hide spinners ─────────────────────── */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }

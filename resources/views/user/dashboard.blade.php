@@ -7,98 +7,115 @@
 
 {{-- Greeting --}}
 <div class="mb-6">
-    <h2 class="text-xl font-bold" style="font-family:'Poppins',sans-serif; color:#F8FAFC;">
+    <h2 class="text-xl font-bold font-heading text-brand-text">
         سلام، {{ auth()->user()->name }}
     </h2>
-    <p class="text-sm mt-1" style="color:#94A3B8;">خلاصه عملکرد شما در پیش‌بینی جام جهانی ۲۰۲۶</p>
+    <p class="text-sm mt-1 text-brand-muted">خلاصه عملکرد شما در پیش‌بینی جام جهانی ۲۰۲۶</p>
 </div>
 
 {{-- Stats Grid --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
-    {{-- Total Score --}}
-    <div class="rounded-2xl p-5 border" style="background-color:#0F172A; border-color:#334155;">
-        <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#94A3B8;">امتیاز کل</p>
-        <p class="text-3xl font-bold" style="color:#22C55E; font-family:'Poppins',sans-serif;">{{ auth()->user()->total_score }}</p>
-        <p class="text-xs mt-2" style="color:#475569;">از مجموع پیش‌بینی‌ها</p>
+    <div class="rounded-2xl p-5 bg-brand-surface border border-brand-border">
+        <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-brand-amber flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">امتیاز کل</p>
+        </div>
+        <p class="text-3xl font-bold font-heading text-brand-green">{{ auth()->user()->total_score }}</p>
+        <p class="text-xs mt-2 text-brand-subtle">از مجموع پیش‌بینی‌ها</p>
     </div>
 
-    {{-- Rank --}}
-    <div class="rounded-2xl p-5 border" style="background-color:#0F172A; border-color:#334155;">
-        <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#94A3B8;">رتبه</p>
-        <p class="text-3xl font-bold" style="color:#F8FAFC; font-family:'Poppins',sans-serif;">#{{ $rank }}</p>
-        <p class="text-xs mt-2" style="color:#475569;">از {{ $totalUsers }} نفر</p>
+    <div class="rounded-2xl p-5 bg-brand-surface border border-brand-border">
+        <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-brand-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">رتبه</p>
+        </div>
+        <p class="text-3xl font-bold font-heading text-brand-text">#{{ $rank }}</p>
+        <p class="text-xs mt-2 text-brand-subtle">از {{ $totalUsers }} نفر</p>
     </div>
 
-    {{-- Predictions --}}
-    <div class="rounded-2xl p-5 border" style="background-color:#0F172A; border-color:#334155;">
-        <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#94A3B8;">پیش‌بینی‌ها</p>
-        <p class="text-3xl font-bold" style="color:#F8FAFC; font-family:'Poppins',sans-serif;">{{ $predictionsMade }}</p>
-        <p class="text-xs mt-2" style="color:#475569;">{{ $exactPredictions }} نتیجه دقیق</p>
+    <div class="rounded-2xl p-5 bg-brand-surface border border-brand-border">
+        <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-brand-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">پیش‌بینی‌ها</p>
+        </div>
+        <p class="text-3xl font-bold font-heading text-brand-text">{{ $predictionsMade }}</p>
+        <p class="text-xs mt-2 text-brand-subtle">{{ $exactPredictions }} نتیجه دقیق</p>
     </div>
 
-    {{-- Accuracy --}}
-    <div class="rounded-2xl p-5 border" style="background-color:#0F172A; border-color:#334155;">
-        <p class="text-xs font-medium uppercase tracking-wider mb-3" style="color:#94A3B8;">دقت</p>
-        <p class="text-3xl font-bold" style="color:#F8FAFC; font-family:'Poppins',sans-serif;">{{ $accuracy }}%</p>
-        <p class="text-xs mt-2" style="color:#475569;">{{ $correctPredictions }} از {{ $scoredPredictions }} ارزیابی شده</p>
+    <div class="rounded-2xl p-5 bg-brand-surface border border-brand-border">
+        <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider">دقت</p>
+        </div>
+        <p class="text-3xl font-bold font-heading text-brand-text">{{ $accuracy }}%</p>
+        <p class="text-xs mt-2 text-brand-subtle">{{ $correctPredictions }} از {{ $scoredPredictions }} ارزیابی شده</p>
     </div>
 </div>
 
-{{-- Scoring Guide + Recent Predictions --}}
+{{-- Recent Predictions + Scoring Guide --}}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
     {{-- Recent Predictions --}}
-    <div class="lg:col-span-2 rounded-2xl border overflow-hidden" style="background-color:#0F172A; border-color:#334155;">
-        <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color:#334155;">
-            <h3 class="font-semibold text-sm" style="color:#F8FAFC; font-family:'Poppins',sans-serif;">آخرین پیش‌بینی‌های شما</h3>
+    <div class="lg:col-span-2 rounded-2xl border border-brand-border bg-brand-surface overflow-hidden">
+        <div class="px-5 py-4 border-b border-brand-border flex items-center justify-between">
+            <h3 class="font-semibold text-sm font-heading text-brand-text">آخرین پیش‌بینی‌های شما</h3>
             <a href="{{ route('games.index') }}"
-               class="text-xs font-medium transition-colors"
-               style="color:#22C55E;"
-               onmouseover="this.style.color='#86efac';"
-               onmouseout="this.style.color='#22C55E';">
+               class="text-xs font-medium text-brand-green hover:text-green-400 transition-colors">
                 مشاهده همه
             </a>
         </div>
 
         @if($recentPredictions->isEmpty())
-            <div class="px-5 py-10 text-center">
-                <p class="text-sm" style="color:#475569;">هنوز پیش‌بینی‌ای ثبت نشده است.</p>
+            <div class="px-5 py-12 text-center">
+                <svg class="w-10 h-10 text-brand-subtle mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <p class="text-sm text-brand-subtle mb-4">هنوز پیش‌بینی‌ای ثبت نشده است.</p>
                 <a href="{{ route('games.index') }}"
-                   class="inline-block mt-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                   style="background-color:#22C55E; color:#020617;"
-                   onmouseover="this.style.backgroundColor='#16A34A';"
-                   onmouseout="this.style.backgroundColor='#22C55E';">
+                   class="inline-block px-4 py-2 rounded-xl text-sm font-semibold bg-brand-green hover:bg-brand-green-dim text-black transition-colors">
                     پیش‌بینی بازی‌ها
                 </a>
             </div>
         @else
-            <div class="divide-y" style="border-color:#334155;">
+            <div class="divide-y divide-brand-border">
                 @foreach($recentPredictions as $pred)
                     <div class="px-5 py-3.5 flex items-center justify-between gap-4">
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium truncate" style="color:#F8FAFC;">
+                            <p class="text-sm font-medium text-brand-text truncate">
                                 {{ $pred->game->homeTeam->name }} vs {{ $pred->game->awayTeam->name }}
                             </p>
-                            <p class="text-xs mt-0.5" style="color:#94A3B8;">
+                            <p class="text-xs mt-0.5 text-brand-muted">
                                 پیش‌بینی: {{ $pred->home_score }}–{{ $pred->away_score }}
                                 @if($pred->game->status === 'finished')
-                                    &nbsp;|&nbsp; نتیجه: {{ $pred->game->home_score }}–{{ $pred->game->away_score }}
+                                    &nbsp;·&nbsp; نتیجه: {{ $pred->game->home_score }}–{{ $pred->game->away_score }}
                                 @endif
                             </p>
                         </div>
                         <div class="flex-shrink-0">
                             @if($pred->points_earned !== null)
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold"
-                                      style="{{ $pred->points_earned >= 7 ? 'background-color:#14532d; color:#86efac;'
-                                               : ($pred->points_earned >= 5 ? 'background-color:#1e3a5f; color:#93c5fd;'
-                                               : ($pred->points_earned >= 2 ? 'background-color:#1e293b; color:#94a3b8;'
-                                               : 'background-color:#1e293b; color:#64748b;')) }}">
+                                @php
+                                    $cls = $pred->points_earned >= 7
+                                        ? 'bg-green-950/60 text-green-300'
+                                        : ($pred->points_earned >= 5
+                                            ? 'bg-blue-950/60 text-blue-300'
+                                            : ($pred->points_earned >= 2
+                                                ? 'bg-brand-card text-brand-muted'
+                                                : 'bg-brand-card text-brand-subtle'));
+                                @endphp
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold {{ $cls }}">
                                     +{{ $pred->points_earned }}
                                 </span>
                             @else
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-medium"
-                                      style="background-color:#1E293B; color:#475569;">
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-brand-card text-brand-subtle">
                                     در انتظار
                                 </span>
                             @endif
@@ -110,31 +127,31 @@
     </div>
 
     {{-- Scoring Guide --}}
-    <div class="rounded-2xl border p-5" style="background-color:#0F172A; border-color:#334155;">
-        <h3 class="font-semibold text-sm mb-4" style="color:#F8FAFC; font-family:'Poppins',sans-serif;">سیستم امتیازدهی</h3>
+    <div class="rounded-2xl border border-brand-border bg-brand-surface p-5">
+        <h3 class="font-semibold text-sm font-heading text-brand-text mb-4">سیستم امتیازدهی</h3>
         <div class="space-y-3">
-            @foreach([
-                [10, 'نتیجه دقیق',       '#22C55E', '#14532d'],
-                [7,  'تفاضل گل یکسان',   '#60a5fa', '#1e3a5f'],
-                [5,  'برنده درست',        '#a78bfa', '#2e1065'],
-                [2,  'شرکت در پیش‌بینی', '#94A3B8', '#1E293B'],
-            ] as [$pts, $label, $color, $bg])
-                <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-                          style="background-color:{{ $bg }}; color:{{ $color }};">
-                        {{ $pts }}
-                    </span>
-                    <span class="text-sm" style="color:#94A3B8;">{{ $label }}</span>
-                </div>
-            @endforeach
+            <div class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 bg-green-950/60 text-green-300">10</span>
+                <span class="text-sm text-brand-muted">نتیجه دقیق</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 bg-blue-950/60 text-blue-300">7</span>
+                <span class="text-sm text-brand-muted">تفاضل گل یکسان</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 bg-purple-950/60 text-purple-300">5</span>
+                <span class="text-sm text-brand-muted">برنده درست</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 bg-brand-card text-brand-muted">2</span>
+                <span class="text-sm text-brand-muted">شرکت در پیش‌بینی</span>
+            </div>
         </div>
 
-        <div class="mt-5 pt-4 border-t" style="border-color:#334155;">
+        <div class="mt-5 pt-4 border-t border-brand-border">
             <a href="{{ route('games.index') }}"
-               class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
-               style="background-color:#22C55E; color:#020617;"
-               onmouseover="this.style.backgroundColor='#16A34A';"
-               onmouseout="this.style.backgroundColor='#22C55E';">
+               class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold
+                      bg-brand-green hover:bg-brand-green-dim text-black transition-colors cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
