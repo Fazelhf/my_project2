@@ -1,53 +1,79 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html class="dark" lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'WorldCup Predictor') — WCP 2026</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'ورود') — پیش‌بینی‌چی</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 antialiased">
+<body class="flex items-center justify-center min-h-screen antialiased">
 
-    <div class="ether-bg"></div>
+{{-- Grid + stadium mesh background --}}
+<div class="stitch-bg"></div>
+<svg class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-30" preserveAspectRatio="none">
+    <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,228,118,0.12)" stroke-width="0.5"/>
+        </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)"/>
+    <circle cx="50%" cy="50%" r="30%" fill="none" stroke="#00e476" stroke-width="0.3" stroke-dasharray="6 4"
+            style="animation: dash 25s linear infinite;"/>
+    <ellipse cx="50%" cy="50%" rx="42%" ry="25%" fill="none" stroke="#00e476" stroke-width="0.2" stroke-dasharray="4 6"
+             style="animation: dash 18s linear infinite reverse;"/>
+</svg>
+<style>@keyframes dash { to { stroke-dashoffset: -120; } }</style>
 
-    <div class="w-full max-w-md relative z-10">
+<main class="relative z-10 w-full max-w-sm px-5 py-12 animate-fade-in">
 
-        {{-- Brand Header --}}
-        <div class="text-center mb-8 animate-[slide-up_0.5s_cubic-bezier(0.16,1,0.3,1)_both]">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-4 animate-float"
-                 style="background: linear-gradient(135deg, #1a1200, #0a0f1e); border: 1px solid rgba(245,158,11,0.3); box-shadow: 0 0 40px rgba(245,158,11,0.15), 0 20px 40px rgba(0,0,0,0.5);">
-                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 9H4.5a2.5 2.5 0 000 5H6" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M18 9h1.5a2.5 2.5 0 010 5H18" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M4 22h16" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M12 20v2" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M6 4h12v10a6 6 0 01-12 0V4z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/>
-                    <circle cx="9" cy="9" r="1" fill="#FCD34D"/>
-                    <circle cx="12" cy="7" r="1" fill="#FCD34D"/>
-                    <circle cx="15" cy="9" r="1" fill="#FCD34D"/>
-                </svg>
-            </div>
-
-            <h1 class="text-3xl font-black font-heading tracking-tight gradient-text-gold">
-                WorldCup Predictor
-            </h1>
-            <p class="mt-1 text-brand-muted text-sm">
-                جام جهانی ۲۰۲۶ — پیش‌بینی کن، امتیاز بگیر، برنده شو
-            </p>
+    {{-- Header --}}
+    <div class="text-center mb-8">
+        <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+             style="background:linear-gradient(135deg,#00b85e,#00e476);box-shadow:0 0 32px rgba(0,228,118,0.3);">
+            <span class="material-symbols-outlined text-2xl" style="color:#003919;font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24;">sports_soccer</span>
         </div>
-
-        {{-- Auth Card --}}
-        <div class="rounded-2xl p-8 animate-[slide-up_0.5s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]"
-             style="background: rgba(10,15,30,0.95); border: 1px solid #1E2D45; backdrop-filter: blur(20px); box-shadow: 0 0 0 1px rgba(245,158,11,0.05), 0 40px 80px rgba(0,0,0,0.6);">
-
-            @yield('content')
-
-        </div>
-
-        <p class="text-center text-xs text-brand-subtle mt-6 animate-[fade-in_0.5s_0.3s_both]">
-            سیستم داخلی پیش‌بینی جام جهانی ۲۰۲۶
-        </p>
+        <h1 class="font-heading font-black text-3xl text-white tracking-tight leading-none">
+            پیش‌بینی ۲۰۲۶
+        </h1>
+        <p class="mt-2 text-sm" style="color:rgba(185,203,185,0.6);">جام جهانی فوتبال در دستان شما</p>
     </div>
 
+    {{-- Neon border card wrapper --}}
+    <div class="relative rounded-3xl">
+        <div class="absolute inset-0 rounded-3xl pointer-events-none"
+             style="background:linear-gradient(45deg,transparent,rgba(0,228,118,0.25),transparent,rgba(0,228,118,0.15),transparent);background-size:200% 200%;animation:border-glow 5s linear infinite;z-index:-1;border-radius:1.5rem;padding:1px;">
+        </div>
+        <div class="liquid-glass rounded-3xl p-7 animate-scale-in stagger-1">
+            @yield('content')
+        </div>
+    </div>
+
+    {{-- Stats footer --}}
+    <div class="mt-8 flex justify-center gap-8 animate-slide-up stagger-3" style="opacity:0.7;">
+        <div class="text-center">
+            <div class="font-heading font-black text-xl gradient-text-green">۱.۲M+</div>
+            <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">کاربر فعال</div>
+        </div>
+        <div class="text-center">
+            <div class="font-heading font-black text-xl gradient-text-green">۴۸</div>
+            <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">تیم ملی</div>
+        </div>
+        <div class="text-center">
+            <div class="font-heading font-black text-xl gradient-text-green">۱۰۴</div>
+            <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">مسابقه</div>
+        </div>
+    </div>
+
+</main>
+
+<style>
+@keyframes border-glow {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+</style>
+
+@stack('scripts')
 </body>
 </html>

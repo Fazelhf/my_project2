@@ -1,42 +1,41 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html class="dark" lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'پنل مدیریت') — Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="bg-brand-bg text-brand-text font-sans antialiased" x-data="{ sidebar: false }" x-cloak>
+<body class="antialiased" x-data="{ sidebar: false }" x-cloak>
 
-<div class="flex min-h-screen">
+<div class="stitch-bg"></div>
 
-    <div
-        x-show="sidebar"
-        x-transition.opacity
-        @click="sidebar = false"
-        class="fixed inset-0 z-20 bg-black/70 backdrop-blur-sm lg:hidden"
-    ></div>
+<div class="flex min-h-screen relative z-10">
 
-    {{-- Admin Sidebar --}}
-    <aside
-        :class="sidebar ? 'translate-x-0' : 'translate-x-full'"
-        class="fixed top-0 right-0 z-30 h-full w-64 flex flex-col
-               bg-brand-surface border-l border-brand-border
-               transition-transform duration-200 ease-in-out
-               lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen"
-    >
+    {{-- Mobile overlay --}}
+    <div x-show="sidebar" x-transition.opacity @click="sidebar = false"
+         class="fixed inset-0 z-20 bg-black/70 backdrop-blur-sm lg:hidden"></div>
+
+    {{-- Admin Sidebar ──────────────────────────────────────────────────────── --}}
+    <aside :class="sidebar ? 'translate-x-0' : 'translate-x-full'"
+           class="fixed top-0 right-0 z-30 h-full w-64 flex flex-col
+                  liquid-glass border-l border-outline
+                  transition-transform duration-300 ease-out
+                  lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen"
+           style="background:rgba(14,20,29,0.9);">
+
         {{-- Logo --}}
-        <div class="flex items-center gap-3 px-5 h-16 border-b border-brand-border flex-shrink-0">
-            <div class="w-8 h-8 rounded-lg bg-brand-green flex items-center justify-center flex-shrink-0 shadow-md shadow-brand-green/30">
-                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
+        <div class="flex items-center gap-3 px-5 h-16 flex-shrink-0"
+             style="border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#00b85e,#00e476);box-shadow:0 0 12px rgba(0,228,118,0.3);">
+                <span class="material-symbols-outlined text-base" style="color:#003919;font-size:18px;font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24;">settings</span>
             </div>
             <div class="min-w-0">
-                <p class="text-sm font-bold font-heading leading-none text-brand-text truncate">پنل مدیریت</p>
-                <p class="text-[11px] text-brand-muted mt-0.5">WorldCup 2026</p>
+                <p class="text-sm font-bold font-heading leading-none text-white truncate">پنل مدیریت</p>
+                <p class="text-[11px] mt-0.5" style="color:#00e476;">WorldCup 2026</p>
             </div>
         </div>
 
@@ -44,104 +43,102 @@
         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
             @php
                 $adminNav = [
-                    ['route' => 'admin.dashboard',   'label' => 'داشبورد',  'match' => 'admin.dashboard'],
-                    ['route' => 'admin.teams.index', 'label' => 'تیم‌ها',   'match' => 'admin.teams.*'],
-                    ['route' => 'admin.games.index', 'label' => 'بازی‌ها',  'match' => 'admin.games.*'],
+                    ['route' => 'admin.dashboard',   'label' => 'داشبورد', 'icon' => 'dashboard',     'match' => 'admin.dashboard'],
+                    ['route' => 'admin.teams.index',  'label' => 'تیم‌ها',  'icon' => 'flag',           'match' => 'admin.teams.*'],
+                    ['route' => 'admin.games.index',  'label' => 'بازی‌ها', 'icon' => 'sports_soccer',  'match' => 'admin.games.*'],
                 ];
             @endphp
 
             @foreach($adminNav as $item)
                 @php $active = request()->routeIs($item['match']); @endphp
                 <a href="{{ route($item['route']) }}"
-                   @class([
-                       'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150',
-                       'bg-brand-card text-brand-green'                                  => $active,
-                       'text-brand-muted hover:bg-brand-card hover:text-brand-text'      => !$active,
-                   ])>
-                    <span @class([
-                        'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                        'bg-brand-green' => $active,
-                        'bg-transparent' => !$active,
-                    ])></span>
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group"
+                   style="{{ $active
+                       ? 'background:rgba(0,228,118,0.1);color:#00e476;'
+                       : 'color:rgba(185,203,185,0.7);' }}"
+                   onmouseover="{{ !$active ? "this.style.background='rgba(255,255,255,0.05)';this.style.color='#dde2f0'" : '' }}"
+                   onmouseout="{{ !$active ? "this.style.background='';this.style.color='rgba(185,203,185,0.7)'" : '' }}">
+                    <span class="material-symbols-outlined text-base flex-shrink-0"
+                          style="font-variation-settings:{{ $active ? "'FILL' 1" : "'FILL' 0" }},'wght' 400,'GRAD' 0,'opsz' 24;">{{ $item['icon'] }}</span>
                     <span>{{ $item['label'] }}</span>
+                    @if($active)
+                    <div class="mr-auto w-1.5 h-1.5 rounded-full" style="background:#00e476;"></div>
+                    @endif
                 </a>
             @endforeach
 
-            <div class="pt-4 mt-4 border-t border-brand-border">
+            <div class="pt-4 mt-4" style="border-top:1px solid rgba(255,255,255,0.07);">
                 <a href="{{ route('dashboard') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-                          text-brand-muted hover:bg-brand-card hover:text-brand-text">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
+                   style="color:rgba(185,203,185,0.6);"
+                   onmouseover="this.style.background='rgba(255,255,255,0.05)';this.style.color='#dde2f0'"
+                   onmouseout="this.style.background='';this.style.color='rgba(185,203,185,0.6)'">
+                    <span class="material-symbols-outlined text-base">arrow_back</span>
                     <span>بازگشت به سایت</span>
                 </a>
             </div>
         </nav>
 
         {{-- User footer --}}
-        <div class="flex-shrink-0 border-t border-brand-border p-3">
+        <div class="flex-shrink-0 p-3" style="border-top:1px solid rgba(255,255,255,0.07);">
             <div class="flex items-center gap-3 px-2 py-2 mb-2">
-                <div class="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center flex-shrink-0 text-xs font-bold text-black">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-black"
+                     style="background:linear-gradient(135deg,#00b85e,#00e476);color:#003919;">
                     {{ mb_strtoupper(mb_substr(auth()->user()?->name ?? 'A', 0, 1, 'UTF-8')) }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-brand-text truncate leading-none">{{ auth()->user()?->name }}</p>
-                    <p class="text-[11px] text-brand-green mt-0.5">مدیر سیستم</p>
+                    <p class="text-sm font-semibold text-white truncate leading-none">{{ auth()->user()?->name }}</p>
+                    <p class="text-[11px] mt-0.5" style="color:#00e476;">مدیر سیستم</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                        class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-                               bg-brand-card border border-brand-border text-brand-muted
-                               hover:text-brand-red hover:border-brand-red/50
-                               transition-colors duration-150 cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
+                        class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150"
+                        style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(185,203,185,0.7);"
+                        onmouseover="this.style.background='rgba(255,90,90,0.08)';this.style.borderColor='rgba(255,90,90,0.3)';this.style.color='#FF8A8A'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(185,203,185,0.7)'">
+                    <span class="material-symbols-outlined text-base">logout</span>
                     خروج
                 </button>
             </form>
         </div>
     </aside>
 
-    {{-- Main --}}
+    {{-- Main Area ──────────────────────────────────────────────────────────── --}}
     <div class="flex-1 flex flex-col min-w-0">
-        <header class="sticky top-0 z-10 flex items-center h-16 px-4 sm:px-6 gap-4
-                       bg-brand-surface/80 backdrop-blur border-b border-brand-border flex-shrink-0">
+
+        {{-- Top bar --}}
+        <header class="sticky top-0 z-10 flex items-center h-16 px-4 sm:px-6 gap-4 flex-shrink-0"
+                style="background:rgba(14,20,29,0.7);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);">
             <button @click="sidebar = !sidebar"
-                    class="lg:hidden p-2 -mr-1 rounded-lg text-brand-muted hover:text-brand-text hover:bg-brand-card transition-colors cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
+                    class="lg:hidden p-2 -mr-1 rounded-xl transition-all cursor-pointer"
+                    style="color:rgba(185,203,185,0.7);"
+                    onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#dde2f0'"
+                    onmouseout="this.style.background='';this.style.color='rgba(185,203,185,0.7)'">
+                <span class="material-symbols-outlined">menu</span>
             </button>
-            <h1 class="flex-1 text-base font-semibold font-heading text-brand-text truncate">
+            <h1 class="flex-1 text-base font-bold font-heading text-white truncate">
                 @yield('page-title', 'داشبورد')
             </h1>
-            <span class="text-xs px-2.5 py-1 rounded-lg font-semibold bg-brand-card border border-brand-border text-brand-green">
-                Admin
-            </span>
+            <span class="badge badge-green font-mono text-xs">Admin</span>
         </header>
 
+        {{-- Flash --}}
         @if(session('success'))
-            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 bg-green-950/50 border border-green-800/50 text-green-300 text-sm rounded-xl px-4 py-3">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
+            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold animate-slide-up flash-success" data-flash>
+                <span class="material-symbols-outlined text-base flex-shrink-0">check_circle</span>
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 bg-red-950/50 border border-red-800/50 text-red-300 text-sm rounded-xl px-4 py-3">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
+            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold animate-slide-up flash-error" data-flash>
+                <span class="material-symbols-outlined text-base flex-shrink-0">error</span>
                 {{ session('error') }}
             </div>
         @endif
 
-        <main class="flex-1 px-4 sm:px-6 py-6">
+        <main class="flex-1 px-4 sm:px-6 py-6 page-enter">
             @yield('content')
         </main>
     </div>

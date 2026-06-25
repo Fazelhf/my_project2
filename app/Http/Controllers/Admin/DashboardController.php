@@ -43,7 +43,13 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentGames', 'upcomingGames'));
+        // لاگ فعالیت‌های اخیر (پیش‌بینی‌های اخیر ثبت‌شده)
+        $recentActivity = \App\Models\Prediction::with(['user', 'game.homeTeam', 'game.awayTeam'])
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentGames', 'upcomingGames', 'recentActivity'));
     }
 
     /**

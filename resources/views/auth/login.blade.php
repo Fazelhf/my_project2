@@ -3,105 +3,129 @@
 
 @section('content')
 
-<div class="mb-7">
-    <h2 class="text-2xl font-black font-heading text-brand-text mb-1">خوش آمدید</h2>
-    <p class="text-sm text-brand-muted">با حساب کاربری خود وارد شوید</p>
-</div>
+<h2 class="font-heading text-2xl font-black text-white mb-7 text-right">ورود به پنل پیش‌بینی</h2>
 
 @if($errors->any())
-    <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6 score-red">
-        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+    <div class="flex items-start gap-3 rounded-2xl px-4 py-3 mb-5 flash-error">
+        <span class="material-symbols-outlined text-base mt-0.5 flex-shrink-0">error</span>
         <span class="text-sm">{{ $errors->first() }}</span>
     </div>
 @endif
 
 @if(session('success'))
-    <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6 score-green">
-        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+    <div class="flex items-start gap-3 rounded-2xl px-4 py-3 mb-5 flash-success">
+        <span class="material-symbols-outlined text-base mt-0.5 flex-shrink-0">check_circle</span>
         <span class="text-sm">{{ session('success') }}</span>
     </div>
 @endif
 
-<form action="{{ route('login.attempt') }}" method="POST" class="space-y-5">
+<form action="{{ route('login.attempt') }}" method="POST" class="space-y-5" id="loginForm">
     @csrf
 
-    <div class="space-y-1.5">
-        <label for="email" class="block text-xs font-bold text-brand-muted uppercase tracking-widest">
-            ایمیل
+    {{-- Email --}}
+    <div class="relative floating-label-input">
+        <input type="email" id="email" name="email" value="{{ old('email') }}"
+               required autofocus placeholder=" "
+               class="stitch-input pr-12"
+               style="padding-right:44px;">
+        <label for="email"
+               class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
+               style="color:rgba(185,203,185,0.5);">
+            ایمیل یا نام کاربری
         </label>
-        <div class="relative">
-            <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
-            </svg>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
-                   placeholder="name@company.com"
-                   class="w-full pr-10 pl-4 py-3 rounded-xl text-sm text-brand-text placeholder:text-brand-subtle outline-none transition-all duration-200"
-                   style="background: rgba(255,255,255,0.04); border: 1px solid #1E2D45;"
-                   onfocus="this.style.borderColor='#F59E0B'; this.style.boxShadow='0 0 0 3px rgba(245,158,11,0.15)'"
-                   onblur="this.style.borderColor='#1E2D45'; this.style.boxShadow='none'">
-        </div>
+        <span class="material-symbols-outlined absolute left-4 top-4 text-base pointer-events-none"
+              style="color:rgba(185,203,185,0.45);">person</span>
     </div>
 
-    <div class="space-y-1.5">
-        <label for="password" class="block text-xs font-bold text-brand-muted uppercase tracking-widest">
+    {{-- Password --}}
+    <div class="relative floating-label-input">
+        <input type="password" id="password" name="password"
+               required placeholder=" "
+               class="stitch-input pr-12"
+               style="padding-right:44px;">
+        <label for="password"
+               class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
+               style="color:rgba(185,203,185,0.5);">
             رمز عبور
         </label>
-        <div class="relative">
-            <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-            <input type="password" id="password" name="password" required placeholder="••••••••"
-                   class="w-full pr-10 pl-4 py-3 rounded-xl text-sm text-brand-text placeholder:text-brand-subtle outline-none transition-all duration-200"
-                   style="background: rgba(255,255,255,0.04); border: 1px solid #1E2D45;"
-                   onfocus="this.style.borderColor='#F59E0B'; this.style.boxShadow='0 0 0 3px rgba(245,158,11,0.15)'"
-                   onblur="this.style.borderColor='#1E2D45'; this.style.boxShadow='none'">
-        </div>
+        <span class="material-symbols-outlined absolute left-4 top-4 text-base cursor-pointer transition-colors"
+              id="togglePassword"
+              style="color:rgba(185,203,185,0.45);"
+              onmouseover="this.style.color='#00e476'" onmouseout="this.style.color='rgba(185,203,185,0.45)'">visibility</span>
     </div>
 
-    <div class="flex items-center gap-2.5">
-        <input id="remember" name="remember" type="checkbox"
-               class="w-4 h-4 rounded cursor-pointer accent-brand-gold"
-               style="border: 1px solid #1E2D45; background: rgba(255,255,255,0.04);">
-        <label for="remember" class="text-sm text-brand-muted cursor-pointer select-none">
-            مرا به خاطر بسپار
-        </label>
+    {{-- Remember me --}}
+    <div class="flex items-center gap-2">
+        <input type="checkbox" name="remember" id="remember"
+               class="w-4 h-4 rounded cursor-pointer"
+               style="accent-color:#00e476;">
+        <label for="remember" class="text-sm cursor-pointer"
+               style="color:rgba(185,203,185,0.7);">مرا به خاطر بسپار</label>
     </div>
 
+    {{-- Submit --}}
     <button type="submit"
-            class="w-full py-3.5 rounded-xl text-sm font-black font-heading tracking-wide cursor-pointer transition-all duration-200 relative overflow-hidden group"
-            style="background: linear-gradient(135deg, #D97706, #F59E0B, #FCD34D); color: #0a0a0a; box-shadow: 0 0 30px rgba(245,158,11,0.3);"
-            onmouseover="this.style.boxShadow='0 0 50px rgba(245,158,11,0.5)'; this.style.transform='translateY(-1px)'"
-            onmouseout="this.style.boxShadow='0 0 30px rgba(245,158,11,0.3)'; this.style.transform='translateY(0)'">
-        <span class="relative z-10 flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-            </svg>
-            ورود به سیستم
-        </span>
+            class="btn-primary w-full py-4 text-base"
+            id="submitBtn">
+        <span>ورود به حساب</span>
+        <span class="material-symbols-outlined text-base">login</span>
     </button>
 </form>
 
-<div class="relative my-6">
-    <div class="absolute inset-0 flex items-center">
-        <div class="w-full" style="border-top: 1px solid #1E2D45;"></div>
-    </div>
-    <div class="relative flex justify-center">
-        <span class="px-3 text-xs text-brand-subtle" style="background: rgba(10,15,30,0.95);">یا</span>
-    </div>
+<div class="mt-7 pt-6 text-center" style="border-top:1px solid rgba(255,255,255,0.08);">
+    <p class="text-sm" style="color:rgba(185,203,185,0.7);">
+        حساب کاربری ندارید؟
+        <a href="{{ route('register') }}" class="font-bold"
+           style="color:#00e476;"
+           onmouseover="this.style.textDecoration='underline'"
+           onmouseout="this.style.textDecoration='none'">ثبت‌نام کنید</a>
+    </p>
 </div>
 
-<p class="text-center text-sm text-brand-muted">
-    حساب کاربری ندارید؟
-    <a href="{{ route('register') }}" class="font-bold transition-colors duration-150"
-       style="color: #F59E0B;"
-       onmouseover="this.style.color='#FCD34D'"
-       onmouseout="this.style.color='#F59E0B'">
-        ثبت‌نام کنید
-    </a>
-</p>
-
 @endsection
+
+@push('scripts')
+<script>
+    /* Floating labels */
+    document.querySelectorAll('.floating-label-input input').forEach(input => {
+        const label = input.nextElementSibling;
+        if (!label || label.tagName !== 'LABEL') return;
+        const update = () => {
+            const filled = input.value.length > 0;
+            label.style.transform = filled ? 'translateY(-1.4rem) scale(0.82)' : '';
+            label.style.color = input === document.activeElement ? '#00e476' : (filled ? 'rgba(185,203,185,0.7)' : 'rgba(185,203,185,0.5)');
+            label.style.background = filled ? '#161c25' : '';
+            label.style.padding = filled ? '0 4px' : '';
+        };
+        input.addEventListener('focus', update);
+        input.addEventListener('blur', update);
+        input.addEventListener('input', update);
+        update();
+    });
+
+    /* Password toggle */
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleBtn.textContent = isPassword ? 'visibility_off' : 'visibility';
+        });
+    }
+
+    /* Mouse parallax on card */
+    const card = document.querySelector('.liquid-glass');
+    if (card) {
+        document.addEventListener('mousemove', e => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
+            card.style.transform = `perspective(800px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.5s ease';
+        });
+    }
+</script>
+@endpush
