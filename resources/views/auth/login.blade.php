@@ -3,88 +3,129 @@
 
 @section('content')
 
-<div class="glass-card neon-border rounded-3xl p-8 md:p-10">
+<h2 class="font-heading text-2xl font-black text-white mb-7 text-right">ورود به پنل پیش‌بینی</h2>
 
-    <h2 class="font-heading text-2xl font-bold text-on-surface mb-8 text-right">ورود به پنل پیش‌بینی</h2>
+@if($errors->any())
+    <div class="flex items-start gap-3 rounded-2xl px-4 py-3 mb-5 flash-error">
+        <span class="material-symbols-outlined text-base mt-0.5 flex-shrink-0">error</span>
+        <span class="text-sm">{{ $errors->first() }}</span>
+    </div>
+@endif
 
-    @if($errors->any())
-        <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6 bg-error/10 border border-error/30 text-error">
-            <span class="material-symbols-outlined text-base mt-0.5">error</span>
-            <span class="text-sm">{{ $errors->first() }}</span>
-        </div>
-    @endif
+@if(session('success'))
+    <div class="flex items-start gap-3 rounded-2xl px-4 py-3 mb-5 flash-success">
+        <span class="material-symbols-outlined text-base mt-0.5 flex-shrink-0">check_circle</span>
+        <span class="text-sm">{{ session('success') }}</span>
+    </div>
+@endif
 
-    @if(session('success'))
-        <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6 bg-primary-container/10 border border-primary-fixed-dim/30 text-primary-fixed-dim">
-            <span class="material-symbols-outlined text-base mt-0.5">check_circle</span>
-            <span class="text-sm">{{ session('success') }}</span>
-        </div>
-    @endif
+<form action="{{ route('login.attempt') }}" method="POST" class="space-y-5" id="loginForm">
+    @csrf
 
-    <form action="{{ route('login.attempt') }}" method="POST" class="space-y-6" id="loginForm">
-        @csrf
-
-        <div class="relative floating-label-input">
-            <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
-                   placeholder=" "
-                   class="w-full bg-surface-container-lowest/50 border border-white/10 rounded-xl px-4 py-4 text-on-surface outline-none focus:border-primary-fixed-dim transition-all peer">
-            <label for="email" class="absolute right-4 top-4 text-on-surface-variant transition-all pointer-events-none origin-right">
-                نام کاربری یا ایمیل
-            </label>
-            <span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant">person</span>
-        </div>
-
-        <div class="relative floating-label-input">
-            <input type="password" id="password" name="password" required
-                   placeholder=" "
-                   class="w-full bg-surface-container-lowest/50 border border-white/10 rounded-xl px-4 py-4 text-on-surface outline-none focus:border-primary-fixed-dim transition-all peer">
-            <label for="password" class="absolute right-4 top-4 text-on-surface-variant transition-all pointer-events-none origin-right">
-                رمز عبور
-            </label>
-            <span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant cursor-pointer hover:text-primary-fixed-dim" id="togglePassword">visibility</span>
-        </div>
-
-        <div class="flex items-center justify-between text-sm font-mono">
-            <label class="flex items-center gap-2 cursor-pointer text-on-surface-variant hover:text-on-surface transition-colors">
-                <input type="checkbox" name="remember" class="w-4 h-4 rounded border-white/20 bg-surface-container-lowest text-primary-fixed-dim focus:ring-primary-fixed-dim focus:ring-offset-0">
-                مرا به خاطر بسپار
-            </label>
-        </div>
-
-        <button type="submit"
-                class="liquid-button w-full py-4 rounded-xl font-heading font-bold text-on-primary-fixed flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,228,118,0.3)] hover:shadow-[0_0_30px_rgba(0,228,118,0.5)] transition-all"
-                id="submitBtn">
-            <span>ورود به حساب</span>
-            <span class="material-symbols-outlined">login</span>
-        </button>
-    </form>
-
-    <div class="mt-8 pt-8 border-t border-white/10 text-center">
-        <p class="text-on-surface-variant mb-2">
-            حساب کاربری ندارید؟
-            <a href="{{ route('register') }}" class="text-primary-fixed-dim font-bold hover:underline">ثبت‌نام کنید</a>
-        </p>
+    {{-- Email --}}
+    <div class="relative floating-label-input">
+        <input type="email" id="email" name="email" value="{{ old('email') }}"
+               required autofocus placeholder=" "
+               class="stitch-input pr-12"
+               style="padding-right:44px;">
+        <label for="email"
+               class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
+               style="color:rgba(185,203,185,0.5);">
+            ایمیل یا نام کاربری
+        </label>
+        <span class="material-symbols-outlined absolute left-4 top-4 text-base pointer-events-none"
+              style="color:rgba(185,203,185,0.45);">person</span>
     </div>
 
+    {{-- Password --}}
+    <div class="relative floating-label-input">
+        <input type="password" id="password" name="password"
+               required placeholder=" "
+               class="stitch-input pr-12"
+               style="padding-right:44px;">
+        <label for="password"
+               class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
+               style="color:rgba(185,203,185,0.5);">
+            رمز عبور
+        </label>
+        <span class="material-symbols-outlined absolute left-4 top-4 text-base cursor-pointer transition-colors"
+              id="togglePassword"
+              style="color:rgba(185,203,185,0.45);"
+              onmouseover="this.style.color='#00e476'" onmouseout="this.style.color='rgba(185,203,185,0.45)'">visibility</span>
+    </div>
+
+    {{-- Remember me --}}
+    <div class="flex items-center gap-2">
+        <input type="checkbox" name="remember" id="remember"
+               class="w-4 h-4 rounded cursor-pointer"
+               style="accent-color:#00e476;">
+        <label for="remember" class="text-sm cursor-pointer"
+               style="color:rgba(185,203,185,0.7);">مرا به خاطر بسپار</label>
+    </div>
+
+    {{-- Submit --}}
+    <button type="submit"
+            class="btn-primary w-full py-4 text-base"
+            id="submitBtn">
+        <span>ورود به حساب</span>
+        <span class="material-symbols-outlined text-base">login</span>
+    </button>
+</form>
+
+<div class="mt-7 pt-6 text-center" style="border-top:1px solid rgba(255,255,255,0.08);">
+    <p class="text-sm" style="color:rgba(185,203,185,0.7);">
+        حساب کاربری ندارید؟
+        <a href="{{ route('register') }}" class="font-bold"
+           style="color:#00e476;"
+           onmouseover="this.style.textDecoration='underline'"
+           onmouseout="this.style.textDecoration='none'">ثبت‌نام کنید</a>
+    </p>
 </div>
 
 @endsection
 
 @push('scripts')
 <script>
-    const toggleBtn = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    toggleBtn.addEventListener('click', () => {
-        const isPassword = passwordInput.getAttribute('type') === 'password';
-        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-        toggleBtn.textContent = isPassword ? 'visibility_off' : 'visibility';
+    /* Floating labels */
+    document.querySelectorAll('.floating-label-input input').forEach(input => {
+        const label = input.nextElementSibling;
+        if (!label || label.tagName !== 'LABEL') return;
+        const update = () => {
+            const filled = input.value.length > 0;
+            label.style.transform = filled ? 'translateY(-1.4rem) scale(0.82)' : '';
+            label.style.color = input === document.activeElement ? '#00e476' : (filled ? 'rgba(185,203,185,0.7)' : 'rgba(185,203,185,0.5)');
+            label.style.background = filled ? '#161c25' : '';
+            label.style.padding = filled ? '0 4px' : '';
+        };
+        input.addEventListener('focus', update);
+        input.addEventListener('blur', update);
+        input.addEventListener('input', update);
+        update();
     });
 
-    const card = document.querySelector('.glass-card');
-    document.addEventListener('mousemove', (e) => {
-        const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
-        const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
-        if (card) card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-    });
+    /* Password toggle */
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleBtn.textContent = isPassword ? 'visibility_off' : 'visibility';
+        });
+    }
+
+    /* Mouse parallax on card */
+    const card = document.querySelector('.liquid-glass');
+    if (card) {
+        document.addEventListener('mousemove', e => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
+            card.style.transform = `perspective(800px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.5s ease';
+        });
+    }
 </script>
 @endpush

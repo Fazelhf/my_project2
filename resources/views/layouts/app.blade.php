@@ -5,168 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Vazirmatn:wght@400;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        :root {
-            --glass-bg: rgba(255,255,255,0.05);
-            --glass-border: rgba(255,255,255,0.1);
-            --neon-primary: #00e476;
-        }
-        body {
-            background-color: #0e141d;
-            background-image:
-                radial-gradient(circle at 0% 0%, rgba(0,228,118,0.12) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(0,26,61,0.7) 0%, transparent 40%);
-            font-family: 'Vazirmatn', sans-serif;
-            color: #dde2f0;
-        }
-        .liquid-glass {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .liquid-glass::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.04) 100%);
-            pointer-events: none;
-        }
-        .liquid-glass.card-glow:hover {
-            border-color: rgba(0,228,118,0.35);
-            box-shadow: 0 0 20px rgba(0,228,118,0.1);
-            transition: all 0.3s ease;
-        }
-        .apple-nav {
-            background: rgba(14,20,29,0.5);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-        .nav-item-active {
-            background: rgba(0,228,118,0.1);
-            color: #00e476 !important;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        /* Keep existing classes for backwards compat */
-        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
-        .glass-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
-        .bento-card { position: relative; transition: all 0.2s ease; }
-        .bento-card:hover { border-color: rgba(0,228,118,0.25) !important; }
-        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
-        .badge-gold { background: rgba(245,166,35,0.15); color: #F5A623; border: 1px solid rgba(245,166,35,0.3); }
-        .badge-green { background: rgba(0,228,118,0.15); color: #00e476; border: 1px solid rgba(0,228,118,0.3); }
-        .badge-red { background: rgba(255,90,90,0.15); color: #FF8A8A; border: 1px solid rgba(255,90,90,0.3); }
-        .badge-blue { background: rgba(77,159,255,0.15); color: #4D9FFF; border: 1px solid rgba(77,159,255,0.3); }
-        .badge-gray { background: rgba(255,255,255,0.08); color: #b9cbb9; border: 1px solid rgba(255,255,255,0.12); }
-        .badge-purple { background: rgba(167,139,250,0.15); color: #A78BFA; border: 1px solid rgba(167,139,250,0.3); }
-        .nav-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; color: rgba(221,226,240,0.7); transition: all 0.2s ease; cursor: pointer; background: transparent; border: none; }
-        .nav-pill:hover { background: rgba(255,255,255,0.06); color: #dde2f0; }
-        .nav-pill.active { background: rgba(0,228,118,0.1); color: #00e476; }
-        .text-gold { color: #F5A623; }
-        .text-brand-text { color: #dde2f0; }
-        .text-brand-muted { color: #b9cbb9; }
-        .text-brand-subtle { color: rgba(185,203,185,0.5); }
-        .gradient-text-gold { background: linear-gradient(135deg,#D97706,#F59E0B,#FCD34D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .score-green { background: rgba(0,228,118,0.1); border: 1px solid rgba(0,228,118,0.3); color: #00e476; }
-        .score-red { background: rgba(255,90,90,0.1); border: 1px solid rgba(255,90,90,0.3); color: #FF8A8A; }
-        .font-heading { font-family: 'Plus Jakarta Sans', 'Vazirmatn', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .ether-bg { display: none; }
-    </style>
 </head>
 <body class="antialiased min-h-screen">
 
-{{-- ── Liquid Ether Background ──────────────────────────────── --}}
-<div class="ether-bg"></div>
+{{-- Background --}}
+<div class="stitch-bg"></div>
 
-{{-- ── SplashCursor WebGL Canvas ───────────────────────────── --}}
+{{-- WebGL fluid cursor --}}
 <canvas id="fluid-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;"></canvas>
 
-{{-- ── Top Navbar ──────────────────────────────────────────── --}}
+{{-- ── Top Navbar ──────────────────────────────────────────────────────────── --}}
 <header class="fixed top-0 inset-x-0 z-50 px-4 pt-3">
-    <nav class="apple-nav rounded-2xl px-4 py-2.5 flex items-center justify-between max-w-5xl mx-auto">
+    <nav class="apple-nav rounded-2xl px-4 py-2.5 flex items-center justify-between max-w-5xl mx-auto gap-3">
 
         {{-- Logo --}}
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 flex-shrink-0">
             <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                 style="background:linear-gradient(135deg,#F5A623,#A78BFA);">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
-                </svg>
+                 style="background:linear-gradient(135deg,#00b85e,#00e476);box-shadow:0 0 12px rgba(0,228,118,0.3);">
+                <span class="material-symbols-outlined text-base" style="color:#003919;font-size:18px;font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24;">sports_soccer</span>
             </div>
-            <span class="font-heading font-black text-sm tracking-wide text-gold hidden sm:block">WC 2026</span>
+            <span class="font-heading font-black text-sm tracking-wide gradient-text-green hidden sm:block">WC 2026</span>
         </a>
 
-        {{-- 4 Nav Pills --}}
-        <div class="flex items-center gap-1">
+        {{-- Main nav --}}
+        <div class="flex items-center gap-0.5 hide-mobile">
             <a href="{{ route('dashboard') }}"
                class="nav-pill {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
+                <span class="material-symbols-outlined text-base">home</span>
                 <span>داشبورد</span>
             </a>
-
             <a href="{{ route('games.index') }}"
                class="nav-pill {{ request()->routeIs('games.*') ? 'active' : '' }}">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
+                <span class="material-symbols-outlined text-base">sports_soccer</span>
                 <span>پیش‌بینی</span>
             </a>
-
             <a href="{{ route('results.index') }}"
                class="nav-pill {{ request()->routeIs('results.*') ? 'active' : '' }}">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
+                <span class="material-symbols-outlined text-base">equalizer</span>
                 <span>نتایج</span>
             </a>
-
             <a href="{{ route('leaderboard') }}"
                class="nav-pill {{ request()->routeIs('leaderboard') ? 'active' : '' }}">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                </svg>
+                <span class="material-symbols-outlined text-base">leaderboard</span>
                 <span>جدول</span>
             </a>
         </div>
 
-        {{-- User info + actions --}}
-        <div class="flex items-center gap-2">
+        {{-- User area --}}
+        <div class="flex items-center gap-2 flex-shrink-0">
             <div class="hidden sm:flex items-center gap-2">
-                <span class="badge badge-gold font-heading text-xs">{{ auth()->user()->total_score ?? 0 }} pt</span>
-                <span class="text-xs text-brand-muted max-w-[90px] truncate">{{ auth()->user()->name }}</span>
+                <span class="badge badge-green font-mono text-xs">{{ auth()->user()->total_score ?? 0 }} pt</span>
+                <span class="text-xs max-w-[80px] truncate" style="color:rgba(221,226,240,0.7);">{{ auth()->user()->name }}</span>
             </div>
 
             @if(auth()->user()->is_admin ?? false)
             <a href="{{ route('admin.dashboard') }}"
-               class="nav-pill" style="color:#C4B5FD;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
+               class="nav-pill"
+               style="color:#C4B5FD;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);">
+                <span class="material-symbols-outlined text-base">settings</span>
                 <span class="hidden md:block">ادمین</span>
             </a>
             @endif
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="nav-pill cursor-pointer"
-                        style="color:rgba(255,90,90,0.7);"
-                        onmouseover="this.style.background='rgba(255,90,90,0.1)';this.style.color='#FF8A8A'"
+                <button type="submit" class="nav-pill cursor-pointer" style="color:rgba(255,90,90,0.7);"
+                        onmouseover="this.style.background='rgba(255,90,90,0.08)';this.style.color='#FF8A8A'"
                         onmouseout="this.style.background='';this.style.color='rgba(255,90,90,0.7)'">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
+                    <span class="material-symbols-outlined text-base">logout</span>
                     <span class="hidden sm:block">خروج</span>
                 </button>
             </form>
@@ -174,36 +81,54 @@
     </nav>
 </header>
 
-{{-- ── Flash Messages ───────────────────────────────────────── --}}
+{{-- ── Flash Messages ──────────────────────────────────────────────────────── --}}
 @if(session('success') || session('error'))
-<div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4 animate-slide-up">
+<div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4 animate-slide-up" data-flash>
     @if(session('success'))
-    <div class="glass rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
-         style="background:rgba(0,229,160,0.1);border-color:rgba(0,229,160,0.3);color:#00E5A0;">
-        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
+    <div class="liquid-glass rounded-2xl px-4 py-3 text-sm font-semibold flex items-center gap-2 flash-success">
+        <span class="material-symbols-outlined text-base flex-shrink-0">check_circle</span>
         {{ session('success') }}
     </div>
     @endif
     @if(session('error'))
-    <div class="glass rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
-         style="background:rgba(255,90,90,0.1);border-color:rgba(255,90,90,0.3);color:#FF8A8A;">
-        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-        </svg>
+    <div class="liquid-glass rounded-2xl px-4 py-3 text-sm font-semibold flex items-center gap-2 flash-error">
+        <span class="material-symbols-outlined text-base flex-shrink-0">error</span>
         {{ session('error') }}
     </div>
     @endif
 </div>
 @endif
 
-{{-- ── Page Content ─────────────────────────────────────────── --}}
-<main class="relative z-10 max-w-5xl mx-auto px-4 pt-24 pb-10 min-h-screen">
+{{-- ── Page Content ────────────────────────────────────────────────────────── --}}
+<main class="relative z-10 max-w-5xl mx-auto px-4 pt-24 pb-10 min-h-screen main-content page-enter">
     @yield('content')
 </main>
 
-{{-- ── SplashCursor WebGL Fluid ─────────────────────────────── --}}
+{{-- ── Mobile Bottom Nav ───────────────────────────────────────────────────── --}}
+<nav class="mobile-nav">
+    <a href="{{ route('dashboard') }}"
+       class="mobile-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+        <span class="material-symbols-outlined" style="font-size:22px;">home</span>
+        داشبورد
+    </a>
+    <a href="{{ route('games.index') }}"
+       class="mobile-nav-item {{ request()->routeIs('games.*') ? 'active' : '' }}">
+        <span class="material-symbols-outlined" style="font-size:22px;">sports_soccer</span>
+        پیش‌بینی
+    </a>
+    <a href="{{ route('results.index') }}"
+       class="mobile-nav-item {{ request()->routeIs('results.*') ? 'active' : '' }}">
+        <span class="material-symbols-outlined" style="font-size:22px;">equalizer</span>
+        نتایج
+    </a>
+    <a href="{{ route('leaderboard') }}"
+       class="mobile-nav-item {{ request()->routeIs('leaderboard') ? 'active' : '' }}">
+        <span class="material-symbols-outlined" style="font-size:22px;">leaderboard</span>
+        جدول
+    </a>
+</nav>
+
+{{-- WebGL Fluid ──────────────────────────────────────────────────────────── --}}
 <script>
 (function(){
     const canvas=document.getElementById('fluid-canvas');
@@ -219,29 +144,14 @@
     else{hf=gl.getExtension('OES_texture_half_float');sl=gl.getExtension('OES_texture_half_float_linear');}
     const HFT=isGL2?gl.HALF_FLOAT:(hf&&hf.HALF_FLOAT_OES);
     const FL=sl?gl.LINEAR:gl.NEAREST;
-    function chk(i,f){
-        const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
-        gl.texImage2D(gl.TEXTURE_2D,0,i,4,4,0,f,HFT,null);
-        const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);
-        return gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
-    }
-    function fmt(i,f){
-        if(!chk(i,f)){if(i===gl.R16F)return fmt(gl.RG16F,gl.RG);if(i===gl.RG16F)return fmt(gl.RGBA16F,gl.RGBA);return null;}
-        return{i,f};
-    }
+    function chk(i,f){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,i,4,4,0,f,HFT,null);const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);return gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;}
+    function fmt(i,f){if(!chk(i,f)){if(i===gl.R16F)return fmt(gl.RG16F,gl.RG);if(i===gl.RG16F)return fmt(gl.RGBA16F,gl.RGBA);return null;}return{i,f};}
     const RGBA=isGL2?fmt(gl.RGBA16F,gl.RGBA):{i:gl.RGBA,f:gl.RGBA};
     const RG=isGL2?fmt(gl.RG16F,gl.RG):RGBA;
     const R=isGL2?fmt(gl.R16F,gl.RED):RGBA;
-    const VS=`precision highp float;attribute vec2 p;varying vec2 U,L,Rv,T,B;uniform vec2 s;
-    void main(){U=p*.5+.5;L=U-vec2(s.x,0.);Rv=U+vec2(s.x,0.);T=U+vec2(0.,s.y);B=U-vec2(0.,s.y);gl_Position=vec4(p,0.,1.);}`;
+    const VS=`precision highp float;attribute vec2 p;varying vec2 U,L,Rv,T,B;uniform vec2 s;void main(){U=p*.5+.5;L=U-vec2(s.x,0.);Rv=U+vec2(s.x,0.);T=U+vec2(0.,s.y);B=U-vec2(0.,s.y);gl_Position=vec4(p,0.,1.);}`;
     function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s;}
-    function prog(vs,fs){
-        const p=gl.createProgram();gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);
-        const u={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);
-        for(let i=0;i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm);}
-        return{p,u,bind(){gl.useProgram(p);}};
-    }
+    function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);const u={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm);}return{p,u,bind(){gl.useProgram(p);}};}
     const vsh=sh(gl.VERTEX_SHADER,VS);
     const P={
         adv:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision highp float;precision highp sampler2D;varying vec2 U;uniform sampler2D uV,uS;uniform vec2 s;uniform float dt,d;void main(){vec2 c=U-dt*texture2D(uV,U).xy*s;gl_FragColor=texture2D(uS,c)/(1.+d*dt);}`)),
@@ -252,107 +162,29 @@
         clr:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision mediump float;precision mediump sampler2D;varying vec2 U;uniform sampler2D uT;uniform float v;void main(){gl_FragColor=v*texture2D(uT,U);}`)),
         dsp:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision highp float;precision highp sampler2D;varying vec2 U;uniform sampler2D uT;void main(){vec3 c=texture2D(uT,U).rgb;gl_FragColor=vec4(c,max(c.r,max(c.g,c.b))*.7);}`)),
     };
-    gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,-1,1,1,1,1,-1]),gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,gl.createBuffer());
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2,0,2,3]),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,-1,1,1,1,1,-1]),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2,0,2,3]),gl.STATIC_DRAW);
     gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(0);
-    function fbo(w,h,ii,ff,fl){
-        gl.activeTexture(gl.TEXTURE0);const tx=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tx);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,fl);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,fl);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D,0,ii,w,h,0,ff,HFT,null);
-        const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tx,0);
-        gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT);
-        return{fb,tx,w,h,sx:1/w,sy:1/h,at(id){gl.activeTexture(gl.TEXTURE0+id);gl.bindTexture(gl.TEXTURE_2D,tx);return id;}};
-    }
-    function dbl(w,h,ii,ff,fl){
-        let a=fbo(w,h,ii,ff,fl),b=fbo(w,h,ii,ff,fl);
-        return{w,h,sx:a.sx,sy:a.sy,get r(){return a;},get w2(){return b;},swap(){[a,b]=[b,a];}};
-    }
-    function blit(t){
-        if(!t){gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.bindFramebuffer(gl.FRAMEBUFFER,null);}
-        else{gl.viewport(0,0,t.w,t.h);gl.bindFramebuffer(gl.FRAMEBUFFER,t.fb);}
-        gl.drawElements(gl.TRIANGLES,6,gl.UNSIGNED_SHORT,0);
-    }
-    function res(r){
-        const ar=gl.drawingBufferWidth/gl.drawingBufferHeight,mn=Math.round(r),mx=Math.round(r*(ar>1?ar:1));
-        return gl.drawingBufferWidth>gl.drawingBufferHeight?{w:mx,h:mn}:{w:mn,h:mx};
-    }
+    function fbo(w,h,ii,ff,fl){gl.activeTexture(gl.TEXTURE0);const tx=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tx);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,fl);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,fl);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,ii,w,h,0,ff,HFT,null);const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tx,0);gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT);return{fb,tx,w,h,sx:1/w,sy:1/h,at(id){gl.activeTexture(gl.TEXTURE0+id);gl.bindTexture(gl.TEXTURE_2D,tx);return id;}};}
+    function dbl(w,h,ii,ff,fl){let a=fbo(w,h,ii,ff,fl),b=fbo(w,h,ii,ff,fl);return{w,h,sx:a.sx,sy:a.sy,get r(){return a;},get w2(){return b;},swap(){[a,b]=[b,a];}};}
+    function blit(t){if(!t){gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.bindFramebuffer(gl.FRAMEBUFFER,null);}else{gl.viewport(0,0,t.w,t.h);gl.bindFramebuffer(gl.FRAMEBUFFER,t.fb);}gl.drawElements(gl.TRIANGLES,6,gl.UNSIGNED_SHORT,0);}
+    function res(r){const ar=gl.drawingBufferWidth/gl.drawingBufferHeight,mn=Math.round(r),mx=Math.round(r*(ar>1?ar:1));return gl.drawingBufferWidth>gl.drawingBufferHeight?{w:mx,h:mn}:{w:mn,h:mx};}
     let dy,vl,dv,pr2;
-    function init(){
-        const s=res(128),d=res(512);
-        dy=dbl(d.w,d.h,RGBA.i,RGBA.f,FL);
-        vl=dbl(s.w,s.h,RG.i,RG.f,FL);
-        dv=fbo(s.w,s.h,R.i,R.f,gl.NEAREST);
-        pr2=dbl(s.w,s.h,R.i,R.f,gl.NEAREST);
-    }
-    function rsz(){
-        const w=Math.floor(canvas.clientWidth*pr),h=Math.floor(canvas.clientHeight*pr);
-        if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;return true;}return false;
-    }
-    function hsv(h,s,v){
-        const i=Math.floor(h*6),f=h*6-i,p=v*(1-s),q=v*(1-f*s),t2=v*(1-(1-f)*s);
-        const c=[[v,t2,p],[q,v,p],[p,v,t2],[p,q,v],[t2,p,v],[v,p,q]][i%6];
-        return{r:c[0]*.12,g:c[1]*.12,b:c[2]*.12};
-    }
+    function init(){const s=res(128),d=res(512);dy=dbl(d.w,d.h,RGBA.i,RGBA.f,FL);vl=dbl(s.w,s.h,RG.i,RG.f,FL);dv=fbo(s.w,s.h,R.i,R.f,gl.NEAREST);pr2=dbl(s.w,s.h,R.i,R.f,gl.NEAREST);}
+    function rsz(){const w=Math.floor(canvas.clientWidth*pr),h=Math.floor(canvas.clientHeight*pr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;return true;}return false;}
+    function hsv(h,s,v){const i=Math.floor(h*6),f=h*6-i,p=v*(1-s),q=v*(1-f*s),t2=v*(1-(1-f)*s);const c=[[v,t2,p],[q,v,p],[p,v,t2],[p,q,v],[t2,p,v],[v,p,q]][i%6];return{r:c[0]*.12,g:c[1]*.12,b:c[2]*.12};}
     init();
-    let mx=.5,my=.5,pmx=.5,pmy=.5,moved=false,col={r:.05,g:.02,b:.15},lt=Date.now();
-    function splat(x,y,dx,dy2,c){
-        const sp=P.spl;sp.bind();
-        gl.uniform1i(sp.u.uT,vl.r.at(0));
-        gl.uniform1f(sp.u.aR,canvas.width/canvas.height);
-        gl.uniform2f(sp.u.pt,x,y);
-        gl.uniform3f(sp.u.C,dx,dy2,0);
-        gl.uniform1f(sp.u.r,.002);
-        blit(vl.w2);vl.swap();
-        gl.uniform1i(sp.u.uT,dy.r.at(0));
-        gl.uniform3f(sp.u.C,c.r,c.g,c.b);
-        blit(dy.w2);dy.swap();
-    }
-    function step(dt){
-        gl.disable(gl.BLEND);
-        const ap=P.adv;ap.bind();
-        gl.uniform2f(ap.u.s,vl.sx,vl.sy);
-        const vi=vl.r.at(0);gl.uniform1i(ap.u.uV,vi);gl.uniform1i(ap.u.uS,vi);
-        gl.uniform1f(ap.u.dt,dt);gl.uniform1f(ap.u.d,2);blit(vl.w2);vl.swap();
-        gl.uniform1i(ap.u.uV,vl.r.at(0));gl.uniform1i(ap.u.uS,dy.r.at(1));
-        gl.uniform1f(ap.u.d,3.5);blit(dy.w2);dy.swap();
-        const dv2=P.div;dv2.bind();gl.uniform2f(dv2.u.s,vl.sx,vl.sy);gl.uniform1i(dv2.u.uV,vl.r.at(0));blit(dv);
-        const cp=P.clr;cp.bind();gl.uniform1i(cp.u.uT,pr2.r.at(0));gl.uniform1f(cp.u.v,.1);blit(pr2.w2);pr2.swap();
-        const pp=P.prs;pp.bind();gl.uniform2f(pp.u.s,vl.sx,vl.sy);gl.uniform1i(pp.u.uD,dv.at(0));
-        for(let i=0;i<20;i++){gl.uniform1i(pp.u.uP,pr2.r.at(1));blit(pr2.w2);pr2.swap();}
-        const gp=P.grd;gp.bind();gl.uniform2f(gp.u.s,vl.sx,vl.sy);gl.uniform1i(gp.u.uP,pr2.r.at(0));gl.uniform1i(gp.u.uV,vl.r.at(1));blit(vl.w2);vl.swap();
-    }
-    function loop(){
-        const now=Date.now(),dt=Math.min((now-lt)/1000,.016);lt=now;
-        if(rsz())init();
-        if(moved){moved=false;splat(mx,my,(mx-pmx)*6000,(my-pmy)*6000,col);}
-        step(dt);
-        gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.enable(gl.BLEND);
-        const dp=P.dsp;dp.bind();gl.uniform1i(dp.u.uT,dy.r.at(0));blit(null);
-        requestAnimationFrame(loop);
-    }
-    window.addEventListener('mousemove',e=>{
-        pmx=mx;pmy=my;
-        mx=e.clientX/window.innerWidth;my=1-e.clientY/window.innerHeight;
-        col=hsv(Math.random(),1,1);moved=true;
-    });
+    let mx=.5,my=.5,pmx=.5,pmy=.5,moved=false,col={r:.0,g:.07,b:.03},lt=Date.now();
+    function splat(x,y,dx,dy2,c){const sp=P.spl;sp.bind();gl.uniform1i(sp.u.uT,vl.r.at(0));gl.uniform1f(sp.u.aR,canvas.width/canvas.height);gl.uniform2f(sp.u.pt,x,y);gl.uniform3f(sp.u.C,dx,dy2,0);gl.uniform1f(sp.u.r,.002);blit(vl.w2);vl.swap();gl.uniform1i(sp.u.uT,dy.r.at(0));gl.uniform3f(sp.u.C,c.r,c.g,c.b);blit(dy.w2);dy.swap();}
+    function step(dt){gl.disable(gl.BLEND);const ap=P.adv;ap.bind();gl.uniform2f(ap.u.s,vl.sx,vl.sy);const vi=vl.r.at(0);gl.uniform1i(ap.u.uV,vi);gl.uniform1i(ap.u.uS,vi);gl.uniform1f(ap.u.dt,dt);gl.uniform1f(ap.u.d,2);blit(vl.w2);vl.swap();gl.uniform1i(ap.u.uV,vl.r.at(0));gl.uniform1i(ap.u.uS,dy.r.at(1));gl.uniform1f(ap.u.d,3.5);blit(dy.w2);dy.swap();const dv2=P.div;dv2.bind();gl.uniform2f(dv2.u.s,vl.sx,vl.sy);gl.uniform1i(dv2.u.uV,vl.r.at(0));blit(dv);const cp=P.clr;cp.bind();gl.uniform1i(cp.u.uT,pr2.r.at(0));gl.uniform1f(cp.u.v,.1);blit(pr2.w2);pr2.swap();const pp=P.prs;pp.bind();gl.uniform2f(pp.u.s,vl.sx,vl.sy);gl.uniform1i(pp.u.uD,dv.at(0));for(let i=0;i<20;i++){gl.uniform1i(pp.u.uP,pr2.r.at(1));blit(pr2.w2);pr2.swap();}const gp=P.grd;gp.bind();gl.uniform2f(gp.u.s,vl.sx,vl.sy);gl.uniform1i(gp.u.uP,pr2.r.at(0));gl.uniform1i(gp.u.uV,vl.r.at(1));blit(vl.w2);vl.swap();}
+    function loop(){const now=Date.now(),dt=Math.min((now-lt)/1000,.016);lt=now;if(rsz())init();if(moved){moved=false;splat(mx,my,(mx-pmx)*6000,(my-pmy)*6000,col);}step(dt);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.enable(gl.BLEND);const dp=P.dsp;dp.bind();gl.uniform1i(dp.u.uT,dy.r.at(0));blit(null);requestAnimationFrame(loop);}
+    window.addEventListener('mousemove',e=>{pmx=mx;pmy=my;mx=e.clientX/window.innerWidth;my=1-e.clientY/window.innerHeight;col=hsv(Math.random(),1,1);moved=true;});
+    /* Touch support */
+    window.addEventListener('touchmove',e=>{const t=e.touches[0];pmx=mx;pmy=my;mx=t.clientX/window.innerWidth;my=1-t.clientY/window.innerHeight;col=hsv(Math.random(),1,1);moved=true;},{passive:true});
     loop();
 })();
 </script>
 
-{{-- Bento glow tracking --}}
-<script>
-document.addEventListener('mousemove',e=>{
-    document.querySelectorAll('.bento-card').forEach(c=>{
-        const r=c.getBoundingClientRect();
-        c.style.setProperty('--glow-x',(e.clientX-r.left)+'px');
-        c.style.setProperty('--glow-y',(e.clientY-r.top)+'px');
-    });
-});
-</script>
-
+@stack('scripts')
 </body>
 </html>

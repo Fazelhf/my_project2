@@ -17,9 +17,9 @@
 <section class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-6">
 
     {{-- امتیاز کل --}}
-    <div class="md:col-span-4 liquid-glass rounded-3xl p-8 flex flex-col justify-between h-[200px]">
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-8 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-1">
         <div>
-            <p class="text-on-surface/60 text-sm mb-1">امتیاز کل</p>
+            <p class="text-sm mb-1" style="color:rgba(185,203,185,0.6);">امتیاز کل</p>
             <h2 class="text-5xl font-black font-heading" style="color:#00e476;">{{ $user->total_score ?? 0 }}</h2>
         </div>
         <div class="space-y-2">
@@ -34,10 +34,10 @@
     </div>
 
     {{-- رتبه --}}
-    <div class="md:col-span-4 liquid-glass rounded-3xl p-8 flex flex-col justify-between h-[200px]" style="border-right:4px solid #00e476;">
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-8 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-2" style="border-right:4px solid #00e476;">
         <div class="flex justify-between items-start">
             <div>
-                <p class="text-on-surface/60 text-sm mb-1">رتبه جهانی</p>
+                <p class="text-sm mb-1" style="color:rgba(185,203,185,0.6);">رتبه جهانی</p>
                 <h2 class="text-5xl font-black font-heading text-white">#{{ $rank }}</h2>
             </div>
             <div class="p-3 rounded-2xl" style="background:rgba(0,228,118,0.1);">
@@ -52,7 +52,7 @@
     </div>
 
     {{-- دقت پیش‌بینی --}}
-    <div class="md:col-span-4 liquid-glass rounded-3xl p-6 flex items-center gap-6 h-[200px]">
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-6 flex items-center gap-6 h-[200px] reveal animate-slide-up stagger-3">
         <div class="relative flex items-center justify-center flex-shrink-0">
             <svg class="w-28 h-28" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="50" fill="transparent" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
