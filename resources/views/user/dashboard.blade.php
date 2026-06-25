@@ -7,7 +7,7 @@
 @php
     $user = auth()->user();
     $myPreds = $predictions ?? collect();
-    $upcomingGames = $upcoming ?? collect();
+    $upcomingGames = $upcomingGames ?? collect();
     $rank = $rank ?? '—';
     $accuracy = $accuracy ?? 0;
     $totalPreds = $totalPredictions ?? 0;

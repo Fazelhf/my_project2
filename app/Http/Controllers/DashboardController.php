@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Prediction;
 use App\Models\User;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): Response
+    public function index(): View
     {
         $user = auth()->user();
 
@@ -26,40 +25,16 @@ class DashboardController extends Controller
             ->whereDoesntHave('predictions', fn ($q) => $q->where('user_id', $user->id))
             ->orderBy('scheduled_at')
             ->take(6)
-            ->get()
-            ->map(fn ($g) => [
-                'id'                  => $g->id,
-                'home_name'           => $g->homeTeam->name,
-                'away_name'           => $g->awayTeam->name,
-                'home_code'           => $g->homeTeam->code,
-                'away_code'           => $g->awayTeam->code,
-                'scheduled_at_formatted' => $g->scheduled_at->timezone('Asia/Tehran')->format('j M H:i'),
-            ]);
+            ->get();
 
-        $recentPredictions = Prediction::with(['game.homeTeam', 'game.awayTeam'])
+        $predictions = Prediction::with(['game.homeTeam', 'game.awayTeam'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->take(6)
-            ->get()
-            ->map(fn ($p) => [
-                'id'         => $p->id,
-                'home_code'  => $p->game->homeTeam->code,
-                'away_code'  => $p->game->awayTeam->code,
-                'home_score' => $p->home_score,
-                'away_score' => $p->away_score,
-                'finished'   => $p->game->status === 'finished',
-                'real_home'  => $p->game->home_score,
-                'real_away'  => $p->game->away_score,
-                'points_earned' => $p->points_earned,
-            ]);
+            ->take(8)
+            ->get();
 
-        return Inertia::render('Dashboard', [
-            'user'              => $user,
-            'rank'              => $rank,
-            'accuracy'          => $accuracy,
-            'totalPredictions'  => $totalPredictions,
-            'upcomingGames'     => $upcomingGames,
-            'recentPredictions' => $recentPredictions,
-        ]);
+        return view('user.dashboard', compact(
+            'user', 'rank', 'accuracy', 'totalPredictions', 'predictions', 'upcomingGames'
+        ));
     }
 }
