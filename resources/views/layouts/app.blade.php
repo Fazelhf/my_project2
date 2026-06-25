@@ -1,13 +1,89 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html class="dark" lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Vazirmatn:wght@400;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        :root {
+            --glass-bg: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+            --neon-primary: #00e476;
+        }
+        body {
+            background-color: #0e141d;
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(0,228,118,0.12) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(0,26,61,0.7) 0%, transparent 40%);
+            font-family: 'Vazirmatn', sans-serif;
+            color: #dde2f0;
+        }
+        .liquid-glass {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.04) 100%);
+            pointer-events: none;
+        }
+        .liquid-glass.card-glow:hover {
+            border-color: rgba(0,228,118,0.35);
+            box-shadow: 0 0 20px rgba(0,228,118,0.1);
+            transition: all 0.3s ease;
+        }
+        .apple-nav {
+            background: rgba(14,20,29,0.5);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .nav-item-active {
+            background: rgba(0,228,118,0.1);
+            color: #00e476 !important;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Keep existing classes for backwards compat */
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .bento-card { position: relative; transition: all 0.2s ease; }
+        .bento-card:hover { border-color: rgba(0,228,118,0.25) !important; }
+        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
+        .badge-gold { background: rgba(245,166,35,0.15); color: #F5A623; border: 1px solid rgba(245,166,35,0.3); }
+        .badge-green { background: rgba(0,228,118,0.15); color: #00e476; border: 1px solid rgba(0,228,118,0.3); }
+        .badge-red { background: rgba(255,90,90,0.15); color: #FF8A8A; border: 1px solid rgba(255,90,90,0.3); }
+        .badge-blue { background: rgba(77,159,255,0.15); color: #4D9FFF; border: 1px solid rgba(77,159,255,0.3); }
+        .badge-gray { background: rgba(255,255,255,0.08); color: #b9cbb9; border: 1px solid rgba(255,255,255,0.12); }
+        .badge-purple { background: rgba(167,139,250,0.15); color: #A78BFA; border: 1px solid rgba(167,139,250,0.3); }
+        .nav-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; color: rgba(221,226,240,0.7); transition: all 0.2s ease; cursor: pointer; background: transparent; border: none; }
+        .nav-pill:hover { background: rgba(255,255,255,0.06); color: #dde2f0; }
+        .nav-pill.active { background: rgba(0,228,118,0.1); color: #00e476; }
+        .text-gold { color: #F5A623; }
+        .text-brand-text { color: #dde2f0; }
+        .text-brand-muted { color: #b9cbb9; }
+        .text-brand-subtle { color: rgba(185,203,185,0.5); }
+        .gradient-text-gold { background: linear-gradient(135deg,#D97706,#F59E0B,#FCD34D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .score-green { background: rgba(0,228,118,0.1); border: 1px solid rgba(0,228,118,0.3); color: #00e476; }
+        .score-red { background: rgba(255,90,90,0.1); border: 1px solid rgba(255,90,90,0.3); color: #FF8A8A; }
+        .font-heading { font-family: 'Plus Jakarta Sans', 'Vazirmatn', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .ether-bg { display: none; }
+    </style>
 </head>
-<body class="antialiased min-h-screen" style="font-family:'Vazirmatn',sans-serif;">
+<body class="antialiased min-h-screen">
 
 {{-- ── Liquid Ether Background ──────────────────────────────── --}}
 <div class="ether-bg"></div>
@@ -17,7 +93,7 @@
 
 {{-- ── Top Navbar ──────────────────────────────────────────── --}}
 <header class="fixed top-0 inset-x-0 z-50 px-4 pt-3">
-    <nav class="glass rounded-2xl px-4 py-2.5 flex items-center justify-between max-w-5xl mx-auto">
+    <nav class="apple-nav rounded-2xl px-4 py-2.5 flex items-center justify-between max-w-5xl mx-auto">
 
         {{-- Logo --}}
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 flex-shrink-0">

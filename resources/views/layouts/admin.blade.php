@@ -1,13 +1,47 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html class="dark" lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'پنل مدیریت') — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Vazirmatn:wght@400;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
+    <style>
+        body { background-color: #0e141d; font-family: 'Vazirmatn', sans-serif; color: #dde2f0; }
+        .liquid-glass {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3);
+            position: relative; overflow: hidden;
+        }
+        .liquid-glass::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 50%, rgba(255,255,255,0.03) 100%);
+            pointer-events: none;
+        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        /* Keep brand vars for backward compat */
+        .bg-brand-bg { background-color: #0e141d; }
+        .bg-brand-surface { background: rgba(255,255,255,0.03); }
+        .bg-brand-card { background: rgba(255,255,255,0.05); }
+        .border-brand-border { border-color: rgba(255,255,255,0.1); }
+        .text-brand-text { color: #dde2f0; }
+        .text-brand-muted { color: #b9cbb9; }
+        .text-brand-subtle { color: rgba(185,203,185,0.5); }
+        .text-brand-green { color: #00e476; }
+        .text-brand-blue { color: #4D9FFF; }
+        .text-brand-amber { color: #F59E0B; }
+        .text-brand-red { color: #FF8A8A; }
+        .bg-brand-green { background: #00e476; }
+        .hover\:bg-brand-green-dim:hover { background: #00b85e; }
+        .font-heading { font-family: 'Plus Jakarta Sans', 'Vazirmatn', sans-serif; }
+        .font-sans { font-family: 'Vazirmatn', sans-serif; }
+    </style>
 </head>
-<body class="bg-brand-bg text-brand-text font-sans antialiased" x-data="{ sidebar: false }" x-cloak>
+<body class="text-brand-text font-sans antialiased" x-data="{ sidebar: false }" x-cloak>
 
 <div class="flex min-h-screen">
 
@@ -22,9 +56,10 @@
     <aside
         :class="sidebar ? 'translate-x-0' : 'translate-x-full'"
         class="fixed top-0 right-0 z-30 h-full w-64 flex flex-col
-               bg-brand-surface border-l border-brand-border
+               liquid-glass border-l
                transition-transform duration-200 ease-in-out
                lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen"
+        style="background:rgba(14,20,29,0.85);"
     >
         {{-- Logo --}}
         <div class="flex items-center gap-3 px-5 h-16 border-b border-brand-border flex-shrink-0">
