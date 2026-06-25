@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\Auth\LoginController;
@@ -41,6 +42,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/{game}/predict', [PredictionController::class, 'store'])->name('predict');
         Route::put('/{game}/predict', [PredictionController::class, 'update'])->name('predict.update');
     });
+});
+
+// ─── API تیم‌ها ────────────────────────────────────────────────────────────────
+Route::middleware('auth')->prefix('api')->group(function () {
+    Route::get('/teams/{team}/stats', [TeamStatsController::class, 'stats']);
 });
 
 // ─── پنل ادمین ────────────────────────────────────────────────────────────────

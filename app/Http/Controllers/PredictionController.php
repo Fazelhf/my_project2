@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Prediction;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PredictionController extends Controller
 {
-    /**
-     * لیست تمام بازی‌ها به همراه پیش‌بینی کاربر
-     */
-    public function index(): View
+    public function index(): Response
     {
         $userId = auth()->id();
 
@@ -25,31 +22,36 @@ class PredictionController extends Controller
         ])
         ->orderBy('scheduled_at')
         ->get()
-        ->groupBy('stage');
+        ->groupBy('stage')
+        ->map(fn ($stageGames) => $stageGames->map(fn ($g) => [
+            'id'                     => $g->id,
+            'home_team_id'           => $g->home_team_id,
+            'away_team_id'           => $g->away_team_id,
+            'home_name'              => $g->homeTeam->name,
+            'away_name'              => $g->awayTeam->name,
+            'home_code'              => $g->homeTeam->code,
+            'away_code'              => $g->awayTeam->code,
+            'scheduled_at_formatted' => $g->scheduled_at->timezone('Asia/Tehran')->format('j M H:i'),
+            'venue'                  => $g->venue,
+            'status'                 => $g->status,
+            'finished'               => $g->status === 'finished',
+            'locked'                 => $g->isPredictionLocked(),
+            'home_score'             => $g->home_score,
+            'away_score'             => $g->away_score,
+            'prediction'             => $g->predictions->first() ? [
+                'home_score'    => $g->predictions->first()->home_score,
+                'away_score'    => $g->predictions->first()->away_score,
+                'points_earned' => $g->predictions->first()->points_earned,
+            ] : null,
+        ]));
 
-        return view('user.games.index', compact('games'));
+        return Inertia::render('Games/Index', [
+            'gamesByStage' => $games,
+        ]);
     }
 
-    /**
-     * صفحه جزئیات یک بازی
-     */
-    public function show(Game $game): View
-    {
-        $game->load(['homeTeam', 'awayTeam']);
-
-        $userPrediction = Prediction::where('user_id', auth()->id())
-            ->where('game_id', $game->id)
-            ->first();
-
-        return view('user.games.show', compact('game', 'userPrediction'));
-    }
-
-    /**
-     * ثبت پیش‌بینی جدید
-     */
     public function store(Request $request, Game $game): RedirectResponse
     {
-        // اگر بازی قفل شده یا تمام شده، نمی‌توان پیش‌بینی ثبت کرد
         if ($game->isPredictionLocked()) {
             return back()->with('error', 'زمان پیش‌بینی این بازی به پایان رسیده است.');
         }
@@ -61,14 +63,8 @@ class PredictionController extends Controller
         $validated = $request->validate([
             'home_score' => ['required', 'integer', 'min:0', 'max:99'],
             'away_score' => ['required', 'integer', 'min:0', 'max:99'],
-        ], [
-            'home_score.required' => 'گل تیم اول را وارد کنید.',
-            'away_score.required' => 'گل تیم دوم را وارد کنید.',
-            'home_score.min'      => 'عدد گل نمی‌تواند منفی باشد.',
-            'away_score.min'      => 'عدد گل نمی‌تواند منفی باشد.',
         ]);
 
-        // جلوگیری از ثبت تکراری
         $exists = Prediction::where('user_id', auth()->id())
             ->where('game_id', $game->id)
             ->exists();
@@ -87,9 +83,6 @@ class PredictionController extends Controller
         return back()->with('success', 'پیش‌بینی شما با موفقیت ثبت شد.');
     }
 
-    /**
-     * ویرایش پیش‌بینی موجود (تا قبل از قفل شدن بازی)
-     */
     public function update(Request $request, Game $game): RedirectResponse
     {
         if ($game->isPredictionLocked()) {
