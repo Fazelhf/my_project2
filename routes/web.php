@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\Auth\LoginController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\ResultsController;
 use Illuminate\Support\Facades\Route;
 
 // ─── صفحه خوش‌آمدگویی ─────────────────────────────────────────────────────────
@@ -31,6 +33,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+    Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
 
     // پیش‌بینی بازی‌ها
     Route::prefix('games')->name('games.')->group(function () {
@@ -39,6 +42,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/{game}/predict', [PredictionController::class, 'store'])->name('predict');
         Route::put('/{game}/predict', [PredictionController::class, 'update'])->name('predict.update');
     });
+});
+
+// ─── API تیم‌ها ────────────────────────────────────────────────────────────────
+Route::middleware('auth')->prefix('api')->group(function () {
+    Route::get('/teams/{team}/stats', [TeamStatsController::class, 'stats']);
 });
 
 // ─── پنل ادمین ────────────────────────────────────────────────────────────────

@@ -1,206 +1,282 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'WorldCup Predictor') — WCP 2026</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="pattern-bg text-brand-text font-sans antialiased" x-data="{ sidebar: false }" x-cloak>
+<body class="antialiased min-h-screen" style="font-family:'Vazirmatn',sans-serif;">
 
-<div class="flex min-h-screen">
+{{-- ── Liquid Ether Background ──────────────────────────────── --}}
+<div class="ether-bg"></div>
 
-    {{-- ── Mobile Overlay ─────────────────────────────────── --}}
-    <div x-show="sidebar" x-transition.opacity @click="sidebar = false"
-         class="fixed inset-0 z-20 bg-black/80 backdrop-blur-sm lg:hidden"></div>
+{{-- ── SplashCursor WebGL Canvas ───────────────────────────── --}}
+<canvas id="fluid-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh;"></canvas>
 
-    {{-- ═══════════════════════════════════════════════════════
-         SIDEBAR
-    ═══════════════════════════════════════════════════════ --}}
-    <aside :class="sidebar ? 'translate-x-0' : 'translate-x-full'"
-           class="fixed top-0 right-0 z-30 h-full w-68 flex flex-col
-                  transition-transform duration-300 ease-in-out
-                  lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen"
-           style="width: 260px; background: linear-gradient(180deg, #0d1525 0%, #0a0f1e 100%); border-left: 1px solid #1E2D45;">
+{{-- ── Top Navbar ──────────────────────────────────────────── --}}
+<header class="fixed top-0 inset-x-0 z-50 px-4 pt-3">
+    <nav class="glass rounded-2xl px-4 py-2.5 flex items-center justify-between max-w-5xl mx-auto">
 
-        {{-- Logo / Brand --}}
-        <div class="flex items-center gap-3 px-5 h-16 flex-shrink-0" style="border-bottom: 1px solid #1E2D45;">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                 style="background: linear-gradient(135deg, #92400E, #D97706); box-shadow: 0 0 20px rgba(245,158,11,0.3);">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 9H4.5a2.5 2.5 0 000 5H6M18 9h1.5a2.5 2.5 0 010 5H18M6 4h12v10a6 6 0 01-12 0V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                    <circle cx="12" cy="9" r="1.5" fill="currentColor"/>
+        {{-- Logo --}}
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 flex-shrink-0">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#F5A623,#A78BFA);">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
                 </svg>
             </div>
-            <div class="min-w-0">
-                <p class="text-sm font-black font-heading leading-none gradient-text-gold">WorldCup</p>
-                <p class="text-[11px] text-brand-muted mt-0.5 font-sans">Predictor 2026</p>
-            </div>
+            <span class="font-heading font-black text-sm tracking-wide text-gold hidden sm:block">WC 2026</span>
+        </a>
+
+        {{-- 4 Nav Pills --}}
+        <div class="flex items-center gap-1">
+            <a href="{{ route('dashboard') }}"
+               class="nav-pill {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span>داشبورد</span>
+            </a>
+
+            <a href="{{ route('games.index') }}"
+               class="nav-pill {{ request()->routeIs('games.*') ? 'active' : '' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span>پیش‌بینی</span>
+            </a>
+
+            <a href="{{ route('results.index') }}"
+               class="nav-pill {{ request()->routeIs('results.*') ? 'active' : '' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>نتایج</span>
+            </a>
+
+            <a href="{{ route('leaderboard') }}"
+               class="nav-pill {{ request()->routeIs('leaderboard') ? 'active' : '' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span>جدول</span>
+            </a>
         </div>
 
-        {{-- Score Card in Sidebar --}}
-        <div class="mx-3 mt-4 mb-2 rounded-xl p-3 flex items-center gap-3"
-             style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(16,185,129,0.05)); border: 1px solid rgba(245,158,11,0.2);">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-black text-sm font-heading"
-                 style="background: rgba(0,0,0,0.3); color: #F59E0B;">
-                {{ mb_strtoupper(mb_substr(auth()->user()?->name ?? 'U', 0, 1, 'UTF-8')) }}
+        {{-- User info + actions --}}
+        <div class="flex items-center gap-2">
+            <div class="hidden sm:flex items-center gap-2">
+                <span class="badge badge-gold font-heading text-xs">{{ auth()->user()->total_score ?? 0 }} pt</span>
+                <span class="text-xs text-brand-muted max-w-[90px] truncate">{{ auth()->user()->name }}</span>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-brand-text truncate leading-none">{{ auth()->user()?->name }}</p>
-                <p class="text-[11px] text-brand-muted mt-1 truncate">{{ auth()->user()?->department ?? 'کاربر' }}</p>
-            </div>
-            <div class="flex-shrink-0 text-center">
-                <p class="text-lg font-black font-heading leading-none" style="color: #F59E0B;">{{ auth()->user()?->total_score ?? 0 }}</p>
-                <p class="text-[10px] text-brand-subtle mt-0.5">امتیاز</p>
-            </div>
-        </div>
 
-        {{-- Nav --}}
-        <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
-
-            @php
-                $nav = [
-                    ['route' => 'dashboard',   'label' => 'داشبورد',          'match' => 'dashboard',   'icon' => 'home'],
-                    ['route' => 'games.index', 'label' => 'پیش‌بینی بازی‌ها', 'match' => 'games.*',     'icon' => 'calendar'],
-                    ['route' => 'leaderboard', 'label' => 'جدول رده‌بندی',    'match' => 'leaderboard', 'icon' => 'trophy'],
-                ];
-            @endphp
-
-            @foreach($nav as $item)
-                @php $active = request()->routeIs($item['match']); @endphp
-                <a href="{{ route($item['route']) }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group cursor-pointer"
-                   style="{{ $active
-                       ? 'background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(16,185,129,0.06)); border: 1px solid rgba(245,158,11,0.2); color: #F59E0B;'
-                       : 'border: 1px solid transparent; color: #8AAABB;' }}"
-                   onmouseover="{{ !$active ? "this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='#1E2D45'; this.style.color='#F1F5F9'" : '' }}"
-                   onmouseout="{{ !$active ? "this.style.background='transparent'; this.style.borderColor='transparent'; this.style.color='#8AAABB'" : '' }}">
-
-                    @if($item['icon'] === 'home')
-                        <svg class="w-4.5 h-4.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                    @elseif($item['icon'] === 'calendar')
-                        <svg class="w-4.5 h-4.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    @else
-                        <svg class="w-4.5 h-4.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    @endif
-
-                    <span>{{ $item['label'] }}</span>
-
-                    @if($active)
-                        <div class="mr-auto flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background: #F59E0B;"></span>
-                        </div>
-                    @endif
-                </a>
-            @endforeach
-
-            {{-- Admin section --}}
-            @if(auth()->user()?->is_admin)
-                <div class="pt-4 mt-3" style="border-top: 1px solid #1E2D45;">
-                    <p class="px-3 mb-2 text-[10px] font-bold text-brand-subtle uppercase tracking-widest">مدیریت</p>
-                    @php $adminActive = request()->routeIs('admin.*'); @endphp
-                    <a href="{{ route('admin.dashboard') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
-                       style="{{ $adminActive
-                           ? 'background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.08)); border: 1px solid rgba(139,92,246,0.3); color: #C4B5FD;'
-                           : 'border: 1px solid transparent; color: #8AAABB;' }}"
-                       onmouseover="{{ !$adminActive ? "this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='#1E2D45'; this.style.color='#F1F5F9'" : '' }}"
-                       onmouseout="{{ !$adminActive ? "this.style.background='transparent'; this.style.borderColor='transparent'; this.style.color='#8AAABB'" : '' }}">
-                        <svg class="w-4.5 h-4.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        <span>پنل ادمین</span>
-                    </a>
-                </div>
+            @if(auth()->user()->is_admin ?? false)
+            <a href="{{ route('admin.dashboard') }}"
+               class="nav-pill" style="color:#C4B5FD;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="hidden md:block">ادمین</span>
+            </a>
             @endif
-        </nav>
 
-        {{-- Logout footer --}}
-        <div class="flex-shrink-0 p-3" style="border-top: 1px solid #1E2D45;">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer"
-                        style="border: 1px solid transparent; color: #8AAABB;"
-                        onmouseover="this.style.background='rgba(239,68,68,0.08)'; this.style.borderColor='rgba(239,68,68,0.2)'; this.style.color='#FCA5A5'"
-                        onmouseout="this.style.background='transparent'; this.style.borderColor='transparent'; this.style.color='#8AAABB'">
-                    <svg class="w-4.5 h-4.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <button type="submit" class="nav-pill cursor-pointer"
+                        style="color:rgba(255,90,90,0.7);"
+                        onmouseover="this.style.background='rgba(255,90,90,0.1)';this.style.color='#FF8A8A'"
+                        onmouseout="this.style.background='';this.style.color='rgba(255,90,90,0.7)'">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
-                    <span>خروج از حساب</span>
+                    <span class="hidden sm:block">خروج</span>
                 </button>
             </form>
         </div>
-    </aside>
+    </nav>
+</header>
 
-    {{-- ═══════════════════════════════════════════════════════
-         MAIN AREA
-    ═══════════════════════════════════════════════════════ --}}
-    <div class="flex-1 flex flex-col min-w-0">
-
-        {{-- Topbar --}}
-        <header class="sticky top-0 z-10 flex items-center h-14 px-4 sm:px-6 gap-4 flex-shrink-0"
-                style="background: rgba(10,15,30,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid #1E2D45;">
-
-            {{-- Mobile menu toggle --}}
-            <button @click="sidebar = !sidebar"
-                    class="lg:hidden p-2 -mr-1 rounded-lg cursor-pointer transition-all duration-150"
-                    style="color: #8AAABB;"
-                    onmouseover="this.style.color='#F1F5F9'; this.style.background='rgba(255,255,255,0.05)'"
-                    onmouseout="this.style.color='#8AAABB'; this.style.background='transparent'">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-
-            {{-- Page title --}}
-            <h1 class="flex-1 text-base font-black font-heading text-brand-text truncate tracking-wide">
-                @yield('page-title', '')
-            </h1>
-
-            {{-- Score badge --}}
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg"
-                 style="background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.06)); border: 1px solid rgba(245,158,11,0.25);">
-                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 20 20" fill="#F59E0B">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-                <span class="text-sm font-black font-heading" style="color: #F59E0B;">{{ auth()->user()?->total_score ?? 0 }}</span>
-                <span class="text-xs text-brand-muted hidden sm:block">امتیاز</span>
-            </div>
-        </header>
-
-        {{-- Flash messages --}}
-        @if(session('success'))
-            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 text-sm rounded-xl px-4 py-3 animate-[slide-up_0.3s_ease_both] score-green">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="mx-4 sm:mx-6 mt-4 flex items-center gap-3 text-sm rounded-xl px-4 py-3 animate-[slide-up_0.3s_ease_both] score-red">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ session('error') }}
-            </div>
-        @endif
-
-        {{-- Content --}}
-        <main class="flex-1 px-4 sm:px-6 py-6">
-            @yield('content')
-        </main>
+{{-- ── Flash Messages ───────────────────────────────────────── --}}
+@if(session('success') || session('error'))
+<div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4 animate-slide-up">
+    @if(session('success'))
+    <div class="glass rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+         style="background:rgba(0,229,160,0.1);border-color:rgba(0,229,160,0.3);color:#00E5A0;">
+        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        {{ session('success') }}
     </div>
+    @endif
+    @if(session('error'))
+    <div class="glass rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+         style="background:rgba(255,90,90,0.1);border-color:rgba(255,90,90,0.3);color:#FF8A8A;">
+        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        {{ session('error') }}
+    </div>
+    @endif
 </div>
+@endif
 
-@stack('scripts')
+{{-- ── Page Content ─────────────────────────────────────────── --}}
+<main class="relative z-10 max-w-5xl mx-auto px-4 pt-24 pb-10 min-h-screen">
+    @yield('content')
+</main>
+
+{{-- ── SplashCursor WebGL Fluid ─────────────────────────────── --}}
+<script>
+(function(){
+    const canvas=document.getElementById('fluid-canvas');
+    if(!canvas)return;
+    const pr=window.devicePixelRatio||1;
+    const params={alpha:true,depth:false,stencil:false,antialias:false,preserveDrawingBuffer:false};
+    let gl=canvas.getContext('webgl2',params);
+    const isGL2=!!gl;
+    if(!isGL2)gl=canvas.getContext('webgl',params)||canvas.getContext('experimental-webgl',params);
+    if(!gl)return;
+    let hf,sl;
+    if(isGL2){gl.getExtension('EXT_color_buffer_float');sl=gl.getExtension('OES_texture_float_linear');}
+    else{hf=gl.getExtension('OES_texture_half_float');sl=gl.getExtension('OES_texture_half_float_linear');}
+    const HFT=isGL2?gl.HALF_FLOAT:(hf&&hf.HALF_FLOAT_OES);
+    const FL=sl?gl.LINEAR:gl.NEAREST;
+    function chk(i,f){
+        const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
+        gl.texImage2D(gl.TEXTURE_2D,0,i,4,4,0,f,HFT,null);
+        const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);
+        return gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
+    }
+    function fmt(i,f){
+        if(!chk(i,f)){if(i===gl.R16F)return fmt(gl.RG16F,gl.RG);if(i===gl.RG16F)return fmt(gl.RGBA16F,gl.RGBA);return null;}
+        return{i,f};
+    }
+    const RGBA=isGL2?fmt(gl.RGBA16F,gl.RGBA):{i:gl.RGBA,f:gl.RGBA};
+    const RG=isGL2?fmt(gl.RG16F,gl.RG):RGBA;
+    const R=isGL2?fmt(gl.R16F,gl.RED):RGBA;
+    const VS=`precision highp float;attribute vec2 p;varying vec2 U,L,Rv,T,B;uniform vec2 s;
+    void main(){U=p*.5+.5;L=U-vec2(s.x,0.);Rv=U+vec2(s.x,0.);T=U+vec2(0.,s.y);B=U-vec2(0.,s.y);gl_Position=vec4(p,0.,1.);}`;
+    function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+    function prog(vs,fs){
+        const p=gl.createProgram();gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);
+        const u={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);
+        for(let i=0;i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm);}
+        return{p,u,bind(){gl.useProgram(p);}};
+    }
+    const vsh=sh(gl.VERTEX_SHADER,VS);
+    const P={
+        adv:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision highp float;precision highp sampler2D;varying vec2 U;uniform sampler2D uV,uS;uniform vec2 s;uniform float dt,d;void main(){vec2 c=U-dt*texture2D(uV,U).xy*s;gl_FragColor=texture2D(uS,c)/(1.+d*dt);}`)),
+        div:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision mediump float;precision mediump sampler2D;varying vec2 U,L,Rv,T,B;uniform sampler2D uV;void main(){float l=texture2D(uV,L).x,r=texture2D(uV,Rv).x,t=texture2D(uV,T).y,b=texture2D(uV,B).y;vec2 C=texture2D(uV,U).xy;if(L.x<0.)l=-C.x;if(Rv.x>1.)r=-C.x;if(T.y>1.)t=-C.y;if(B.y<0.)b=-C.y;gl_FragColor=vec4(.5*(r-l+t-b),0.,0.,1.);}`)),
+        prs:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision mediump float;precision mediump sampler2D;varying vec2 U,L,Rv,T,B;uniform sampler2D uP,uD;void main(){float l=texture2D(uP,L).x,r=texture2D(uP,Rv).x,t=texture2D(uP,T).x,b=texture2D(uP,B).x;gl_FragColor=vec4((l+r+b+t-texture2D(uD,U).x)*.25,0.,0.,1.);}`)),
+        grd:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision mediump float;precision mediump sampler2D;varying vec2 U,L,Rv,T,B;uniform sampler2D uP,uV;void main(){float l=texture2D(uP,L).x,r=texture2D(uP,Rv).x,t=texture2D(uP,T).x,b=texture2D(uP,B).x;vec2 v=texture2D(uV,U).xy-vec2(r-l,t-b);gl_FragColor=vec4(v,0.,1.);}`)),
+        spl:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision highp float;precision highp sampler2D;varying vec2 U;uniform sampler2D uT;uniform float aR;uniform vec3 C;uniform vec2 pt;uniform float r;void main(){vec2 p=U-pt;p.x*=aR;vec3 s=exp(-dot(p,p)/r)*C;gl_FragColor=vec4(texture2D(uT,U).xyz+s,1.);}`)),
+        clr:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision mediump float;precision mediump sampler2D;varying vec2 U;uniform sampler2D uT;uniform float v;void main(){gl_FragColor=v*texture2D(uT,U);}`)),
+        dsp:prog(vsh,sh(gl.FRAGMENT_SHADER,`precision highp float;precision highp sampler2D;varying vec2 U;uniform sampler2D uT;void main(){vec3 c=texture2D(uT,U).rgb;gl_FragColor=vec4(c,max(c.r,max(c.g,c.b))*.7);}`)),
+    };
+    gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,-1,1,1,1,1,-1]),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,gl.createBuffer());
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2,0,2,3]),gl.STATIC_DRAW);
+    gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(0);
+    function fbo(w,h,ii,ff,fl){
+        gl.activeTexture(gl.TEXTURE0);const tx=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tx);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,fl);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,fl);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+        gl.texImage2D(gl.TEXTURE_2D,0,ii,w,h,0,ff,HFT,null);
+        const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tx,0);
+        gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT);
+        return{fb,tx,w,h,sx:1/w,sy:1/h,at(id){gl.activeTexture(gl.TEXTURE0+id);gl.bindTexture(gl.TEXTURE_2D,tx);return id;}};
+    }
+    function dbl(w,h,ii,ff,fl){
+        let a=fbo(w,h,ii,ff,fl),b=fbo(w,h,ii,ff,fl);
+        return{w,h,sx:a.sx,sy:a.sy,get r(){return a;},get w2(){return b;},swap(){[a,b]=[b,a];}};
+    }
+    function blit(t){
+        if(!t){gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.bindFramebuffer(gl.FRAMEBUFFER,null);}
+        else{gl.viewport(0,0,t.w,t.h);gl.bindFramebuffer(gl.FRAMEBUFFER,t.fb);}
+        gl.drawElements(gl.TRIANGLES,6,gl.UNSIGNED_SHORT,0);
+    }
+    function res(r){
+        const ar=gl.drawingBufferWidth/gl.drawingBufferHeight,mn=Math.round(r),mx=Math.round(r*(ar>1?ar:1));
+        return gl.drawingBufferWidth>gl.drawingBufferHeight?{w:mx,h:mn}:{w:mn,h:mx};
+    }
+    let dy,vl,dv,pr2;
+    function init(){
+        const s=res(128),d=res(512);
+        dy=dbl(d.w,d.h,RGBA.i,RGBA.f,FL);
+        vl=dbl(s.w,s.h,RG.i,RG.f,FL);
+        dv=fbo(s.w,s.h,R.i,R.f,gl.NEAREST);
+        pr2=dbl(s.w,s.h,R.i,R.f,gl.NEAREST);
+    }
+    function rsz(){
+        const w=Math.floor(canvas.clientWidth*pr),h=Math.floor(canvas.clientHeight*pr);
+        if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;return true;}return false;
+    }
+    function hsv(h,s,v){
+        const i=Math.floor(h*6),f=h*6-i,p=v*(1-s),q=v*(1-f*s),t2=v*(1-(1-f)*s);
+        const c=[[v,t2,p],[q,v,p],[p,v,t2],[p,q,v],[t2,p,v],[v,p,q]][i%6];
+        return{r:c[0]*.12,g:c[1]*.12,b:c[2]*.12};
+    }
+    init();
+    let mx=.5,my=.5,pmx=.5,pmy=.5,moved=false,col={r:.05,g:.02,b:.15},lt=Date.now();
+    function splat(x,y,dx,dy2,c){
+        const sp=P.spl;sp.bind();
+        gl.uniform1i(sp.u.uT,vl.r.at(0));
+        gl.uniform1f(sp.u.aR,canvas.width/canvas.height);
+        gl.uniform2f(sp.u.pt,x,y);
+        gl.uniform3f(sp.u.C,dx,dy2,0);
+        gl.uniform1f(sp.u.r,.002);
+        blit(vl.w2);vl.swap();
+        gl.uniform1i(sp.u.uT,dy.r.at(0));
+        gl.uniform3f(sp.u.C,c.r,c.g,c.b);
+        blit(dy.w2);dy.swap();
+    }
+    function step(dt){
+        gl.disable(gl.BLEND);
+        const ap=P.adv;ap.bind();
+        gl.uniform2f(ap.u.s,vl.sx,vl.sy);
+        const vi=vl.r.at(0);gl.uniform1i(ap.u.uV,vi);gl.uniform1i(ap.u.uS,vi);
+        gl.uniform1f(ap.u.dt,dt);gl.uniform1f(ap.u.d,2);blit(vl.w2);vl.swap();
+        gl.uniform1i(ap.u.uV,vl.r.at(0));gl.uniform1i(ap.u.uS,dy.r.at(1));
+        gl.uniform1f(ap.u.d,3.5);blit(dy.w2);dy.swap();
+        const dv2=P.div;dv2.bind();gl.uniform2f(dv2.u.s,vl.sx,vl.sy);gl.uniform1i(dv2.u.uV,vl.r.at(0));blit(dv);
+        const cp=P.clr;cp.bind();gl.uniform1i(cp.u.uT,pr2.r.at(0));gl.uniform1f(cp.u.v,.1);blit(pr2.w2);pr2.swap();
+        const pp=P.prs;pp.bind();gl.uniform2f(pp.u.s,vl.sx,vl.sy);gl.uniform1i(pp.u.uD,dv.at(0));
+        for(let i=0;i<20;i++){gl.uniform1i(pp.u.uP,pr2.r.at(1));blit(pr2.w2);pr2.swap();}
+        const gp=P.grd;gp.bind();gl.uniform2f(gp.u.s,vl.sx,vl.sy);gl.uniform1i(gp.u.uP,pr2.r.at(0));gl.uniform1i(gp.u.uV,vl.r.at(1));blit(vl.w2);vl.swap();
+    }
+    function loop(){
+        const now=Date.now(),dt=Math.min((now-lt)/1000,.016);lt=now;
+        if(rsz())init();
+        if(moved){moved=false;splat(mx,my,(mx-pmx)*6000,(my-pmy)*6000,col);}
+        step(dt);
+        gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.enable(gl.BLEND);
+        const dp=P.dsp;dp.bind();gl.uniform1i(dp.u.uT,dy.r.at(0));blit(null);
+        requestAnimationFrame(loop);
+    }
+    window.addEventListener('mousemove',e=>{
+        pmx=mx;pmy=my;
+        mx=e.clientX/window.innerWidth;my=1-e.clientY/window.innerHeight;
+        col=hsv(Math.random(),1,1);moved=true;
+    });
+    loop();
+})();
+</script>
+
+{{-- Bento glow tracking --}}
+<script>
+document.addEventListener('mousemove',e=>{
+    document.querySelectorAll('.bento-card').forEach(c=>{
+        const r=c.getBoundingClientRect();
+        c.style.setProperty('--glow-x',(e.clientX-r.left)+'px');
+        c.style.setProperty('--glow-y',(e.clientY-r.top)+'px');
+    });
+});
+</script>
+
 </body>
 </html>
