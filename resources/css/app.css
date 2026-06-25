@@ -284,6 +284,19 @@ body {
     white-space: nowrap;
 }
 
+.badge-gold   { background: rgba(245,166,35,0.15);  border: 1px solid rgba(245,166,35,0.35); color: #FCD34D; }
+.badge-green  { background: rgba(0,229,160,0.12);   border: 1px solid rgba(0,229,160,0.3);   color: #00E5A0; }
+.badge-blue   { background: rgba(77,159,255,0.12);  border: 1px solid rgba(77,159,255,0.3);  color: #7DC3FF; }
+.badge-red    { background: rgba(255,90,90,0.12);   border: 1px solid rgba(255,90,90,0.3);   color: #FF8A8A; }
+.badge-gray   { background: rgba(148,163,184,0.1);  border: 1px solid rgba(148,163,184,0.2); color: #94A3B8; }
+.badge-purple { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.3); color: #C4B5FD; }
+
+/* Legacy aliases used in existing blade files */
+.score-gold   { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: rgba(245,166,35,0.15);  border: 1px solid rgba(245,166,35,0.35); color: #FCD34D; }
+.score-green  { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: rgba(0,229,160,0.12);   border: 1px solid rgba(0,229,160,0.3);   color: #00E5A0; }
+.score-blue   { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: rgba(77,159,255,0.12);  border: 1px solid rgba(77,159,255,0.3);  color: #7DC3FF; }
+.score-red    { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: rgba(255,90,90,0.12);   border: 1px solid rgba(255,90,90,0.3);   color: #FF8A8A; }
+.score-gray   { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; background: rgba(148,163,184,0.1);  border: 1px solid rgba(148,163,184,0.2); color: #94A3B8; }
 .badge-gold   { background: rgba(245,166,35,0.12);  border: 1px solid rgba(245,166,35,0.3);  color: #FCD34D; }
 .badge-green  { background: rgba(0,228,118,0.1);    border: 1px solid rgba(0,228,118,0.25);  color: #00e476; }
 .badge-blue   { background: rgba(77,159,255,0.1);   border: 1px solid rgba(77,159,255,0.25); color: #7DC3FF; }
