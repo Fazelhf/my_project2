@@ -6,17 +6,9 @@
     <title>@yield('title', 'WorldCup Predictor') — WCP 2026</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen pattern-bg flex items-center justify-center p-4 antialiased">
+<body class="min-h-screen flex items-center justify-center p-4 antialiased">
 
-    {{-- Ambient light orbs --}}
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-20%] left-[10%] w-[600px] h-[600px] rounded-full"
-             style="background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);"></div>
-        <div class="absolute bottom-[-10%] right-[5%] w-[500px] h-[500px] rounded-full"
-             style="background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);"></div>
-        <div class="absolute top-[40%] left-[-10%] w-[400px] h-[400px] rounded-full"
-             style="background: radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%);"></div>
-    </div>
+    <div class="ether-bg"></div>
 
     <div class="w-full max-w-md relative z-10">
 

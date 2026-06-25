@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\ResultsController;
 use Illuminate\Support\Facades\Route;
 
 // ─── صفحه خوش‌آمدگویی ─────────────────────────────────────────────────────────
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+    Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
 
     // پیش‌بینی بازی‌ها
     Route::prefix('games')->name('games.')->group(function () {
