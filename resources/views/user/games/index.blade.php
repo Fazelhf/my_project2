@@ -17,11 +17,73 @@ $stageLabels = [
 @endphp
 
 {{-- Header --}}
-<div class="flex items-center justify-between mb-6">
+<div class="flex items-center justify-between mb-5 reveal animate-slide-up">
     <h1 class="text-2xl font-black font-heading text-white flex items-center gap-3">
         <span class="material-symbols-outlined text-3xl" style="color:#00e476;">sports_soccer</span>
         لیست بازی‌ها و پیش‌بینی
     </h1>
+</div>
+
+{{-- ── Rank Card + Filters ── --}}
+<div class="flex flex-col sm:flex-row gap-3 mb-6 reveal animate-slide-up stagger-1">
+
+    {{-- Rank Card --}}
+    <div class="liquid-glass rounded-2xl px-5 py-4 flex items-center gap-4 sm:w-64 flex-shrink-0"
+         style="border-color:rgba(0,228,118,0.2);">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-black font-heading flex-shrink-0"
+             style="background:linear-gradient(135deg,#00b85e,#00e476);color:#003919;">
+            {{ mb_strtoupper(mb_substr(auth()->user()->name,0,1,'UTF-8')) }}
+        </div>
+        <div>
+            <p class="text-xs mb-0.5" style="color:rgba(185,203,185,0.6);">رتبه شما</p>
+            <p class="text-2xl font-black font-heading" style="color:#00e476;">
+                #{{ $rank ?? '—' }}
+            </p>
+        </div>
+        <a href="{{ route('leaderboard') }}" class="mr-auto text-xs font-bold flex items-center gap-1 transition-opacity opacity-60 hover:opacity-100"
+           style="color:#00e476;">
+            <span>جدول</span>
+            <span class="material-symbols-outlined text-sm">arrow_back_ios</span>
+        </a>
+    </div>
+
+    {{-- Filter Tabs --}}
+    <div class="flex-1 flex items-center gap-2 flex-wrap">
+        @php
+            $filterTabs = [
+                ['key' => 'all',   'label' => 'همه بازی‌ها'],
+                ['key' => 'today', 'label' => 'امروز'],
+                ['key' => 'tomorrow', 'label' => 'فردا'],
+                ['key' => 'week',  'label' => 'هفته آینده'],
+            ];
+        @endphp
+        @foreach($filterTabs as $tab)
+        <a href="{{ route('games.index', array_merge(request()->query(), ['filter' => $tab['key']])) }}"
+           class="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+           style="{{ ($filter ?? 'all') === $tab['key']
+               ? 'background:#00e476;color:#003919;'
+               : 'background:rgba(255,255,255,0.06);color:rgba(185,203,185,0.7);border:1px solid rgba(255,255,255,0.1);' }}">
+            {{ $tab['label'] }}
+        </a>
+        @endforeach
+
+        {{-- Group Filter --}}
+        <div class="relative mr-auto">
+            <select onchange="window.location=this.value"
+                    class="appearance-none px-4 py-2 rounded-xl text-xs font-bold cursor-pointer outline-none"
+                    style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(185,203,185,0.7);padding-left:28px;">
+                <option value="{{ route('games.index', array_merge(request()->query(), ['group' => ''])) }}">همه گروه‌ها</option>
+                @foreach(['A','B','C','D','E','F','G','H','I','J','K','L'] as $g)
+                <option value="{{ route('games.index', array_merge(request()->query(), ['group' => $g])) }}"
+                        {{ ($group ?? '') === $g ? 'selected' : '' }}>
+                    گروه {{ $g }}
+                </option>
+                @endforeach
+            </select>
+            <span class="material-symbols-outlined absolute top-1/2 -translate-y-1/2 left-2 text-sm pointer-events-none"
+                  style="color:rgba(185,203,185,0.5);">expand_more</span>
+        </div>
+    </div>
 </div>
 
 @if($games->isEmpty())

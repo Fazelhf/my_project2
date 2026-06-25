@@ -8,14 +8,13 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-    public function showForm(): Response
+    public function showForm(): View
     {
-        return Inertia::render('Auth/Register');
+        return view('auth.register');
     }
 
     public function register(Request $request): RedirectResponse

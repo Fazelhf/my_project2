@@ -13,9 +13,17 @@ class TeamController extends Controller
 {
     public function index(): View
     {
-        $teams = Team::ordered()->get()->groupBy('group_name');
+        $allTeams = Team::ordered()->get();
+        $teams    = $allTeams->groupBy('group_name');
 
-        return view('admin.teams.index', compact('teams'));
+        $stats = [
+            'total'       => $allTeams->count(),
+            'with_flag'   => $allTeams->whereNotNull('flag_url')->count(),
+            'without_flag' => $allTeams->whereNull('flag_url')->count(),
+            'groups'       => $allTeams->whereNotNull('group_name')->pluck('group_name')->unique()->count(),
+        ];
+
+        return view('admin.teams.index', compact('teams', 'stats'));
     }
 
     public function create(): View

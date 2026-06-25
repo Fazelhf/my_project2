@@ -51,27 +51,75 @@
     @endforeach
 </div>
 
-{{-- ── Recalculate ─────────────────────────────────────────── --}}
-<div class="liquid-glass rounded-2xl p-5 mb-6 flex items-center justify-between gap-4">
-    <div>
-        <h3 class="font-bold text-sm font-heading text-white flex items-center gap-2">
-            <span class="material-symbols-outlined text-base" style="color:#00e476;">sync</span>
-            بازمحاسبه همه امتیازات
-        </h3>
-        <p class="text-xs mt-1" style="color:rgba(185,203,185,0.6);">در صورت ویرایش نتایج، این دکمه را بزنید تا همه امتیازها از نو حساب شوند.</p>
-    </div>
-    <form method="POST" action="{{ route('admin.recalculate') }}">
+
+{{-- ── Quick Actions ────────────────────────────────────────── --}}
+<div class="grid grid-cols-3 gap-3 mb-6">
+    <a href="{{ route('admin.games.create') }}"
+       class="liquid-glass rounded-2xl p-4 flex flex-col items-center gap-2 text-center cursor-pointer transition-all card-glow">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,228,118,0.12);">
+            <span class="material-symbols-outlined" style="color:#00e476;">add_circle</span>
+        </div>
+        <p class="text-xs font-bold text-white">بازی جدید</p>
+    </a>
+    <a href="{{ route('admin.teams.create') }}"
+       class="liquid-glass rounded-2xl p-4 flex flex-col items-center gap-2 text-center cursor-pointer transition-all card-glow">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(77,159,255,0.12);">
+            <span class="material-symbols-outlined" style="color:#4D9FFF;">flag</span>
+        </div>
+        <p class="text-xs font-bold text-white">تیم جدید</p>
+    </a>
+    <form method="POST" action="{{ route('admin.recalculate') }}" class="contents">
         @csrf
         <button type="submit"
-                class="px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all whitespace-nowrap flex items-center gap-2"
-                style="background:#00e476;color:#003919;"
-                onmouseover="this.style.boxShadow='0 0 20px rgba(0,228,118,0.4)'"
-                onmouseout="this.style.boxShadow=''">
-            <span class="material-symbols-outlined text-base">refresh</span>
-            بازمحاسبه
+                class="liquid-glass rounded-2xl p-4 flex flex-col items-center gap-2 text-center cursor-pointer transition-all card-glow w-full"
+                style="background:none;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.12);">
+                <span class="material-symbols-outlined" style="color:#F59E0B;">sync</span>
+            </div>
+            <p class="text-xs font-bold text-white">بازمحاسبه امتیاز</p>
         </button>
     </form>
 </div>
+
+{{-- ── Activity Log ─────────────────────────────────────────── --}}
+@if($recentActivity->count())
+<div class="liquid-glass rounded-2xl overflow-hidden mb-6">
+    <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-bold text-sm font-heading text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-base" style="color:#00e476;">timeline</span>
+            فعالیت‌های اخیر
+        </h3>
+        <span class="text-xs font-mono px-2 py-0.5 rounded-full" style="background:rgba(0,228,118,0.1);color:#00e476;">{{ $recentActivity->count() }} پیش‌بینی</span>
+    </div>
+    @foreach($recentActivity as $act)
+    <div class="px-5 py-3 flex items-center gap-4 text-xs"
+         style="border-bottom:1px solid rgba(255,255,255,0.04);"
+         onmouseover="this.style.background='rgba(0,228,118,0.02)'"
+         onmouseout="this.style.background=''">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
+             style="background:rgba(0,228,118,0.1);color:#00e476;">
+            {{ mb_strtoupper(mb_substr($act->user?->name ?? '?', 0, 1, 'UTF-8')) }}
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-white font-semibold truncate">{{ $act->user?->name }}</p>
+            <p class="truncate mt-0.5" style="color:rgba(185,203,185,0.6);">
+                {{ $act->game?->homeTeam?->code }} vs {{ $act->game?->awayTeam?->code }}
+                — پیش‌بینی:
+                <span class="font-mono font-bold text-white">{{ $act->home_score }}–{{ $act->away_score }}</span>
+            </p>
+        </div>
+        @if($act->points_earned !== null)
+            <span class="font-mono font-bold flex-shrink-0" style="color:#00e476;">+{{ $act->points_earned }}pt</span>
+        @else
+            <span class="text-[10px] px-1.5 py-0.5 rounded flex-shrink-0" style="background:rgba(255,255,255,0.05);color:rgba(185,203,185,0.5);">ارزیابی نشده</span>
+        @endif
+        <span class="font-mono flex-shrink-0 text-[11px]" style="color:rgba(185,203,185,0.4);">
+            {{ $act->created_at->diffForHumans() }}
+        </span>
+    </div>
+    @endforeach
+</div>
+@endif
 
 {{-- ── Recent + Upcoming ───────────────────────────────────── --}}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
