@@ -46,6 +46,7 @@
                     ['route' => 'admin.dashboard',   'label' => 'داشبورد', 'icon' => 'dashboard',     'match' => 'admin.dashboard'],
                     ['route' => 'admin.teams.index',  'label' => 'تیم‌ها',  'icon' => 'flag',           'match' => 'admin.teams.*'],
                     ['route' => 'admin.games.index',  'label' => 'بازی‌ها', 'icon' => 'sports_soccer',  'match' => 'admin.games.*'],
+                    ['route' => 'admin.import-export', 'label' => 'ایمپورت / اکسپورت', 'icon' => 'sync_alt', 'match' => 'admin.import-export'],
                 ];
             @endphp
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ImportExportController;
 use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
@@ -69,4 +70,11 @@ Route::middleware(['auth', 'admin'])
         // ثبت نتیجه بازی (اکشن جداگانه)
         Route::post('/games/{game}/result', [AdminGameController::class, 'submitResult'])
             ->name('games.result');
+
+        // ایمپورت / اکسپورت
+        Route::get('/import-export', [ImportExportController::class, 'index'])->name('import-export');
+        Route::post('/import/games', [ImportExportController::class, 'importGames'])->name('import.games');
+        Route::get('/export/games', [ImportExportController::class, 'exportGames'])->name('export.games');
+        Route::get('/export/leaderboard', [ImportExportController::class, 'exportLeaderboard'])->name('export.leaderboard');
+        Route::get('/export/user/{user}/predictions', [ImportExportController::class, 'exportUserPredictions'])->name('export.user.predictions');
     });

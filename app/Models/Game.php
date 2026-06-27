@@ -42,7 +42,8 @@ class Game extends Model
 
     const STAGES = [
         'group'        => 'مرحله گروهی',
-        'round_of_16'  => 'دور اول حذفی',
+        'round_of_32'  => 'دور ۳۲ تیمی',
+        'round_of_16'  => 'دور ۱۶ تیمی',
         'quarter_final' => 'ربع نهایی',
         'semi_final'   => 'نیمه نهایی',
         'third_place'  => 'رده‌بندی سوم و چهارم',
@@ -50,6 +51,7 @@ class Game extends Model
     ];
 
     const KNOCKOUT_STAGES = [
+        'round_of_32',
         'round_of_16',
         'quarter_final',
         'semi_final',
