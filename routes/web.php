@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ImportExportController;
+use App\Http\Controllers\Admin\ScoringRuleController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
@@ -70,6 +73,24 @@ Route::middleware(['auth', 'admin'])
         // ثبت نتیجه بازی (اکشن جداگانه)
         Route::post('/games/{game}/result', [AdminGameController::class, 'submitResult'])
             ->name('games.result');
+
+        // ── مدیریت کاربران ────────────────────────────────────────────────────
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');
+        Route::post('/users/{user}/toggle-active', [UserManagementController::class, 'toggleActive'])->name('users.toggle-active');
+        Route::post('/users/{user}/note', [UserManagementController::class, 'updateNote'])->name('users.note');
+        Route::post('/users/{user}/override', [UserManagementController::class, 'manualOverride'])->name('users.override');
+        Route::post('/users/bulk-action', [UserManagementController::class, 'bulkAction'])->name('users.bulk-action');
+        Route::post('/predictions/{prediction}/edit', [UserManagementController::class, 'editPrediction'])->name('predictions.edit');
+        Route::post('/predictions/{prediction}/points-override', [UserManagementController::class, 'overridePredictionPoints'])->name('predictions.points-override');
+
+        // ── قوانین امتیازدهی ──────────────────────────────────────────────────
+        Route::get('/scoring-rules', [ScoringRuleController::class, 'index'])->name('scoring-rules.index');
+        Route::post('/scoring-rules/{game}', [ScoringRuleController::class, 'update'])->name('scoring-rules.update');
+        Route::delete('/scoring-rules/{game}', [ScoringRuleController::class, 'destroy'])->name('scoring-rules.destroy');
+
+        // ── Audit Log ──────────────────────────────────────────────────────────
+        Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
 
         // ایمپورت / اکسپورت
         Route::get('/import-export', [ImportExportController::class, 'index'])->name('import-export');

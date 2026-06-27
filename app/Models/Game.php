@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Game extends Model
 {
@@ -82,6 +83,11 @@ class Game extends Model
     public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
+    }
+
+    public function scoringRule(): HasOne
+    {
+        return $this->hasOne(GameScoringRule::class);
     }
 
     // ─── Scopes ───────────────────────────────────────────────────────────────
