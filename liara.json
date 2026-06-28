@@ -1,8 +1,11 @@
 {
   "app": "worldcup-namabar",
-  "port": 3000,
+  "port": 80,
+  "platform": "laravel",
   "build": {
     "location": "germany"
   },
-  "disks": []
+  "laravel": {
+    "phpVersion": "8.2"
+  }
 }
