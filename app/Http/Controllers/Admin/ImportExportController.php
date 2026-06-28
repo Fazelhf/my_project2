@@ -273,6 +273,84 @@ class ImportExportController extends Controller
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 
+    // ── import پیش‌بینی‌های سیستم قدیم ──────────────────────────────────────
+
+    public function importPredictionsPage(): View
+    {
+        $games = Game::with(['homeTeam', 'awayTeam'])
+            ->orderBy('scheduled_at')
+            ->get();
+
+        $users = User::regular()->orderBy('name')->get(['id', 'name', 'email']);
+
+        return view('admin.import-export.import-predictions', compact('games', 'users'));
+    }
+
+    public function importPredictions(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'game_id'              => 'required|exists:games,id',
+            'predictions'          => 'required|array|min:1',
+            'predictions.*.user_id'    => 'required|exists:users,id',
+            'predictions.*.home_score' => 'required|integer|min:0|max:99',
+            'predictions.*.away_score' => 'required|integer|min:0|max:99',
+        ], [
+            'game_id.required' => 'انتخاب بازی الزامی است.',
+            'predictions.required' => 'حداقل یک پیش‌بینی وارد کنید.',
+        ]);
+
+        $game    = Game::with('scoringRule')->findOrFail($request->game_id);
+        $created = 0;
+        $updated = 0;
+        $scorer  = app(\App\Services\PredictionScoringService::class);
+
+        foreach ($request->predictions as $row) {
+            $userId    = $row['user_id'];
+            $homeScore = (int) $row['home_score'];
+            $awayScore = (int) $row['away_score'];
+
+            // محاسبه امتیاز اگر بازی نتیجه دارد
+            $points = null;
+            if ($game->isScorable()) {
+                $rule = $game->scoringRule;
+                $dummy = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
+                $points = $rule
+                    ? $rule->calculatePoints($homeScore, $awayScore, $game->home_score, $game->away_score)
+                    : $dummy->calculatePoints($game->home_score, $game->away_score);
+            }
+
+            $existing = Prediction::where('user_id', $userId)->where('game_id', $game->id)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'home_score'      => $homeScore,
+                    'away_score'      => $awayScore,
+                    'points_earned'   => $points,
+                    'is_admin_edited' => true,
+                    'admin_note'      => 'وارد شده از سیستم قدیم',
+                ]);
+                $updated++;
+            } else {
+                Prediction::create([
+                    'user_id'         => $userId,
+                    'game_id'         => $game->id,
+                    'home_score'      => $homeScore,
+                    'away_score'      => $awayScore,
+                    'points_earned'   => $points,
+                    'is_admin_edited' => true,
+                    'admin_note'      => 'وارد شده از سیستم قدیم',
+                ]);
+                $created++;
+            }
+        }
+
+        if ($created + $updated > 0) {
+            $scorer->recalculateUserScores();
+        }
+
+        return back()->with('success', "{$created} پیش‌بینی جدید ثبت شد، {$updated} پیش‌بینی بروزرسانی شد.");
+    }
+
     public function exportLeaderboard(): Response
     {
         $users = User::regular()->orderByDesc('total_score')->get();

@@ -37,6 +37,38 @@
             </div>
         </div>
 
+        {{-- ویرایش مشخصات کاربر --}}
+        <div class="liquid-glass rounded-2xl overflow-hidden">
+            <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                <span class="material-symbols-outlined text-sm" style="color:#00e476;">edit</span>
+                <span class="text-xs font-bold text-white">ویرایش مشخصات</span>
+            </div>
+            <form method="POST" action="{{ route('admin.users.profile', $user) }}" class="p-4 space-y-3">
+                @csrf
+                <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">نام</label>
+                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="stitch-input text-sm w-full">
+                </div>
+                <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">ایمیل</label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="stitch-input text-sm w-full">
+                </div>
+                <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">واحد / دپارتمان</label>
+                    <input type="text" name="department" value="{{ old('department', $user->department) }}" class="stitch-input text-sm w-full" placeholder="اختیاری">
+                </div>
+                <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">رمز عبور جدید (اختیاری)</label>
+                    <input type="password" name="password" class="stitch-input text-sm w-full" placeholder="خالی = بدون تغییر">
+                </div>
+                <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">تکرار رمز عبور</label>
+                    <input type="password" name="password_confirmation" class="stitch-input text-sm w-full">
+                </div>
+                <button type="submit" class="btn-primary text-xs py-2.5 w-full">ذخیره تغییرات</button>
+            </form>
+        </div>
+
         {{-- Stats توزیع --}}
         <div class="liquid-glass rounded-2xl p-4 space-y-2">
             @php $tiers = [

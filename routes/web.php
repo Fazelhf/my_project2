@@ -77,6 +77,7 @@ Route::middleware(['auth', 'admin'])
         // ── مدیریت کاربران ────────────────────────────────────────────────────
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');
+        Route::post('/users/{user}/profile', [UserManagementController::class, 'updateProfile'])->name('users.profile');
         Route::post('/users/{user}/toggle-active', [UserManagementController::class, 'toggleActive'])->name('users.toggle-active');
         Route::post('/users/{user}/note', [UserManagementController::class, 'updateNote'])->name('users.note');
         Route::post('/users/{user}/override', [UserManagementController::class, 'manualOverride'])->name('users.override');
@@ -98,4 +99,6 @@ Route::middleware(['auth', 'admin'])
         Route::get('/export/games', [ImportExportController::class, 'exportGames'])->name('export.games');
         Route::get('/export/leaderboard', [ImportExportController::class, 'exportLeaderboard'])->name('export.leaderboard');
         Route::get('/export/user/{user}/predictions', [ImportExportController::class, 'exportUserPredictions'])->name('export.user.predictions');
+        Route::get('/import/predictions', [ImportExportController::class, 'importPredictionsPage'])->name('import.predictions');
+        Route::post('/import/predictions', [ImportExportController::class, 'importPredictions'])->name('import.predictions.store');
     });

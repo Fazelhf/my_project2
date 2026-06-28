@@ -60,7 +60,8 @@
                                         @endif
                                     </td>
                                     <td class="px-5 py-3 hidden md:table-cell font-mono text-xs" style="color:rgba(185,203,185,0.6);">
-                                        {{ $game->scheduled_at?->format('j M Y H:i') }}
+                                        {{ $game->scheduled_at?->timezone('Asia/Tehran')->format('j M Y H:i') }}
+                                        <span class="block text-xs opacity-50">تهران</span>
                                     </td>
                                     <td class="px-5 py-3">
                                         @if($game->status === 'finished')
@@ -72,7 +73,11 @@
                                                 زنده
                                             </span>
                                         @else
-                                            <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:rgba(255,255,255,0.06);color:rgba(185,203,185,0.7);">پیش‌رو</span>
+                                            @if($game->scheduled_at && $game->scheduled_at->isPast())
+                                                <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:rgba(245,158,11,0.1);color:#F59E0B;border:1px solid rgba(245,158,11,0.25);">در انتظار نتیجه</span>
+                                            @else
+                                                <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:rgba(255,255,255,0.06);color:rgba(185,203,185,0.7);">پیش‌رو</span>
+                                            @endif
                                         @endif
                                     </td>
                                     <td class="px-5 py-3 text-left">

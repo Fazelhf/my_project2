@@ -211,6 +211,37 @@
 
 </div>
 
+{{-- ── import پیش‌بینی‌های سیستم قدیم ── --}}
+<div class="mt-5 liquid-glass rounded-2xl overflow-hidden">
+    <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(167,139,250,0.12);">
+                <span class="material-symbols-outlined text-base" style="color:#A78BFA;">history</span>
+            </div>
+            <div>
+                <h2 class="font-black text-sm font-heading text-white">وارد کردن پیش‌بینی‌های سیستم قدیم</h2>
+                <p class="text-xs" style="color:rgba(185,203,185,0.6);">برای هر بازی، پیش‌بینی کاربران از سامانه قبلی را وارد کنید</p>
+            </div>
+        </div>
+        <a href="{{ route('admin.import.predictions') }}"
+           class="px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all"
+           style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;"
+           onmouseover="this.style.background='rgba(167,139,250,0.22)'"
+           onmouseout="this.style.background='rgba(167,139,250,0.12)'">
+            <span class="material-symbols-outlined text-sm">add</span>
+            شروع import
+        </a>
+    </div>
+    <div class="px-5 py-4 text-xs" style="color:rgba(185,203,185,0.5);">
+        <ul class="space-y-1 list-disc list-inside">
+            <li>ابتدا بازی مورد نظر را انتخاب کنید</li>
+            <li>سپس برای هر کاربر، پیش‌بینی (نتیجه‌ای که در سامانه قدیم زده) را وارد کنید</li>
+            <li>اگر کاربر قبلاً پیش‌بینی داشت، بروزرسانی می‌شود</li>
+            <li>امتیاز خودکار محاسبه می‌شود (اگر بازی نتیجه دارد)</li>
+        </ul>
+    </div>
+</div>
+
 @push('scripts')
 <script>
 function handleDrop(e) {

@@ -73,6 +73,53 @@ class UserManagementController extends Controller
         return view('admin.users.show', compact('user', 'predictions', 'auditLogs', 'stats'));
     }
 
+    // ── ویرایش مشخصات کاربر ──────────────────────────────────────────────────
+
+    public function updateProfile(User $user, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|max:255|unique:users,email,' . $user->id,
+            'department' => 'nullable|string|max:100',
+            'password'   => 'nullable|string|min:8|confirmed',
+        ], [
+            'name.required'    => 'نام الزامی است.',
+            'email.required'   => 'ایمیل الزامی است.',
+            'email.unique'     => 'این ایمیل توسط کاربر دیگری استفاده شده.',
+            'password.min'     => 'رمز عبور باید حداقل ۸ کاراکتر باشد.',
+            'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد.',
+        ]);
+
+        $before = [
+            'name'       => $user->name,
+            'email'      => $user->email,
+            'department' => $user->department,
+        ];
+
+        $data = [
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'department' => $request->department,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
+
+        AdminAuditLog::record(
+            'user_note_updated',
+            'User',
+            $user->id,
+            $before,
+            ['name' => $request->name, 'email' => $request->email, 'department' => $request->department],
+            'ویرایش مشخصات توسط ادمین'
+        );
+
+        return back()->with('success', 'مشخصات کاربر بروزرسانی شد.');
+    }
+
     // ── فعال/غیرفعال ─────────────────────────────────────────────────────────
 
     public function toggleActive(User $user, Request $request): RedirectResponse
