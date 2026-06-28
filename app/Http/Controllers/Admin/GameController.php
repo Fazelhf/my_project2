@@ -61,7 +61,7 @@ class GameController extends Controller
 
     public function show(Game $game): View
     {
-        $game->load(['homeTeam', 'awayTeam']);
+        $game->load(['homeTeam', 'awayTeam', 'scoringRule']);
 
         return view('admin.games.show', compact('game'));
     }
@@ -132,6 +132,31 @@ class GameController extends Controller
             : "نتیجه ثبت شد. امتیاز {$result['updated']} پیش‌بینی محاسبه شد.";
 
         return redirect()->route('admin.games.index')->with('success', $message);
+    }
+
+    /**
+     * ویرایش نتیجه بازی تمام‌شده + بازمحاسبه امتیازات
+     */
+    public function updateResult(Request $request, Game $game): RedirectResponse
+    {
+        $validated = $request->validate([
+            'home_score'       => ['required', 'integer', 'min:0', 'max:99'],
+            'away_score'       => ['required', 'integer', 'min:0', 'max:99'],
+            'home_score_final' => ['nullable', 'integer', 'min:0', 'max:99'],
+            'away_score_final' => ['nullable', 'integer', 'min:0', 'max:99'],
+        ], [
+            'home_score.required' => 'گل تیم اول را وارد کنید.',
+            'away_score.required' => 'گل تیم دوم را وارد کنید.',
+        ]);
+
+        $game->update($validated);
+
+        // بازمحاسبه امتیازات همه پیش‌بینی‌ها (به جز override شده‌ها)
+        $result = $this->scoringService->processGame($game->fresh());
+
+        $message = "نتیجه ویرایش شد. امتیاز {$result['updated']} پیش‌بینی بازمحاسبه شد.";
+
+        return back()->with('success', $message);
     }
 
     public function destroy(Game $game): RedirectResponse

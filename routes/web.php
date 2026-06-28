@@ -73,6 +73,9 @@ Route::middleware(['auth', 'admin'])
         // ثبت نتیجه بازی (اکشن جداگانه)
         Route::post('/games/{game}/result', [AdminGameController::class, 'submitResult'])
             ->name('games.result');
+        // ویرایش نتیجه بازی تمام‌شده
+        Route::post('/games/{game}/update-result', [AdminGameController::class, 'updateResult'])
+            ->name('games.update-result');
 
         // ── مدیریت کاربران ────────────────────────────────────────────────────
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
