@@ -102,6 +102,46 @@ class PredictionScoringService
         ];
     }
 
+    /**
+     * آمار امتیازدهی یک بازی برای نمایش در پنل ادمین
+     */
+    public function getGameStats(Game $game): array
+    {
+        $predictions = $game->predictions()->get();
+        $total       = $predictions->count();
+
+        $breakdown = [
+            10   => 0,
+            7    => 0,
+            5    => 0,
+            2    => 0,
+            0    => 0,
+            null => 0,
+        ];
+
+        foreach ($predictions as $p) {
+            $pts = $p->points_override ?? $p->points_earned;
+            if (array_key_exists($pts, $breakdown)) {
+                $breakdown[$pts]++;
+            } else {
+                $breakdown[null]++;
+            }
+        }
+
+        $scored     = $total - $breakdown[null];
+        $avgPoints  = $scored > 0
+            ? round($predictions->filter(fn($p) => ($p->points_override ?? $p->points_earned) !== null)
+                ->sum(fn($p) => $p->points_override ?? $p->points_earned) / $scored, 1)
+            : 0;
+
+        return [
+            'total'     => $total,
+            'scored'    => $scored,
+            'avg'       => $avgPoints,
+            'breakdown' => $breakdown,
+        ];
+    }
+
     public function recalculateUserScores(): void
     {
         User::all()->each(function (User $user) {
