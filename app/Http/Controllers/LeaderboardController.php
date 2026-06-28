@@ -16,7 +16,7 @@ class LeaderboardController extends Controller
             ->orderBy('name')
             ->get();
 
-        $finishedGames = Game::finished()->count();
+        $finishedGames = Game::finished()->with(['homeTeam', 'awayTeam'])->get();
 
         $predictions = Prediction::whereIn('user_id', $users->pluck('id'))
             ->whereNotNull('points_earned')
