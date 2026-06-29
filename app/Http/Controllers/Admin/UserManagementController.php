@@ -254,6 +254,32 @@ class UserManagementController extends Controller
         return back()->with('success', 'امتیاز پیش‌بینی override شد.');
     }
 
+    // ── حذف کاربر ────────────────────────────────────────────────────────────
+
+    public function destroy(User $user, Request $request): RedirectResponse
+    {
+        if ($user->is_admin) {
+            return back()->with('error', 'حذف کاربر ادمین امکان‌پذیر نیست.');
+        }
+
+        $name = $user->name;
+
+        AdminAuditLog::record(
+            'user_deleted',
+            'User',
+            $user->id,
+            ['name' => $name, 'email' => $user->email],
+            [],
+            $request->reason ?? 'حذف توسط ادمین'
+        );
+
+        $user->predictions()->delete();
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "کاربر «{$name}» و تمام پیش‌بینی‌هایش حذف شد.");
+    }
+
     // ── عملیات گروهی ─────────────────────────────────────────────────────────
 
     public function bulkAction(Request $request): RedirectResponse
