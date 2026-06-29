@@ -106,6 +106,7 @@
                     خروج
                 </button>
             </form>
+            <p class="text-center mt-3 text-[10px]" style="color:rgba(185,203,185,0.2);">ساخته شده با عشق در نمابر مهر</p>
         </div>
     </aside>
 
