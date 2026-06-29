@@ -174,57 +174,20 @@
 
 </div>
 
-{{-- ── Import / Export ─────────────────────────────────────── --}}
+{{-- ── Import / Export shortcut ─────────────────────────────── --}}
 <div class="liquid-glass rounded-2xl overflow-hidden mt-4">
-    <div class="px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+    <div class="px-5 py-4 flex items-center justify-between">
         <h3 class="font-bold text-sm font-heading text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-base" style="color:#00e476;">import_export</span>
-            ایمپورت / اکسپورت پیش‌بینی‌ها
+            ایمپورت / اکسپورت
         </h3>
-    </div>
-
-    @if(session('success'))
-        <div class="mx-5 mt-4 px-4 py-3 rounded-xl text-sm font-bold"
-             style="background:rgba(0,228,118,0.12);border:1px solid rgba(0,228,118,0.3);color:#00e476;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="px-5 py-4 flex flex-wrap items-center gap-3" style="border-bottom:1px solid rgba(255,255,255,0.05);">
-        <span class="text-sm text-white font-bold">همه کاربران:</span>
-        <a href="{{ route('admin.export.all') }}"
-           class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+        <a href="{{ route('admin.import-export') }}"
+           class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5"
            style="background:rgba(0,228,118,0.12);color:#00e476;border:1px solid rgba(0,228,118,0.25);">
-            <span class="material-symbols-outlined text-sm">download</span>
-            دانلود JSON
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+            رفتن به صفحه ایمپورت/اکسپورت
         </a>
-        <form method="POST" action="{{ route('admin.import.all') }}" enctype="multipart/form-data" class="flex items-center gap-2">
-            @csrf
-            <input type="file" name="file" accept=".json,application/json" required class="text-xs" style="color:rgba(185,203,185,0.7);">
-            <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold cursor-pointer"
-                    style="background:rgba(77,159,255,0.15);color:#4D9FFF;border:1px solid rgba(77,159,255,0.3);">آپلود JSON</button>
-        </form>
     </div>
-
-    @foreach($users as $u)
-    <div class="px-5 py-3 flex flex-wrap items-center gap-3"
-         style="border-bottom:1px solid rgba(255,255,255,0.04);"
-         onmouseover="this.style.background='rgba(255,255,255,0.02)'"
-         onmouseout="this.style.background=''">
-        <span class="text-sm text-white flex-1 min-w-0 truncate">{{ $u->name }}</span>
-        <a href="{{ route('admin.export.user', $u) }}"
-           class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer"
-           style="background:rgba(0,228,118,0.1);color:#00e476;border:1px solid rgba(0,228,118,0.2);">
-            <span class="material-symbols-outlined text-xs">download</span>دانلود
-        </a>
-        <form method="POST" action="{{ route('admin.import.user', $u) }}" enctype="multipart/form-data" class="flex items-center gap-1.5">
-            @csrf
-            <input type="file" name="file" accept=".json,application/json" required class="text-xs" style="color:rgba(185,203,185,0.6);">
-            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer"
-                    style="background:rgba(77,159,255,0.1);color:#4D9FFF;border:1px solid rgba(77,159,255,0.2);">آپلود</button>
-        </form>
-    </div>
-    @endforeach
 </div>
 
 @endsection
