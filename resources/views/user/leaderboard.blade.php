@@ -29,10 +29,11 @@
              style="background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.3);color:#CBD5E1;">2</div>
         <p class="text-xs font-bold text-white truncate">{{ $users[1]->name }}</p>
         <p class="text-[10px] mt-0.5 truncate" style="color:rgba(185,203,185,0.5);">{{ $users[1]->department ?: '—' }}</p>
-        <p class="text-2xl font-black font-heading mt-2" style="color:#94A3B8;">{{ $users[1]->total_score }}</p>
+        <p class="text-2xl font-black font-heading mt-2" style="color:#94A3B8;">{{ $users[1]->live_score }}</p>
         @php $u1preds = $predictions->get($users[1]->id, collect()); @endphp
         <p class="text-[10px] font-mono mt-1" style="color:rgba(185,203,185,0.5);">
-            {{ $u1preds->where('points_earned',10)->count() }} / {{ $u1preds->count() }} صحیح
+            <span style="color:#00e476;">{{ $u1preds->where('points_earned','>=',5)->count() }}</span> درست •
+            <span style="color:#F5A623;">{{ $u1preds->where('points_earned',10)->count() }}</span> دقیق
         </p>
     </div>
 
@@ -54,10 +55,11 @@
              style="background:linear-gradient(135deg,#D97706,#F5A623);color:#0a0a0a;box-shadow:0 0 14px rgba(245,166,35,0.3);">1</div>
         <p class="text-sm font-black text-white truncate">{{ $users[0]->name }}</p>
         <p class="text-[10px] mt-0.5 truncate" style="color:rgba(185,203,185,0.6);">{{ $users[0]->department ?: '—' }}</p>
-        <p class="text-3xl font-black font-heading mt-2" style="background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ $users[0]->total_score }}</p>
+        <p class="text-3xl font-black font-heading mt-2" style="background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ $users[0]->live_score }}</p>
         @php $u0preds = $predictions->get($users[0]->id, collect()); @endphp
         <p class="text-[10px] font-mono mt-1" style="color:rgba(245,166,35,0.7);">
-            {{ $u0preds->where('points_earned',10)->count() }} / {{ $u0preds->count() }} صحیح
+            <span style="color:#00e476;">{{ $u0preds->where('points_earned','>=',5)->count() }}</span> درست •
+            <span style="color:#F5A623;">{{ $u0preds->where('points_earned',10)->count() }}</span> دقیق
         </p>
     </div>
 
@@ -73,10 +75,11 @@
              style="background:rgba(194,65,12,0.15);border:1px solid rgba(194,65,12,0.3);color:#FDBA74;">3</div>
         <p class="text-xs font-bold text-white truncate">{{ $users[2]->name }}</p>
         <p class="text-[10px] mt-0.5 truncate" style="color:rgba(185,203,185,0.5);">{{ $users[2]->department ?: '—' }}</p>
-        <p class="text-2xl font-black font-heading mt-2" style="color:#FB923C;">{{ $users[2]->total_score }}</p>
+        <p class="text-2xl font-black font-heading mt-2" style="color:#FB923C;">{{ $users[2]->live_score }}</p>
         @php $u2preds = $predictions->get($users[2]->id, collect()); @endphp
         <p class="text-[10px] font-mono mt-1" style="color:rgba(251,146,60,0.7);">
-            {{ $u2preds->where('points_earned',10)->count() }} / {{ $u2preds->count() }} صحیح
+            <span style="color:#00e476;">{{ $u2preds->where('points_earned','>=',5)->count() }}</span> درست •
+            <span style="color:#F5A623;">{{ $u2preds->where('points_earned',10)->count() }}</span> دقیق
         </p>
     </div>
 </div>
@@ -106,8 +109,7 @@
             <tr style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);">
                 <th class="px-4 py-3 text-right text-xs font-bold font-mono w-12" style="color:rgba(185,203,185,0.5);">رتبه</th>
                 <th class="px-4 py-3 text-right text-xs font-bold font-mono" style="color:rgba(185,203,185,0.5);">کاربر</th>
-                <th class="px-4 py-3 text-center text-xs font-bold font-mono hidden md:table-cell" style="color:rgba(185,203,185,0.5);">پیش‌بینی</th>
-                <th class="px-4 py-3 text-center text-xs font-bold font-mono hidden sm:table-cell" style="color:rgba(185,203,185,0.5);">دقت</th>
+                <th class="px-4 py-3 text-center text-xs font-bold font-mono hidden md:table-cell" style="color:rgba(185,203,185,0.5);">کل / درست / دقیق</th>
                 <th class="px-4 py-3 text-center text-xs font-bold font-mono" style="color:rgba(185,203,185,0.5);">امتیاز</th>
             </tr>
         </thead>
@@ -117,8 +119,8 @@
             $isMe    = $u->id === auth()->id();
             $upreds  = $predictions->get($u->id, collect());
             $total   = $upreds->count();
-            $correct = $upreds->where('points_earned', 10)->count();
-            $accuracy = $total > 0 ? round($correct / $total * 100) : 0;
+            $correct = $upreds->where('points_earned', '>=', 5)->count();
+            $exact   = $upreds->where('points_earned', 10)->count();
         @endphp
         <tr class="user-row cursor-pointer transition-all duration-150"
             data-name="{{ strtolower($u->name) }} {{ strtolower($u->department ?? '') }}"
@@ -163,27 +165,23 @@
             </td>
 
             <td class="px-4 py-3.5 text-center hidden md:table-cell" style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                <span class="font-mono text-xs font-semibold" style="color:rgba(185,203,185,0.7);">{{ $correct }} / {{ $total }}</span>
-            </td>
-
-            <td class="px-4 py-3.5 hidden sm:table-cell" style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                <div class="flex items-center gap-2 justify-center">
-                    <div class="w-20 h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08);">
-                        <div class="h-full rounded-full"
-                             style="width:{{ $accuracy }}%;background:{{ $accuracy >= 50 ? '#00e476' : ($accuracy >= 25 ? '#F5A623' : '#FF8A8A') }};"></div>
-                    </div>
-                    <span class="text-[11px] font-mono w-8 text-left" style="color:rgba(185,203,185,0.6);">{{ $accuracy }}%</span>
+                <div class="flex items-center justify-center gap-3 text-xs font-mono">
+                    <span style="color:rgba(185,203,185,0.6);">{{ $total }}</span>
+                    <span style="color:rgba(255,255,255,0.15);">/</span>
+                    <span style="color:#00e476;">{{ $correct }}</span>
+                    <span style="color:rgba(255,255,255,0.15);">/</span>
+                    <span style="color:#F5A623;">{{ $exact }}</span>
                 </div>
             </td>
 
             <td class="px-4 py-3.5 text-center" style="border-bottom:1px solid rgba(255,255,255,0.04);">
                 @if($i===0)
                     <span class="text-xl font-black font-heading"
-                          style="background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ $u->total_score }}</span>
+                          style="background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ $u->live_score }}</span>
                 @elseif($i<3)
-                    <span class="text-lg font-black font-heading" style="color:#94A3B8;">{{ $u->total_score }}</span>
+                    <span class="text-lg font-black font-heading" style="color:#94A3B8;">{{ $u->live_score }}</span>
                 @else
-                    <span class="font-bold text-white">{{ $u->total_score }}</span>
+                    <span class="font-bold text-white">{{ $u->live_score }}</span>
                 @endif
             </td>
         </tr>

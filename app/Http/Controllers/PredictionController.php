@@ -44,10 +44,12 @@ class PredictionController extends Controller
         $game->load([
             'homeTeam',
             'awayTeam',
-            'predictions' => fn($q) => $q->where('user_id', auth()->id()),
+            'predictions.user',
         ]);
 
-        return view('user.games.show', compact('game'));
+        $myPrediction = $game->predictions->firstWhere('user_id', auth()->id());
+
+        return view('user.games.show', compact('game', 'myPrediction'));
     }
 
     public function store(Request $request, Game $game): RedirectResponse

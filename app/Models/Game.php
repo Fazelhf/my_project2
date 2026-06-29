@@ -29,13 +29,17 @@ class Game extends Model
         'status',
         'is_disciplinary',
         'notes',
+        'goals',
+        'home_score_ht',
+        'away_score_ht',
     ];
 
     protected function casts(): array
     {
         return [
-            'scheduled_at'   => 'datetime',
+            'scheduled_at'    => 'datetime',
             'is_disciplinary' => 'boolean',
+            'goals'           => 'array',
         ];
     }
 
