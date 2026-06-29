@@ -238,7 +238,7 @@ class ImportWorldCupGames extends Command
         $team = Team::where('name', $name)->first();
         if (! $team) {
             $iso     = $this->nameToIso[$name] ?? null;
-            $flagUrl = $iso ? "https://flagcdn.com/w40/{$iso}.png" : null;
+            $flagUrl = $iso ? "/flags/{$iso}.png" : null;
             $code = $this->uniqueCode($name);
             $team = Team::create([
                 'name'       => $name,
@@ -247,10 +247,10 @@ class ImportWorldCupGames extends Command
                 'group_name' => $group,
             ]);
             $this->line("  Created team: $name");
-        } elseif (! $team->flag_url) {
+        } elseif (! $team->flag_url || str_contains($team->flag_url, 'flagcdn.com')) {
             $iso = $this->nameToIso[$name] ?? null;
             if ($iso) {
-                $team->update(['flag_url' => "https://flagcdn.com/w40/{$iso}.png"]);
+                $team->update(['flag_url' => "/flags/{$iso}.png"]);
             }
         }
 
