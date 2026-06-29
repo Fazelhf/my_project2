@@ -50,6 +50,10 @@
                     <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="stitch-input text-sm w-full">
                 </div>
                 <div>
+                    <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">نام کاربری</label>
+                    <input type="text" name="username" value="{{ old('username', $user->username) }}" class="stitch-input text-sm w-full" placeholder="اختیاری — فقط انگلیسی و عدد">
+                </div>
+                <div>
                     <label class="text-xs mb-1 block" style="color:rgba(185,203,185,0.6);">ایمیل</label>
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="stitch-input text-sm w-full">
                 </div>

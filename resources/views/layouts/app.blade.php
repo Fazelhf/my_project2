@@ -51,6 +51,16 @@
                 <span class="material-symbols-outlined text-base">leaderboard</span>
                 <span>جدول</span>
             </a>
+            <a href="{{ route('bracket') }}"
+               class="nav-pill {{ request()->routeIs('bracket') ? 'active' : '' }}">
+                <span class="material-symbols-outlined text-base">account_tree</span>
+                <span>حذفی</span>
+            </a>
+            <a href="{{ route('chat') }}"
+               class="nav-pill {{ request()->routeIs('chat') ? 'active' : '' }}">
+                <span class="material-symbols-outlined text-base">forum</span>
+                <span>چت</span>
+            </a>
         </div>
 
         {{-- User area --}}

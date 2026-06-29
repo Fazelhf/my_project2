@@ -5,8 +5,13 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ImportExportController;
 use App\Http\Controllers\Admin\ScoringRuleController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\BracketController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\GameCommentController;
+use App\Http\Controllers\TournamentPredictionController;
 use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
+use App\Http\Controllers\Admin\TournamentAdminController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -40,6 +45,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
     Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
 
+    // براکت حذفی
+    Route::get('/bracket', [BracketController::class, 'index'])->name('bracket');
+
+    // پیش‌بینی قهرمانی
+    Route::get('/tournament-prediction', [TournamentPredictionController::class, 'show'])->name('tournament.prediction');
+    Route::post('/tournament-prediction', [TournamentPredictionController::class, 'store'])->name('tournament.prediction.store');
+
+    // چت گروهی
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+    Route::get('/chat/messages', [ChatController::class, 'messages'])->name('chat.messages');
+    Route::post('/chat/messages', [ChatController::class, 'store'])->name('chat.store');
+    Route::delete('/chat/messages/{message}', [ChatController::class, 'destroy'])->name('chat.destroy');
+
     // پروفایل کاربر
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -50,7 +68,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/{game}', [PredictionController::class, 'show'])->name('show');
         Route::post('/{game}/predict', [PredictionController::class, 'store'])->name('predict');
         Route::put('/{game}/predict', [PredictionController::class, 'update'])->name('predict.update');
+
+        // کامنت‌ها
+        Route::post('/{game}/comments', [GameCommentController::class, 'store'])->name('comments.store');
     });
+
+    // لایک کامنت
+    Route::post('/comments/{comment}/like', [GameCommentController::class, 'like'])->name('comments.like');
+    Route::delete('/comments/{comment}', [GameCommentController::class, 'destroy'])->name('comments.destroy');
+
+    // اشتراک‌گذاری پیش‌بینی (عمومی)
+    Route::get('/share/{game}/{user}', [PredictionController::class, 'shareCard'])->name('prediction.share');
 });
 
 // ─── API تیم‌ها ────────────────────────────────────────────────────────────────
@@ -101,6 +129,10 @@ Route::middleware(['auth', 'admin'])
 
         // ── Audit Log ──────────────────────────────────────────────────────────
         Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
+
+        // پیش‌بینی قهرمانی (ادمین)
+        Route::get('/tournament', [TournamentAdminController::class, 'index'])->name('tournament');
+        Route::post('/tournament', [TournamentAdminController::class, 'update'])->name('tournament.update');
 
         // ایمپورت / اکسپورت
         Route::get('/import-export', [ImportExportController::class, 'index'])->name('import-export');

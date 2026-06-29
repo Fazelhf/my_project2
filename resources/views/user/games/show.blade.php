@@ -261,4 +261,107 @@
 </div>
 @endif
 
+{{-- Share prediction button --}}
+@if($prediction)
+<div class="glass-card rounded-3xl p-5 mb-5 animate-slide-up" style="animation-delay:.25s">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+            <p class="text-sm font-bold text-white">اشتراک‌گذاری پیش‌بینی</p>
+            <p class="text-xs mt-0.5" style="color:rgba(185,203,185,0.5);">پیش‌بینی خود را با دیگران به اشتراک بگذارید</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="copyShareLink()" id="copy-btn"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition-all"
+                    style="background:rgba(0,228,118,0.1);color:#00e476;border:1px solid rgba(0,228,118,0.25);">
+                <span class="material-symbols-outlined text-base">link</span>
+                کپی لینک
+            </button>
+            <a href="{{ route('prediction.share', ['game' => $game->id, 'user' => auth()->id()]) }}" target="_blank"
+               class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition-all"
+               style="background:rgba(77,159,255,0.1);color:#4D9FFF;border:1px solid rgba(77,159,255,0.25);">
+                <span class="material-symbols-outlined text-base">open_in_new</span>
+                مشاهده کارت
+            </a>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- Comments section --}}
+<div class="glass-card rounded-3xl p-6 animate-slide-up" style="animation-delay:.3s" x-data="commentsApp()" x-init="init()">
+    <h3 class="text-sm font-black font-heading text-white mb-5 flex items-center gap-2">
+        <span class="material-symbols-outlined text-base" style="color:#4D9FFF;">chat_bubble</span>
+        نظرات
+        <span class="text-xs px-2 py-0.5 rounded-full font-mono" style="background:rgba(77,159,255,0.1);color:#4D9FFF;">{{ $comments->count() }}</span>
+    </h3>
+
+    {{-- Comment form --}}
+    <form action="{{ route('games.comments.store', $game) }}" method="POST" class="mb-6">
+        @csrf
+        <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black flex-shrink-0"
+                 style="background:linear-gradient(135deg,#00b85e,#00e476);color:#003919;">
+                {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1, 'UTF-8')) }}
+            </div>
+            <div class="flex-1">
+                <textarea name="body" rows="2" maxlength="1000" required
+                          placeholder="نظر خود را بنویسید..."
+                          class="stitch-input w-full resize-none text-sm"
+                          style="padding:12px 16px;min-height:80px;"></textarea>
+                <button type="submit" class="mt-2 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition-all"
+                        style="background:rgba(0,228,118,0.1);color:#00e476;border:1px solid rgba(0,228,118,0.2);">
+                    <span class="material-symbols-outlined text-base">send</span>
+                    ثبت نظر
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {{-- Comments list --}}
+    <div class="space-y-4" id="comments-list">
+        @foreach($comments as $comment)
+        @if(!$comment->parent_id)
+        @include('user.games._comment', ['comment' => $comment, 'game' => $game])
+        @endif
+        @endforeach
+
+        @if($comments->isEmpty())
+        <p class="text-sm text-center py-6" style="color:rgba(185,203,185,0.4);">اولین نفری باشید که نظر می‌دهید!</p>
+        @endif
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+function commentsApp() {
+    return { init() {} };
+}
+
+function copyShareLink() {
+    const url = '{{ route('prediction.share', ['game' => $game->id, 'user' => auth()->id()]) }}';
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copy-btn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined text-base">check_circle</span> کپی شد!';
+        setTimeout(() => btn.innerHTML = orig, 2000);
+    });
+}
+
+async function likeComment(id, btn) {
+    const resp = await fetch(`/comments/${id}/like`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    });
+    const data = await resp.json();
+    const icon = btn.querySelector('.like-icon');
+    const cnt = btn.querySelector('.like-count');
+    if (icon) icon.style.color = data.liked ? '#ff5a8a' : 'rgba(185,203,185,0.5)';
+    if (cnt) cnt.textContent = data.count > 0 ? data.count : '';
+}
+</script>
+@endpush

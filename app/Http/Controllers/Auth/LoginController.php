@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -17,23 +18,35 @@ class LoginController extends Controller
 
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email'    => ['required', 'email'],
+        $request->validate([
+            'login'    => ['required', 'string'],
             'password' => ['required'],
         ], [
-            'email.required'    => 'ایمیل الزامی است.',
-            'email.email'       => 'فرمت ایمیل صحیح نیست.',
+            'login.required'    => 'ایمیل یا نام کاربری الزامی است.',
             'password.required' => 'رمز عبور الزامی است.',
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('dashboard'));
+        $login = $request->input('login');
+
+        // Determine if it's email or username
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $user = User::where($field, $login)->first();
+
+        if (!$user || !\Hash::check($request->password, $user->password)) {
+            return back()
+                ->withInput($request->only('login'))
+                ->withErrors(['login' => 'اطلاعات ورود اشتباه است.']);
         }
 
-        return back()
-            ->withInput($request->only('email'))
-            ->withErrors(['email' => 'ایمیل یا رمز عبور اشتباه است.']);
+        if (!$user->is_active) {
+            return back()
+                ->withInput($request->only('login'))
+                ->withErrors(['login' => 'حساب کاربری شما غیرفعال است.']);
+        }
+
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+        return redirect()->intended(route('dashboard'));
     }
 
     public function logout(Request $request): RedirectResponse

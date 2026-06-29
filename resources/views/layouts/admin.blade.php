@@ -49,6 +49,7 @@
                     ['route' => 'admin.games.index',  'label' => 'بازی‌ها', 'icon' => 'sports_soccer',  'match' => 'admin.games.*'],
                     ['route' => 'admin.users.index',    'label' => 'کاربران',             'icon' => 'group',         'match' => 'admin.users.*'],
                     ['route' => 'admin.scoring-rules.index', 'label' => 'امتیازدهی',      'icon' => 'rule',          'match' => 'admin.scoring-rules.*'],
+                    ['route' => 'admin.tournament',      'label' => 'پیش‌بینی قهرمانی',    'icon' => 'emoji_events',  'match' => 'admin.tournament*'],
                     ['route' => 'admin.audit-log',      'label' => 'Audit Log',            'icon' => 'policy',        'match' => 'admin.audit-log'],
                     ['route' => 'admin.import-export',  'label' => 'ایمپورت / اکسپورت',   'icon' => 'sync_alt',      'match' => 'admin.import-export'],
                 ];
