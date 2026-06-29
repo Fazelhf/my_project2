@@ -104,6 +104,11 @@
     @yield('content')
 </main>
 
+{{-- ── Footer ──────────────────────────────────────────────────────────────── --}}
+<footer class="relative z-10 text-center py-4 pb-24 sm:pb-6">
+    <p class="text-xs" style="color:rgba(185,203,185,0.25);">ساخته شده با عشق در نمابر مهر</p>
+</footer>
+
 {{-- ── Mobile Bottom Nav ───────────────────────────────────────────────────── --}}
 <nav class="mobile-nav">
     <a href="{{ route('dashboard') }}"

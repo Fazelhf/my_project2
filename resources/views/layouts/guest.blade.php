@@ -52,10 +52,6 @@
     {{-- Stats footer --}}
     <div class="mt-8 flex justify-center gap-8 animate-slide-up stagger-3" style="opacity:0.7;">
         <div class="text-center">
-            <div class="font-heading font-black text-xl gradient-text-green">۱.۲M+</div>
-            <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">کاربر فعال</div>
-        </div>
-        <div class="text-center">
             <div class="font-heading font-black text-xl gradient-text-green">۴۸</div>
             <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">تیم ملی</div>
         </div>
@@ -64,6 +60,7 @@
             <div class="text-xs font-mono mt-0.5" style="color:rgba(185,203,185,0.6);">مسابقه</div>
         </div>
     </div>
+    <p class="text-center mt-6 text-xs animate-slide-up stagger-4" style="color:rgba(185,203,185,0.35);">ساخته شده با عشق در نمابر مهر</p>
 
 </main>
 
