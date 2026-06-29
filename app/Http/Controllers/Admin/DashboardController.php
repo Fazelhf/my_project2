@@ -49,7 +49,9 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentGames', 'upcomingGames', 'recentActivity'));
+        $users = User::regular()->orderBy('name')->get();
+
+        return view('admin.dashboard', compact('stats', 'recentGames', 'upcomingGames', 'recentActivity', 'users'));
     }
 
     /**

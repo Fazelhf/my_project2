@@ -1,0 +1,6 @@
+{
+    "platform": "laravel",
+    "node": {
+        "version": "20"
+    }
+}

@@ -230,6 +230,13 @@ export default function AppLayout({ children, title }) {
                                 <span className="hidden md:block">ادمین</span>
                             </Link>
                         )}
+                        <Link href="/profile" className="nav-pill"
+                              style={{ color: 'rgba(185,203,185,0.7)' }}
+                              onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#F0F4FF'; }}
+                              onMouseOut={e => { e.currentTarget.style.background = ''; e.currentTarget.style.color = 'rgba(185,203,185,0.7)'; }}>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                            <span className="hidden sm:block">پروفایل</span>
+                        </Link>
                         <Link href="/logout" method="post" as="button" className="nav-pill cursor-pointer"
                               style={{ color: 'rgba(255,90,90,0.7)' }}
                               onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,90,90,0.1)'; e.currentTarget.style.color = '#FF8A8A'; }}

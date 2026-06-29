@@ -32,14 +32,6 @@
 
 <div class="flex items-center justify-between mb-5">
     <p class="text-sm font-mono" style="color:rgba(185,203,185,0.6);">{{ $teams->flatten()->count() }} تیم ثبت شده</p>
-    <a href="{{ route('admin.teams.create') }}"
-       class="px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all flex items-center gap-2"
-       style="background:#00e476;color:#003919;"
-       onmouseover="this.style.boxShadow='0 0 20px rgba(0,228,118,0.4)'"
-       onmouseout="this.style.boxShadow=''">
-        <span class="material-symbols-outlined text-base">add</span>
-        تیم جدید
-    </a>
 </div>
 
 @foreach($teams->sortKeys() as $group => $groupTeams)
