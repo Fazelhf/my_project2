@@ -283,43 +283,51 @@ class ImportExportController extends Controller
 
         $users = User::regular()->orderBy('name')->get(['id', 'name', 'email']);
 
-        return view('admin.import-export.import-predictions', compact('games', 'users'));
+        // پیش‌بینی‌های موجود: [user_id][game_id] => {home, away}
+        $existing = collect();
+        if ($userId = old('user_id', request('user_id'))) {
+            $existing = Prediction::where('user_id', $userId)
+                ->get()
+                ->keyBy('game_id');
+        }
+
+        return view('admin.import-export.import-predictions', compact('games', 'users', 'existing'));
     }
 
     public function importPredictions(Request $request): RedirectResponse
     {
         $request->validate([
-            'game_id'              => 'required|exists:games,id',
-            'predictions'          => 'required|array|min:1',
-            'predictions.*.user_id'    => 'required|exists:users,id',
-            'predictions.*.home_score' => 'required|integer|min:0|max:99',
-            'predictions.*.away_score' => 'required|integer|min:0|max:99',
-        ], [
-            'game_id.required' => 'انتخاب بازی الزامی است.',
-            'predictions.required' => 'حداقل یک پیش‌بینی وارد کنید.',
+            'user_id'     => 'required|exists:users,id',
+            'predictions' => 'required|array',
         ]);
 
-        $game    = Game::with('scoringRule')->findOrFail($request->game_id);
+        $user    = User::findOrFail($request->user_id);
+        $games   = Game::with('scoringRule')->get()->keyBy('id');
+        $scorer  = app(\App\Services\PredictionScoringService::class);
         $created = 0;
         $updated = 0;
-        $scorer  = app(\App\Services\PredictionScoringService::class);
 
-        foreach ($request->predictions as $row) {
-            $userId    = $row['user_id'];
-            $homeScore = (int) $row['home_score'];
-            $awayScore = (int) $row['away_score'];
+        foreach ($request->predictions as $gameId => $row) {
+            $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
+            $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
 
-            // محاسبه امتیاز اگر بازی نتیجه دارد
+            // ردیف‌های خالی رو رد کن
+            if ($homeScore === null && $awayScore === null) {
+                continue;
+            }
+
+            $game   = $games->get($gameId);
             $points = null;
-            if ($game->isScorable()) {
-                $rule = $game->scoringRule;
-                $dummy = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
+
+            if ($game && $game->isScorable()) {
+                $rule   = $game->scoringRule;
+                $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
                 $points = $rule
                     ? $rule->calculatePoints($homeScore, $awayScore, $game->home_score, $game->away_score)
                     : $dummy->calculatePoints($game->home_score, $game->away_score);
             }
 
-            $existing = Prediction::where('user_id', $userId)->where('game_id', $game->id)->first();
+            $existing = Prediction::where('user_id', $user->id)->where('game_id', $gameId)->first();
 
             if ($existing) {
                 $existing->update([
@@ -332,8 +340,8 @@ class ImportExportController extends Controller
                 $updated++;
             } else {
                 Prediction::create([
-                    'user_id'         => $userId,
-                    'game_id'         => $game->id,
+                    'user_id'         => $user->id,
+                    'game_id'         => $gameId,
                     'home_score'      => $homeScore,
                     'away_score'      => $awayScore,
                     'points_earned'   => $points,
@@ -348,7 +356,8 @@ class ImportExportController extends Controller
             $scorer->recalculateUserScores();
         }
 
-        return back()->with('success', "{$created} پیش‌بینی جدید ثبت شد، {$updated} پیش‌بینی بروزرسانی شد.");
+        return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
+            ->with('success', "پیش‌بینی‌های {$user->name}: {$created} جدید، {$updated} بروزرسانی شد.");
     }
 
     public function exportLeaderboard(): Response

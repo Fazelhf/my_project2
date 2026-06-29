@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'وارد کردن پیش‌بینی‌های سیستم قدیم')
+@section('title', 'وارد کردن پیش‌بینی‌ها')
 @section('page-title', 'import پیش‌بینی‌ها')
 
 @section('content')
@@ -15,163 +15,123 @@
 </div>
 @endif
 
-<div class="liquid-glass rounded-2xl overflow-hidden">
+{{-- ── Step 1: انتخاب کاربر ──────────────────────────────────── --}}
+<div class="liquid-glass rounded-2xl overflow-hidden mb-4">
     <div class="px-5 py-4 flex items-center gap-3" style="border-bottom:1px solid rgba(255,255,255,0.08);">
-        <span class="material-symbols-outlined text-base" style="color:#A78BFA;">history</span>
-        <div>
-            <h2 class="font-black text-sm font-heading text-white">وارد کردن پیش‌بینی‌های سیستم قدیم</h2>
-            <p class="text-xs mt-0.5" style="color:rgba(185,203,185,0.5);">برای هر بازی، پیش‌بینی‌های کاربران را از سیستم قبلی وارد کنید</p>
-        </div>
+        <span class="material-symbols-outlined text-base" style="color:#A78BFA;">person</span>
+        <h2 class="font-black text-sm font-heading text-white">انتخاب کاربر</h2>
     </div>
-
-    <form method="POST" action="{{ route('admin.import.predictions.store') }}" id="importForm">
-        @csrf
-
-        {{-- انتخاب بازی --}}
-        <div class="p-5 space-y-4" style="border-bottom:1px solid rgba(255,255,255,0.07);">
-            <div>
-                <label class="text-xs font-bold mb-2 block" style="color:rgba(185,203,185,0.7);">انتخاب بازی</label>
-                <select name="game_id" id="gameSelect" required class="stitch-input text-sm w-full" onchange="loadGame(this.value)">
-                    <option value="">-- بازی را انتخاب کنید --</option>
-                    @foreach($games as $game)
-                    <option value="{{ $game->id }}" data-home="{{ $game->homeTeam->name }}" data-away="{{ $game->awayTeam->name }}"
-                            {{ old('game_id') == $game->id ? 'selected' : '' }}>
-                        {{ $game->homeTeam->name }} vs {{ $game->awayTeam->name }}
-                        — {{ $game->scheduled_at?->timezone('Asia/Tehran')->format('j M Y H:i') }}
-                        @if($game->status === 'finished') [{{ $game->home_score }}–{{ $game->away_score }}] @endif
+    <div class="p-5">
+        <form method="GET" action="{{ route('admin.import.predictions') }}" class="flex items-end gap-3 flex-wrap">
+            <div class="flex-1 min-w-48">
+                <label class="text-xs font-bold mb-1.5 block" style="color:rgba(185,203,185,0.7);">کاربر</label>
+                <select name="user_id" id="userSelect" class="stitch-input text-sm w-full" onchange="this.form.submit()">
+                    <option value="">-- کاربر را انتخاب کنید --</option>
+                    @foreach($users as $u)
+                    <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>
+                        {{ $u->name }} — {{ $u->email }}
                     </option>
                     @endforeach
                 </select>
             </div>
+        </form>
+    </div>
+</div>
+
+{{-- ── Step 2: جدول بازی‌ها (فقط وقتی کاربر انتخاب شده) ──────── --}}
+@if(request('user_id'))
+@php
+    $selectedUser = $users->firstWhere('id', request('user_id'));
+@endphp
+
+<div class="liquid-glass rounded-2xl overflow-hidden">
+    <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-base" style="color:#00e476;">sports_score</span>
+            <div>
+                <h2 class="font-black text-sm font-heading text-white">پیش‌بینی‌های {{ $selectedUser?->name }}</h2>
+                <p class="text-xs mt-0.5" style="color:rgba(185,203,185,0.5);">برای هر بازی نتیجه پیش‌بینی شده را وارد کنید — خانه‌های خالی ذخیره نمی‌شوند</p>
+            </div>
+        </div>
+        <span class="text-xs font-mono px-2 py-1 rounded-lg" style="background:rgba(0,228,118,0.1);color:#00e476;">
+            {{ $games->count() }} بازی
+        </span>
+    </div>
+
+    <form method="POST" action="{{ route('admin.import.predictions.store') }}">
+        @csrf
+        <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);">
+                        <th class="px-4 py-3 text-right text-xs font-bold" style="color:rgba(185,203,185,0.5);">#</th>
+                        <th class="px-4 py-3 text-right text-xs font-bold" style="color:rgba(185,203,185,0.5);">بازی</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold" style="color:rgba(185,203,185,0.5);">تاریخ</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold" style="color:rgba(185,203,185,0.5);">نتیجه واقعی</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold w-24" style="color:#4D9FFF;">گل میزبان</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold w-24" style="color:#4D9FFF;">گل مهمان</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($games as $i => $game)
+                    @php
+                        $pred = $existing->get($game->id);
+                    @endphp
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"
+                        onmouseover="this.style.background='rgba(0,228,118,0.02)'"
+                        onmouseout="this.style.background=''">
+                        <td class="px-4 py-3 text-xs font-mono" style="color:rgba(185,203,185,0.35);">{{ $i + 1 }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-white text-xs">{{ $game->homeTeam->name }}</span>
+                                <span style="color:rgba(185,203,185,0.4);" class="text-xs">vs</span>
+                                <span class="font-bold text-white text-xs">{{ $game->awayTeam->name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-center text-xs font-mono" style="color:rgba(185,203,185,0.5);">
+                            {{ $game->scheduled_at?->timezone('Asia/Tehran')->format('j M Y') }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            @if($game->status === 'finished')
+                                <span class="font-black font-mono text-sm" style="color:#00e476;">
+                                    {{ $game->home_score }} – {{ $game->away_score }}
+                                </span>
+                            @else
+                                <span class="text-xs" style="color:rgba(185,203,185,0.3);">—</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                            <input type="number"
+                                   name="predictions[{{ $game->id }}][home_score]"
+                                   value="{{ old("predictions.{$game->id}.home_score", $pred?->home_score) }}"
+                                   min="0" max="99" placeholder="—"
+                                   class="stitch-input text-center text-sm w-16 mx-auto block">
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                            <input type="number"
+                                   name="predictions[{{ $game->id }}][away_score]"
+                                   value="{{ old("predictions.{$game->id}.away_score", $pred?->away_score) }}"
+                                   min="0" max="99" placeholder="—"
+                                   class="stitch-input text-center text-sm w-16 mx-auto block">
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
 
-        {{-- جدول پیش‌بینی‌ها --}}
-        <div class="p-5">
-            <div class="flex items-center justify-between mb-3">
-                <label class="text-xs font-bold" style="color:rgba(185,203,185,0.7);">پیش‌بینی‌های کاربران</label>
-                <button type="button" onclick="addRow()"
-                        class="text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1"
-                        style="background:rgba(0,228,118,0.1);border:1px solid rgba(0,228,118,0.25);color:#00e476;">
-                    <span class="material-symbols-outlined text-sm">add</span>
-                    افزودن ردیف
-                </button>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm" id="predTable">
-                    <thead>
-                        <tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
-                            <th class="px-3 py-2 text-right text-xs font-bold" style="color:rgba(185,203,185,0.5);">کاربر</th>
-                            <th class="px-3 py-2 text-center text-xs font-bold w-20" style="color:rgba(185,203,185,0.5);">گل میزبان</th>
-                            <th class="px-3 py-2 text-center text-xs font-bold w-20" style="color:rgba(185,203,185,0.5);">گل مهمان</th>
-                            <th class="px-3 py-2 w-10"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="predRows">
-                        {{-- ردیف‌های old() --}}
-                        @if(old('predictions'))
-                            @foreach(old('predictions') as $i => $row)
-                            <tr class="pred-row" style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                                <td class="px-3 py-2">
-                                    <select name="predictions[{{ $i }}][user_id]" required class="stitch-input text-xs w-full">
-                                        <option value="">انتخاب کاربر</option>
-                                        @foreach($users as $u)
-                                        <option value="{{ $u->id }}" {{ $row['user_id'] == $u->id ? 'selected' : '' }}>{{ $u->name }} — {{ $u->email }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td class="px-3 py-2">
-                                    <input type="number" name="predictions[{{ $i }}][home_score]" value="{{ $row['home_score'] }}"
-                                           min="0" max="99" required class="stitch-input text-xs text-center w-full">
-                                </td>
-                                <td class="px-3 py-2">
-                                    <input type="number" name="predictions[{{ $i }}][away_score]" value="{{ $row['away_score'] }}"
-                                           min="0" max="99" required class="stitch-input text-xs text-center w-full">
-                                </td>
-                                <td class="px-3 py-2 text-center">
-                                    <button type="button" onclick="removeRow(this)" class="text-xs" style="color:#FF8A8A;">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- هیچ ردیفی نداره --}}
-            <div id="emptyMsg" class="text-center py-8" style="color:rgba(185,203,185,0.4);">
-                <span class="material-symbols-outlined text-3xl">inbox</span>
-                <p class="text-xs mt-1">روی «افزودن ردیف» کلیک کنید</p>
-            </div>
-
-            <div class="mt-5 flex items-center gap-3 justify-end">
-                <a href="{{ route('admin.import-export') }}" class="text-xs px-4 py-2 rounded-xl"
-                   style="background:rgba(255,255,255,0.05);color:rgba(185,203,185,0.6);">انصراف</a>
-                <button type="submit" id="submitBtn"
-                        class="btn-primary text-sm px-6 py-2.5" disabled>
-                    ذخیره پیش‌بینی‌ها
-                </button>
-            </div>
+        <div class="px-5 py-4 flex items-center justify-between" style="border-top:1px solid rgba(255,255,255,0.07);">
+            <a href="{{ route('admin.import-export') }}" class="text-xs px-4 py-2 rounded-xl"
+               style="background:rgba(255,255,255,0.05);color:rgba(185,203,185,0.6);">انصراف</a>
+            <button type="submit" class="btn-primary text-sm px-8 py-2.5 flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">save</span>
+                ذخیره همه پیش‌بینی‌ها
+            </button>
         </div>
     </form>
 </div>
-
-{{-- قالب ردیف --}}
-<template id="rowTpl">
-    <tr class="pred-row" style="border-bottom:1px solid rgba(255,255,255,0.04);">
-        <td class="px-3 py-2">
-            <select name="predictions[__IDX__][user_id]" required class="stitch-input text-xs w-full">
-                <option value="">انتخاب کاربر</option>
-                @foreach($users as $u)
-                <option value="{{ $u->id }}">{{ $u->name }} — {{ $u->email }}</option>
-                @endforeach
-            </select>
-        </td>
-        <td class="px-3 py-2">
-            <input type="number" name="predictions[__IDX__][home_score]" placeholder="0"
-                   min="0" max="99" required class="stitch-input text-xs text-center w-full">
-        </td>
-        <td class="px-3 py-2">
-            <input type="number" name="predictions[__IDX__][away_score]" placeholder="0"
-                   min="0" max="99" required class="stitch-input text-xs text-center w-full">
-        </td>
-        <td class="px-3 py-2 text-center">
-            <button type="button" onclick="removeRow(this)" class="text-xs" style="color:#FF8A8A;">
-                <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
-        </td>
-    </tr>
-</template>
-
-<script>
-let rowIdx = {{ old('predictions') ? count(old('predictions')) : 0 }};
-
-function updateUI() {
-    const rows = document.querySelectorAll('.pred-row');
-    document.getElementById('emptyMsg').style.display = rows.length ? 'none' : 'block';
-    document.getElementById('submitBtn').disabled = rows.length === 0 || !document.getElementById('gameSelect').value;
-}
-
-function addRow() {
-    const tpl  = document.getElementById('rowTpl').innerHTML.replaceAll('__IDX__', rowIdx++);
-    const tbody = document.getElementById('predRows');
-    tbody.insertAdjacentHTML('beforeend', tpl);
-    updateUI();
-}
-
-function removeRow(btn) {
-    btn.closest('tr').remove();
-    updateUI();
-}
-
-function loadGame(val) {
-    updateUI();
-}
-
-document.getElementById('gameSelect').addEventListener('change', () => updateUI());
-updateUI();
-</script>
+@endif
 
 @endsection
