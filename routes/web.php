@@ -89,6 +89,7 @@ Route::middleware(['auth', 'admin'])
         Route::post('/users/{user}/toggle-active', [UserManagementController::class, 'toggleActive'])->name('users.toggle-active');
         Route::post('/users/{user}/note', [UserManagementController::class, 'updateNote'])->name('users.note');
         Route::post('/users/{user}/override', [UserManagementController::class, 'manualOverride'])->name('users.override');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::post('/users/bulk-action', [UserManagementController::class, 'bulkAction'])->name('users.bulk-action');
         Route::post('/predictions/{prediction}/edit', [UserManagementController::class, 'editPrediction'])->name('predictions.edit');
         Route::post('/predictions/{prediction}/points-override', [UserManagementController::class, 'overridePredictionPoints'])->name('predictions.points-override');

@@ -112,6 +112,28 @@
             </div>
         </div>
 
+        {{-- حذف کاربر --}}
+        <div class="liquid-glass rounded-2xl overflow-hidden" style="border-color:rgba(255,107,107,0.2);">
+            <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid rgba(255,107,107,0.15);">
+                <span class="material-symbols-outlined text-sm" style="color:#FF6B6B;">delete_forever</span>
+                <span class="text-xs font-bold" style="color:#FF6B6B;">حذف کاربر</span>
+            </div>
+            <div class="p-4 space-y-3">
+                <p class="text-xs" style="color:rgba(185,203,185,0.6);">با حذف کاربر، تمام پیش‌بینی‌هایش نیز پاک می‌شود. این عمل برگشت‌پذیر نیست.</p>
+                <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
+                      onsubmit="return confirm('آیا مطمئن هستید؟ کاربر «{{ $user->name }}» و تمام پیش‌بینی‌هایش حذف خواهد شد.')">
+                    @csrf
+                    @method('DELETE')
+                    <input type="text" name="reason" placeholder="دلیل حذف (اختیاری)" class="stitch-input text-xs w-full mb-2">
+                    <button type="submit" class="w-full text-xs font-bold py-2.5 rounded-xl transition-all"
+                            style="background:rgba(255,107,107,0.1);color:#FF6B6B;border:1px solid rgba(255,107,107,0.3);"
+                            onmouseover="this.style.background='rgba(255,107,107,0.2)'" onmouseout="this.style.background='rgba(255,107,107,0.1)'">
+                        حذف دائمی کاربر
+                    </button>
+                </form>
+            </div>
+        </div>
+
         {{-- Manual Override امتیاز --}}
         <div class="liquid-glass rounded-2xl overflow-hidden">
             <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid rgba(255,255,255,0.07);">
