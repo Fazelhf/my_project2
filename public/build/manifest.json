@@ -1,0 +1,120 @@
+{
+  "_AppLayout-DgvDN062.js": {
+    "file": "assets/AppLayout-DgvDN062.js",
+    "name": "AppLayout",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_GuestLayout-BpoBecSv.js": {
+    "file": "assets/GuestLayout-BpoBecSv.js",
+    "name": "GuestLayout",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-VqE_y_R8.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.jsx": {
+    "file": "assets/Login-uXO7Gjfy.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_GuestLayout-BpoBecSv.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/Pages/Auth/Register.jsx": {
+    "file": "assets/Register-D0JCoNJ2.js",
+    "name": "Register",
+    "src": "resources/js/Pages/Auth/Register.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_GuestLayout-BpoBecSv.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/Pages/Dashboard.jsx": {
+    "file": "assets/Dashboard-CxMFWXhG.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AppLayout-DgvDN062.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/Pages/Games/Index.jsx": {
+    "file": "assets/Index-D6itd7Pc.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Games/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AppLayout-DgvDN062.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/Pages/Leaderboard.jsx": {
+    "file": "assets/Leaderboard-BICABU7O.js",
+    "name": "Leaderboard",
+    "src": "resources/js/Pages/Leaderboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AppLayout-DgvDN062.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/Pages/Results.jsx": {
+    "file": "assets/Results-rX5mFynj.js",
+    "name": "Results",
+    "src": "resources/js/Pages/Results.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AppLayout-DgvDN062.js"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-mRxmQcOV.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Auth/Login.jsx",
+      "resources/js/Pages/Auth/Register.jsx",
+      "resources/js/Pages/Dashboard.jsx",
+      "resources/js/Pages/Games/Index.jsx",
+      "resources/js/Pages/Leaderboard.jsx",
+      "resources/js/Pages/Results.jsx"
+    ],
+    "css": [
+      "assets/app-VqE_y_R8.css"
+    ]
+  }
+}
