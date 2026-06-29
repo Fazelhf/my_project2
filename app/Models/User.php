@@ -19,6 +19,9 @@ class User extends Authenticatable
         'department',
         'avatar',
         'is_admin',
+        'is_active',
+        'score_adjustment',
+        'admin_note',
     ];
 
     protected $hidden = [
@@ -32,6 +35,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'is_admin'          => 'boolean',
+            'is_active'         => 'boolean',
+            'score_adjustment'  => 'integer',
         ];
     }
 
@@ -71,6 +76,14 @@ class User extends Authenticatable
         return $query->where('is_admin', false);
     }
 
+    /**
+     * فیلتر کاربران فعال
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     // ─── Accessors ────────────────────────────────────────────────────────────
 
     /**
@@ -79,6 +92,14 @@ class User extends Authenticatable
     public function getRankAttribute(): int
     {
         return static::where('total_score', '>', $this->total_score)->count() + 1;
+    }
+
+    /**
+     * امتیاز واقعی = total_score + score_adjustment
+     */
+    public function getEffectiveScoreAttribute(): int
+    {
+        return max(0, ($this->total_score ?? 0) + ($this->score_adjustment ?? 0));
     }
 
     /**

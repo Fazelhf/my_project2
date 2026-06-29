@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html><html class="dark" dir="rtl" lang="fa"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ورود به پنل پیش‌بینی جام‌جهانی ۲۰۲۶</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Vazirmatn:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&amp;family=Vazirmatn:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#32476c",
+                    "secondary-fixed-dim": "#b2c7f3",
+                    "surface-container": "#1a2029",
+                    "inverse-on-surface": "#2b313b",
+                    "surface-container-high": "#242a34",
+                    "on-surface": "#dde2f0",
+                    "primary-fixed-dim": "#00e476",
+                    "on-primary-container": "#007137",
+                    "tertiary": "#fffaf5",
+                    "on-primary-fixed-variant": "#005227",
+                    "on-primary-fixed": "#00210c",
+                    "error-container": "#93000a",
+                    "outline-variant": "#3b4b3d",
+                    "surface-tint": "#00e476",
+                    "primary-container": "#00ff85",
+                    "on-secondary-container": "#a0b6e1",
+                    "surface-dim": "#0e141d",
+                    "tertiary-fixed": "#ffe16d",
+                    "on-tertiary": "#3a3000",
+                    "surface-bright": "#343944",
+                    "tertiary-container": "#ffdc49",
+                    "inverse-primary": "#006d35",
+                    "outline": "#849584",
+                    "tertiary-fixed-dim": "#e9c400",
+                    "surface-variant": "#2f353f",
+                    "surface-container-lowest": "#080e17",
+                    "on-secondary": "#1a3054",
+                    "primary": "#f0ffee",
+                    "on-secondary-fixed": "#011b3e",
+                    "on-tertiary-fixed-variant": "#544600",
+                    "secondary-container": "#32476c",
+                    "surface-container-highest": "#2f353f",
+                    "on-tertiary-container": "#736000",
+                    "on-tertiary-fixed": "#221b00",
+                    "secondary": "#b2c7f3",
+                    "on-primary": "#003919",
+                    "background": "#0e141d",
+                    "on-surface-variant": "#b9cbb9",
+                    "on-background": "#dde2f0",
+                    "secondary-fixed": "#d7e3ff",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "surface": "#0e141d",
+                    "error": "#ffb4ab",
+                    "inverse-surface": "#dde2f0",
+                    "surface-container-low": "#161c25",
+                    "primary-fixed": "#61ff97"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "24px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "card-gap": "20px"
+            },
+            "fontFamily": {
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-md": ["Plus Jakarta Sans", "Vazirmatn"],
+                    "headline-lg": ["Plus Jakarta Sans", "Vazirmatn"],
+                    "body-lg": ["Vazirmatn"],
+                    "headline-xl": ["Plus Jakarta Sans", "Vazirmatn"],
+                    "body-md": ["Vazirmatn"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1.0", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0e141d;
+            overflow: hidden;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .neon-border {
+            position: relative;
+        }
+
+        .neon-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(45deg, transparent, #00e476, transparent, #00e476, transparent);
+            background-size: 200% 200%;
+            animation: border-glow 4s linear infinite;
+            z-index: -1;
+            border-radius: 1.5rem;
+            opacity: 0.5;
+        }
+
+        @keyframes border-glow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .liquid-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #00e476;
+        }
+
+        .liquid-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 40%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s ease;
+        }
+
+        .liquid-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            animation: rotate-liquid 4s linear infinite;
+        }
+
+        @keyframes rotate-liquid {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+
+        .floating-label-input:focus-within label,
+        .floating-label-input input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #00e476;
+            background: #1a2029;
+            padding: 0 4px;
+        }
+
+        .mesh-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .stadium-line {
+            stroke: #00e476;
+            stroke-width: 0.5;
+            stroke-dasharray: 4;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+<!-- Abstract Stadium Mesh Background -->
+<div class="mesh-background">
+<svg height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" width="100%">
+<defs>
+<pattern height="10" id="grid" patternUnits="userSpaceOnUse" width="10">
+<path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0, 228, 118, 0.1)" stroke-width="0.1"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+<circle class="stadium-line" cx="50" cy="50" fill="none" opacity="0.3" r="30"></circle>
+<rect class="stadium-line" fill="none" height="60" opacity="0.2" width="80" x="10" y="20"></rect>
+</svg>
+</div>
+<!-- Animated Atmosphere Shader -->
+
+<main class="relative z-10 w-full max-w-md px-6">
+<!-- Brand Logo/Header -->
+<div class="text-center mb-8">
+<h1 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-primary-fixed-dim drop-shadow-[0_0_15px_rgba(0,228,118,0.4)] tracking-tighter">
+                پیش‌بینی ۲۰۲۶
+            </h1>
+<p class="font-body-md text-on-surface-variant mt-2">جام جهانی فوتبال در دستان شما</p>
+</div>
+<!-- Login Card -->
+<div class="glass-card neon-border rounded-3xl p-8 md:p-10">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-8 text-right">ورود به پنل پیش‌بینی</h2>
+<form class="space-y-6" id="loginForm">
+<!-- Username Field -->
+<div class="relative floating-label-input">
+<input class="w-full bg-surface-container-lowest/50 border border-white/10 rounded-xl px-4 py-4 text-on-surface font-body-md outline-none focus:border-primary-fixed-dim transition-all peer" id="username" name="username" placeholder=" " type="text">
+<label class="absolute right-4 top-4 text-on-surface-variant font-body-md transition-all pointer-events-none origin-right" for="username">
+                        نام کاربری یا ایمیل
+                    </label>
+<span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant" data-icon="person">person</span>
+</div>
+<!-- Password Field -->
+<div class="relative floating-label-input">
+<input class="w-full bg-surface-container-lowest/50 border border-white/10 rounded-xl px-4 py-4 text-on-surface font-body-md outline-none focus:border-primary-fixed-dim transition-all peer" id="password" name="password" placeholder=" " type="password">
+<label class="absolute right-4 top-4 text-on-surface-variant font-body-md transition-all pointer-events-none origin-right" for="password">
+                        رمز عبور
+                    </label>
+<span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant cursor-pointer hover:text-primary-fixed-dim" data-icon="visibility" id="togglePassword">visibility</span>
+</div>
+<!-- Remember & Forgot -->
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<label class="flex items-center gap-2 cursor-pointer text-on-surface-variant hover:text-on-surface transition-colors">
+<input class="w-4 h-4 rounded border-white/20 bg-surface-container-lowest text-primary-fixed-dim focus:ring-primary-fixed-dim focus:ring-offset-0" type="checkbox">
+                        مرا به خاطر بسپار
+                    </label>
+<a class="text-primary-fixed-dim hover:text-primary-fixed transition-colors" href="#">فراموشی رمز عبور؟</a>
+</div>
+<!-- Login Button -->
+<button class="liquid-button w-full py-4 rounded-xl font-headline-md text-on-primary-fixed flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,228,118,0.3)] hover:shadow-[0_0_30px_rgba(0,228,118,0.5)] transition-all" type="submit">
+<span>ورود به حساب</span>
+<span class="material-symbols-outlined" data-icon="login">login</span>
+</button>
+</form>
+<!-- Social Login / Register -->
+<div class="mt-8 pt-8 border-t border-white/10 text-center">
+<p class="font-body-md text-on-surface-variant mb-4">یا ورود با</p>
+<div class="flex justify-center gap-4">
+<button class="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+<img class="w-6 h-6" data-alt="A clean vector icon of the Google logo for social authentication, isolated on a transparent background, representing modern digital security and cross-platform login services." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAylfFja4M8xpQOsYdDDqnEf-GyPpV00mt2UbFiyAj8bxOErVGf_AT9CZEEQEmA7Yjm3CDukvqPdgNLBI9CFRacJq4M-cFWGugZ2q6jfkNLkLZ98bN9cM46pR3i5nRzVzVJcTINNeh-uHB1Bex834Yco-jGNApbocoJc0qJLn4PQPKnwdrPsq3veVaR39LIuMdvUBFFxMwKaK_lCApuAezPSAIcBX48LieDRHAefkzkJizlCk4mIsiTs405P0KfC39rajr9Y_R8g9A">
+</button>
+<button class="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-on-surface" data-icon="apple">apps</span>
+</button>
+</div>
+<p class="mt-6 font-body-md text-on-surface-variant">
+                    حساب کاربری ندارید؟ 
+                    <a class="text-primary-fixed-dim font-bold hover:underline" href="#">ثبت‌نام کنید</a>
+</p>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="mt-8 flex justify-center gap-8 opacity-60">
+<div class="text-center">
+<div class="font-headline-md text-primary-fixed-dim">۱.۲M+</div>
+<div class="font-label-sm text-on-surface-variant">کاربر فعال</div>
+</div>
+<div class="text-center">
+<div class="font-headline-md text-primary-fixed-dim">۴۸</div>
+<div class="font-label-sm text-on-surface-variant">تیم ملی</div>
+</div>
+<div class="text-center">
+<div class="font-headline-md text-primary-fixed-dim">۱۰۴</div>
+<div class="font-label-sm text-on-surface-variant">مسابقه</div>
+</div>
+</div>
+</main>
+<script>
+        // Password Visibility Toggle
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            toggleBtn.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+
+        // Form Submit Interaction
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span> <span>درحال بررسی...</span>';
+            
+            // Mock delay
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined text-on-primary-fixed" data-icon="check_circle">check_circle</span> <span>خوش آمدید!</span>';
+                btn.style.background = '#00ff85';
+            }, 1500);
+        });
+
+        // Mouse move parallax effect for the card
+        const card = document.querySelector('.glass-card');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+    </script>
+</body></html>

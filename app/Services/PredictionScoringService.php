@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Game;
+use App\Models\GameScoringRule;
 use App\Models\Prediction;
 use App\Models\User;
 
@@ -24,9 +25,25 @@ class PredictionScoringService
             return ['updated' => 0, 'skipped_disciplinary' => false];
         }
 
+        $rule = $game->scoringRule;
         $updated = 0;
+
         foreach ($game->predictions as $prediction) {
-            $points = $prediction->calculatePoints($game->home_score, $game->away_score);
+            // اگر ادمین override داده، points_earned رو آپدیت نمی‌کنیم
+            if ($prediction->points_override !== null) {
+                $updated++;
+                continue;
+            }
+
+            $points = $rule
+                ? $rule->calculatePoints(
+                    $prediction->home_score,
+                    $prediction->away_score,
+                    $game->home_score,
+                    $game->away_score
+                )
+                : $prediction->calculatePoints($game->home_score, $game->away_score);
+
             $prediction->update(['points_earned' => $points]);
             $updated++;
         }
@@ -41,8 +58,8 @@ class PredictionScoringService
      */
     public function recalculateAll(): array
     {
-        // ریست همه امتیازها
-        Prediction::query()->update(['points_earned' => null]);
+        // ریست همه امتیازها (به جز override های ادمین)
+        Prediction::whereNull('points_override')->update(['points_earned' => null]);
 
         // بازی‌های انضباطی
         Game::where('is_disciplinary', true)
@@ -52,10 +69,25 @@ class PredictionScoringService
         $gamesProcessed = 0;
         $predictionsUpdated = 0;
 
-        Game::scorable()->with('predictions')->get()
+        Game::scorable()->with(['predictions', 'scoringRule'])->get()
             ->each(function (Game $game) use (&$gamesProcessed, &$predictionsUpdated) {
+                $rule = $game->scoringRule;
+
                 foreach ($game->predictions as $prediction) {
-                    $pts = $prediction->calculatePoints($game->home_score, $game->away_score);
+                    if ($prediction->points_override !== null) {
+                        $predictionsUpdated++;
+                        continue;
+                    }
+
+                    $pts = $rule
+                        ? $rule->calculatePoints(
+                            $prediction->home_score,
+                            $prediction->away_score,
+                            $game->home_score,
+                            $game->away_score
+                        )
+                        : $prediction->calculatePoints($game->home_score, $game->away_score);
+
                     $prediction->update(['points_earned' => $pts]);
                     $predictionsUpdated++;
                 }
@@ -70,10 +102,56 @@ class PredictionScoringService
         ];
     }
 
-    private function recalculateUserScores(): void
+    /**
+     * آمار امتیازدهی یک بازی برای نمایش در پنل ادمین
+     */
+    public function getGameStats(Game $game): array
+    {
+        $predictions = $game->predictions()->get();
+        $total       = $predictions->count();
+
+        $breakdown = [
+            10   => 0,
+            7    => 0,
+            5    => 0,
+            2    => 0,
+            0    => 0,
+            null => 0,
+        ];
+
+        foreach ($predictions as $p) {
+            $pts = $p->points_override ?? $p->points_earned;
+            if (array_key_exists($pts, $breakdown)) {
+                $breakdown[$pts]++;
+            } else {
+                $breakdown[null]++;
+            }
+        }
+
+        $scored     = $total - $breakdown[null];
+        $avgPoints  = $scored > 0
+            ? round($predictions->filter(fn($p) => ($p->points_override ?? $p->points_earned) !== null)
+                ->sum(fn($p) => $p->points_override ?? $p->points_earned) / $scored, 1)
+            : 0;
+
+        return [
+            'total'     => $total,
+            'scored'    => $scored,
+            'avg'       => $avgPoints,
+            'breakdown' => $breakdown,
+        ];
+    }
+
+    public function recalculateUserScores(): void
     {
         User::all()->each(function (User $user) {
-            $total = $user->predictions()->whereNotNull('points_earned')->sum('points_earned');
+            // از effective_points استفاده می‌کنیم (override > earned)
+            $total = $user->predictions()
+                ->selectRaw('COALESCE(points_override, points_earned) as pts')
+                ->get()
+                ->whereNotNull('pts')
+                ->sum('pts');
+
             $user->update(['total_score' => $total]);
         });
     }

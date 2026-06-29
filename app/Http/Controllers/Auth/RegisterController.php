@@ -8,42 +8,40 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-    public function showForm(): Response
+    public function showForm(): View
     {
-        return Inertia::render('Auth/Register');
+        return view('auth.register');
     }
 
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'       => ['required', 'string', 'max:100'],
-            'email'      => ['required', 'email', 'max:255', 'unique:users,email'],
+            'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password'   => ['required', 'string', 'min:8', 'confirmed'],
             'department' => ['nullable', 'string', 'max:100'],
-            'password'   => ['required', 'confirmed', 'min:8'],
         ], [
-            'name.required'       => 'نام الزامی است.',
-            'email.required'      => 'ایمیل الزامی است.',
-            'email.email'         => 'فرمت ایمیل صحیح نیست.',
-            'email.unique'        => 'این ایمیل قبلاً ثبت شده است.',
-            'password.required'   => 'رمز عبور الزامی است.',
-            'password.confirmed'  => 'تکرار رمز عبور مطابقت ندارد.',
-            'password.min'        => 'رمز عبور باید حداقل ۸ کاراکتر باشد.',
+            'name.required'      => 'نام الزامی است.',
+            'email.required'     => 'ایمیل الزامی است.',
+            'email.unique'       => 'این ایمیل قبلاً ثبت شده است.',
+            'password.required'  => 'رمز عبور الزامی است.',
+            'password.min'       => 'رمز عبور باید حداقل ۸ کاراکتر باشد.',
+            'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد.',
         ]);
 
         $user = User::create([
             'name'       => $validated['name'],
             'email'      => $validated['email'],
+            'password'   => Hash::make($validated['password']),
             'department' => $validated['department'] ?? null,
-            'password'   => $validated['password'],
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect()->route('dashboard');

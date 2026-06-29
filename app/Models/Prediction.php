@@ -16,15 +16,28 @@ class Prediction extends Model
         'home_score',
         'away_score',
         'points_earned',
+        'points_override',
+        'is_admin_edited',
+        'admin_note',
     ];
 
     protected function casts(): array
     {
         return [
-            'home_score'    => 'integer',
-            'away_score'    => 'integer',
-            'points_earned' => 'integer',
+            'home_score'      => 'integer',
+            'away_score'      => 'integer',
+            'points_earned'   => 'integer',
+            'points_override' => 'integer',
+            'is_admin_edited' => 'boolean',
         ];
+    }
+
+    /**
+     * امتیاز مؤثر: اگر ادمین override کرده آن را برگردان، وگرنه points_earned
+     */
+    public function getEffectivePointsAttribute(): ?int
+    {
+        return $this->points_override ?? $this->points_earned;
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────

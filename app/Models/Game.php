@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Game extends Model
 {
@@ -42,7 +43,8 @@ class Game extends Model
 
     const STAGES = [
         'group'        => 'مرحله گروهی',
-        'round_of_16'  => 'دور اول حذفی',
+        'round_of_32'  => 'دور ۳۲ تیمی',
+        'round_of_16'  => 'دور ۱۶ تیمی',
         'quarter_final' => 'ربع نهایی',
         'semi_final'   => 'نیمه نهایی',
         'third_place'  => 'رده‌بندی سوم و چهارم',
@@ -50,6 +52,7 @@ class Game extends Model
     ];
 
     const KNOCKOUT_STAGES = [
+        'round_of_32',
         'round_of_16',
         'quarter_final',
         'semi_final',
@@ -80,6 +83,11 @@ class Game extends Model
     public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
+    }
+
+    public function scoringRule(): HasOne
+    {
+        return $this->hasOne(GameScoringRule::class);
     }
 
     // ─── Scopes ───────────────────────────────────────────────────────────────

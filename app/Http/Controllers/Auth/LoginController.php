@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showForm(): Response
+    public function showForm(): View
     {
-        return Inertia::render('Auth/Login');
+        return view('auth.login');
     }
 
     public function login(Request $request): RedirectResponse
