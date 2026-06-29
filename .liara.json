@@ -1,6 +1,6 @@
 {
     "platform": "laravel",
-    "build": {
-        "assets": false
+    "node": {
+        "version": "20"
     }
 }
