@@ -1,20 +1,20 @@
 {
-  "_AppLayout-DgvDN062.js": {
-    "file": "assets/AppLayout-DgvDN062.js",
+  "_AppLayout-BYqhxg7e.js": {
+    "file": "assets/AppLayout-BYqhxg7e.js",
     "name": "AppLayout",
     "imports": [
       "resources/js/app.jsx"
     ]
   },
-  "_GuestLayout-BpoBecSv.js": {
-    "file": "assets/GuestLayout-BpoBecSv.js",
+  "_GuestLayout-BVRimQDE.js": {
+    "file": "assets/GuestLayout-BVRimQDE.js",
     "name": "GuestLayout",
     "imports": [
       "resources/js/app.jsx"
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-VqE_y_R8.css",
+    "file": "assets/app-CXtPNLIN.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -23,85 +23,98 @@
     ]
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-uXO7Gjfy.js",
+    "file": "assets/Login-P3r8eqwS.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_GuestLayout-BpoBecSv.js"
+      "_GuestLayout-BVRimQDE.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/Pages/Auth/Register.jsx": {
-    "file": "assets/Register-D0JCoNJ2.js",
+    "file": "assets/Register-76R1lG_O.js",
     "name": "Register",
     "src": "resources/js/Pages/Auth/Register.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_GuestLayout-BpoBecSv.js"
+      "_GuestLayout-BVRimQDE.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-CxMFWXhG.js",
+    "file": "assets/Dashboard-BpRlT_GV.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AppLayout-DgvDN062.js"
+      "_AppLayout-BYqhxg7e.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/Pages/Games/Index.jsx": {
-    "file": "assets/Index-D6itd7Pc.js",
+    "file": "assets/Index-DDrnLF5O.js",
     "name": "Index",
     "src": "resources/js/Pages/Games/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AppLayout-DgvDN062.js"
+      "_AppLayout-BYqhxg7e.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/Pages/Leaderboard.jsx": {
-    "file": "assets/Leaderboard-BICABU7O.js",
+    "file": "assets/Leaderboard-Cz-R-saX.js",
     "name": "Leaderboard",
     "src": "resources/js/Pages/Leaderboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AppLayout-DgvDN062.js"
+      "_AppLayout-BYqhxg7e.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
+    ]
+  },
+  "resources/js/Pages/Profile.jsx": {
+    "file": "assets/Profile-rA4Nrasn.js",
+    "name": "Profile",
+    "src": "resources/js/Pages/Profile.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AppLayout-BYqhxg7e.js"
+    ],
+    "css": [
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/Pages/Results.jsx": {
-    "file": "assets/Results-rX5mFynj.js",
+    "file": "assets/Results-BHsXOanM.js",
     "name": "Results",
     "src": "resources/js/Pages/Results.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AppLayout-DgvDN062.js"
+      "_AppLayout-BYqhxg7e.js"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-mRxmQcOV.js",
+    "file": "assets/app-SAFZwZyC.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -111,10 +124,11 @@
       "resources/js/Pages/Dashboard.jsx",
       "resources/js/Pages/Games/Index.jsx",
       "resources/js/Pages/Leaderboard.jsx",
+      "resources/js/Pages/Profile.jsx",
       "resources/js/Pages/Results.jsx"
     ],
     "css": [
-      "assets/app-VqE_y_R8.css"
+      "assets/app-CXtPNLIN.css"
     ]
   }
 }

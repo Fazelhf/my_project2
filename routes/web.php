@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\TeamStatsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
+use App\Http\Controllers\Admin\ImportExportController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultsController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,10 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // پروفایل کاربر
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
     Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
 
@@ -69,4 +75,10 @@ Route::middleware(['auth', 'admin'])
         // ثبت نتیجه بازی (اکشن جداگانه)
         Route::post('/games/{game}/result', [AdminGameController::class, 'submitResult'])
             ->name('games.result');
+
+        // ایمپورت / اکسپورت
+        Route::get('/export/all', [ImportExportController::class, 'exportAll'])->name('export.all');
+        Route::post('/import/all', [ImportExportController::class, 'importAll'])->name('import.all');
+        Route::get('/export/user/{user}', [ImportExportController::class, 'exportUser'])->name('export.user');
+        Route::post('/import/user/{user}', [ImportExportController::class, 'importUser'])->name('import.user');
     });
