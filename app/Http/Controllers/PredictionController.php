@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Prediction;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -49,7 +50,14 @@ class PredictionController extends Controller
 
         $myPrediction = $game->predictions->firstWhere('user_id', auth()->id());
 
-        return view('user.games.show', compact('game', 'myPrediction'));
+        $comments = \App\Models\GameComment::with(['user', 'replies.user', 'replies.likes', 'likes'])
+            ->where('game_id', $game->id)
+            ->where('is_deleted', false)
+            ->whereNull('parent_id')
+            ->orderBy('created_at')
+            ->get();
+
+        return view('user.games.show', compact('game', 'myPrediction', 'comments'));
     }
 
     public function store(Request $request, Game $game): RedirectResponse
@@ -100,5 +108,13 @@ class PredictionController extends Controller
         ]);
 
         return back()->with('success', 'پیش‌بینی شما ویرایش شد!');
+    }
+
+    public function shareCard(Game $game, User $user): View
+    {
+        $game->load(['homeTeam', 'awayTeam']);
+        $prediction = Prediction::where('game_id', $game->id)->where('user_id', $user->id)->first();
+
+        return view('user.share-card', compact('game', 'user', 'prediction'));
     }
 }
