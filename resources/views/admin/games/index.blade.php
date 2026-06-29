@@ -52,9 +52,17 @@
                                     onmouseover="this.style.background='rgba(0,228,118,0.03)'"
                                     onmouseout="this.style.background=''">
                                     <td class="px-5 py-3">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                        @if($game->homeTeam->flag_url)
+                                            <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-6 h-4 object-cover rounded flex-shrink-0" style="border:1px solid rgba(255,255,255,0.1);" onerror="this.style.display='none'">
+                                        @endif
                                         <span class="text-white font-medium">{{ $game->homeTeam->name }}</span>
-                                        <span class="mx-1.5" style="color:rgba(255,255,255,0.3);">vs</span>
+                                        <span class="mx-0.5" style="color:rgba(255,255,255,0.3);">vs</span>
+                                        @if($game->awayTeam->flag_url)
+                                            <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-6 h-4 object-cover rounded flex-shrink-0" style="border:1px solid rgba(255,255,255,0.1);" onerror="this.style.display='none'">
+                                        @endif
                                         <span class="text-white font-medium">{{ $game->awayTeam->name }}</span>
+                                        </div>
                                         @if($game->is_disciplinary)
                                             <span class="mr-2 text-xs px-2 py-0.5 rounded-full font-bold" style="background:rgba(255,90,90,0.1);color:#FF8A8A;border:1px solid rgba(255,90,90,0.25);">انضباطی</span>
                                         @endif

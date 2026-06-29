@@ -15,13 +15,12 @@ class DashboardController extends Controller
 
         $rank = User::where('total_score', '>', $user->total_score)->count() + 1;
 
-        $scoredPredictions  = Prediction::where('user_id', $user->id)->whereNotNull('points_earned')->count();
-        $correctPredictions = Prediction::where('user_id', $user->id)->where('points_earned', '>=', 5)->count();
         $totalPredictions   = Prediction::where('user_id', $user->id)->count();
-        $accuracy           = $scoredPredictions > 0 ? round(($correctPredictions / $scoredPredictions) * 100, 1) : 0;
+        $correctPredictions = Prediction::where('user_id', $user->id)->where('points_earned', '>=', 5)->count();
+        $exactPredictions   = Prediction::where('user_id', $user->id)->where('points_earned', 10)->count();
 
         $upcomingGames = Game::with(['homeTeam', 'awayTeam'])
-            ->where('status', 'scheduled')
+            ->whereIn('status', ['upcoming', 'scheduled'])
             ->whereDoesntHave('predictions', fn ($q) => $q->where('user_id', $user->id))
             ->orderBy('scheduled_at')
             ->take(6)
@@ -34,7 +33,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('user.dashboard', compact(
-            'user', 'rank', 'accuracy', 'totalPredictions', 'predictions', 'upcomingGames'
+            'user', 'rank', 'totalPredictions', 'correctPredictions', 'exactPredictions', 'predictions', 'upcomingGames'
         ));
     }
 }

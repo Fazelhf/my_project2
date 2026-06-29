@@ -9,8 +9,9 @@
     $myPreds = $predictions ?? collect();
     $upcomingGames = $upcomingGames ?? collect();
     $rank = $rank ?? '—';
-    $accuracy = $accuracy ?? 0;
     $totalPreds = $totalPredictions ?? 0;
+    $correctPreds = $correctPredictions ?? 0;
+    $exactPreds = $exactPredictions ?? 0;
 @endphp
 
 {{-- ── Hero Stats Row ──────────────────────────────────────── --}}
@@ -51,28 +52,26 @@
         </div>
     </div>
 
-    {{-- دقت پیش‌بینی --}}
-    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-6 flex items-center gap-6 h-[200px] reveal animate-slide-up stagger-3">
-        <div class="relative flex items-center justify-center flex-shrink-0">
-            <svg class="w-28 h-28" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="50" fill="transparent" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-                <circle cx="60" cy="60" r="50" fill="transparent" stroke="#00e476" stroke-width="8"
-                    stroke-dasharray="314.15"
-                    stroke-dashoffset="{{ 314.15 - (314.15 * min($accuracy, 100) / 100) }}"
-                    stroke-linecap="round"
-                    style="transform:rotate(-90deg);transform-origin:50% 50%;"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-2xl font-black font-heading" style="color:#00e476;">{{ $accuracy }}%</span>
+    {{-- آمار پیش‌بینی --}}
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-6 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-3">
+        <p class="text-sm mb-3" style="color:rgba(185,203,185,0.6);">آمار پیش‌بینی</p>
+        <div class="grid grid-cols-3 gap-2 flex-1">
+            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(255,255,255,0.04);">
+                <span class="text-2xl font-black font-heading" style="color:rgba(185,203,185,0.8);">{{ $totalPreds }}</span>
+                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(185,203,185,0.5);">کل<br>پیش‌بینی‌ها</span>
+            </div>
+            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(0,228,118,0.05);border:1px solid rgba(0,228,118,0.15);">
+                <span class="text-2xl font-black font-heading" style="color:#00e476;">{{ $correctPreds }}</span>
+                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(0,228,118,0.7);">پیش‌بینی<br>درست</span>
+            </div>
+            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);">
+                <span class="text-2xl font-black font-heading" style="color:#F5A623;">{{ $exactPreds }}</span>
+                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(245,166,35,0.7);">پیش‌بینی<br>دقیق</span>
             </div>
         </div>
-        <div>
-            <h3 class="text-lg font-bold font-heading text-white mb-1">دقت پیش‌بینی</h3>
-            <p class="text-sm" style="color:rgba(221,226,240,0.6);">{{ $totalPreds }} پیش‌بینی ثبت‌شده</p>
-            <div class="mt-3 flex gap-1 items-center text-xs" style="color:#00e476;">
-                <span class="w-2 h-2 rounded-full animate-pulse" style="background:#00e476;"></span>
-                {{ $user->department ?? 'کاربر فعال' }}
-            </div>
+        <div class="mt-3 flex gap-1 items-center text-xs" style="color:#00e476;">
+            <span class="w-2 h-2 rounded-full animate-pulse" style="background:#00e476;"></span>
+            {{ $user->department ?? 'کاربر فعال' }}
         </div>
     </div>
 
@@ -99,9 +98,14 @@
                     <div class="flex flex-col md:flex-row items-center gap-6">
                         <div class="flex-1 flex items-center justify-center gap-6 w-full">
                             <div class="text-center">
-                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading text-white"
+                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden"
                                      style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                                    {{ $game->homeTeam->code }}
+                                    @if($game->homeTeam->flag_url)
+                                        <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                        <span class="text-sm font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->homeTeam->code }}</span>
+                                    @else
+                                        <span class="text-sm font-black font-heading text-white">{{ $game->homeTeam->code }}</span>
+                                    @endif
                                 </div>
                                 <p class="text-sm font-bold text-white">{{ $game->homeTeam->name_fa ?? $game->homeTeam->name }}</p>
                             </div>
@@ -115,9 +119,14 @@
                                 <span class="text-white/30 text-lg font-bold">vs</span>
                             </div>
                             <div class="text-center">
-                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading text-white"
+                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden"
                                      style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                                    {{ $game->awayTeam->code }}
+                                    @if($game->awayTeam->flag_url)
+                                        <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                        <span class="text-sm font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->awayTeam->code }}</span>
+                                    @else
+                                        <span class="text-sm font-black font-heading text-white">{{ $game->awayTeam->code }}</span>
+                                    @endif
                                 </div>
                                 <p class="text-sm font-bold text-white">{{ $game->awayTeam->name_fa ?? $game->awayTeam->name }}</p>
                             </div>
@@ -225,16 +234,18 @@
                 <span class="material-symbols-outlined text-base" style="color:#00e476;">query_stats</span>
                 آمار عملکرد
             </h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="text-center p-4 rounded-2xl" style="background:rgba(255,255,255,0.04);">
-                    <p class="text-2xl font-black font-heading" style="color:#00e476;">{{ $totalPreds }}</p>
-                    <p class="text-xs mt-1" style="color:rgba(185,203,185,0.6);">کل پیش‌بینی‌ها</p>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="text-center p-3 rounded-2xl" style="background:rgba(255,255,255,0.04);">
+                    <p class="text-xl font-black font-heading" style="color:rgba(185,203,185,0.8);">{{ $totalPreds }}</p>
+                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(185,203,185,0.5);">کل<br>پیش‌بینی‌ها</p>
                 </div>
-                <div class="text-center p-4 rounded-2xl" style="background:rgba(255,255,255,0.04);">
-                    <p class="text-2xl font-black font-heading text-white">
-                        {{ $myPreds->where('points_earned', '>', 0)->count() }}
-                    </p>
-                    <p class="text-xs mt-1" style="color:rgba(185,203,185,0.6);">پیش‌بینی درست</p>
+                <div class="text-center p-3 rounded-2xl" style="background:rgba(0,228,118,0.05);border:1px solid rgba(0,228,118,0.15);">
+                    <p class="text-xl font-black font-heading" style="color:#00e476;">{{ $correctPreds }}</p>
+                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(0,228,118,0.6);">پیش‌بینی<br>درست</p>
+                </div>
+                <div class="text-center p-3 rounded-2xl" style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);">
+                    <p class="text-xl font-black font-heading" style="color:#F5A623;">{{ $exactPreds }}</p>
+                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(245,166,35,0.6);">پیش‌بینی<br>دقیق</p>
                 </div>
             </div>
             <a href="{{ route('leaderboard') }}"
