@@ -6,6 +6,6 @@
     "location": "germany"
   },
   "laravel": {
-    "phpVersion": "8.2"
+    "phpVersion": "8.4"
   }
 }
