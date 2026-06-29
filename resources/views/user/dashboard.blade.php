@@ -283,20 +283,33 @@
         </div>
 
         {{-- لینک سریع به پیش‌بینی --}}
-        <div class="liquid-glass card-glow rounded-3xl overflow-hidden cursor-pointer group">
-            <div class="p-6 space-y-3"
-                 style="background:linear-gradient(135deg,rgba(0,228,118,0.08),rgba(0,26,61,0.5));">
-                <span class="material-symbols-outlined text-3xl" style="color:#00e476;">emoji_events</span>
-                <h4 class="font-heading font-bold text-white text-lg">قهرمان را پیش‌بینی کنید!</h4>
-                <p class="text-sm" style="color:rgba(221,226,240,0.6);">جایزه ویژه امتیازی در انتظار شماست</p>
-                <a href="{{ route('games.index') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold mt-2"
-                   style="background:#00e476;color:#003919;">
-                    <span class="material-symbols-outlined text-base">arrow_back</span>
-                    شروع کنید
-                </a>
+        <a href="{{ route('games.index') }}"
+           class="relative rounded-3xl overflow-hidden block cursor-pointer group"
+           style="min-height:160px;">
+            {{-- عکس استادیوم (اگه فایل public/images/stadium.jpg باشه نشون میده) --}}
+            @if(file_exists(public_path('images/stadium.jpg')))
+                <img src="{{ asset('images/stadium.jpg') }}"
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                     alt="stadium">
+            @else
+                <div class="absolute inset-0"
+                     style="background:linear-gradient(135deg,#001a0d 0%,#003919 40%,#001428 100%);">
+                    <div class="absolute inset-0" style="background:radial-gradient(ellipse at 30% 50%,rgba(0,228,118,0.25) 0%,transparent 65%);"></div>
+                    {{-- نقطه‌های نور استادیوم --}}
+                    <div class="absolute top-3 left-6 w-1.5 h-1.5 rounded-full opacity-70" style="background:#00e476;box-shadow:0 0 8px #00e476;"></div>
+                    <div class="absolute top-5 left-16 w-1 h-1 rounded-full opacity-40" style="background:#00e476;"></div>
+                    <div class="absolute top-2 right-8 w-1 h-1 rounded-full opacity-50" style="background:#ffe16d;box-shadow:0 0 6px #ffe16d;"></div>
+                    <div class="absolute top-8 right-4 w-1.5 h-1.5 rounded-full opacity-30" style="background:#ffe16d;"></div>
+                </div>
+            @endif
+            {{-- overlay + محتوا --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+            <div class="relative p-6 flex flex-col justify-end h-full" style="min-height:160px;">
+                <p class="text-xs font-bold mb-1" style="color:#00e476;">مسابقه ویژه</p>
+                <h4 class="font-heading font-bold text-white text-lg leading-tight">قهرمان را پیش‌بینی کنید!</h4>
+                <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6);">جایزه ویژه امتیازی در انتظار شماست</p>
             </div>
-        </div>
+        </a>
 
     </div>
 

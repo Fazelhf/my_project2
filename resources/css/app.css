@@ -467,16 +467,19 @@ input:focus, textarea:focus, select:focus {
     bottom: 0;
     left: 0; right: 0;
     z-index: 50;
-    background: rgba(14,20,29,0.85);
-    backdrop-filter: saturate(200%) blur(24px);
-    -webkit-backdrop-filter: saturate(200%) blur(24px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding: 8px 24px 20px;
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(14,20,29,0.88);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px 24px 0 0;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.07), 0 -8px 32px rgba(0,0,0,0.4);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    align-items: center;
+    justify-content: space-around;
 }
 @media (max-width: 767px) {
-    .mobile-nav { display: flex; align-items: center; justify-content: space-around; }
-    .main-content { padding-bottom: 80px; }
+    .mobile-nav { display: flex; }
+    .main-content { padding-bottom: 90px; }
 }
 
 .mobile-nav-item {
@@ -484,22 +487,61 @@ input:focus, textarea:focus, select:focus {
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    padding: 6px 12px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 14px;
     text-decoration: none;
-    color: rgba(221,226,240,0.5);
+    color: rgba(221,226,240,0.45);
     font-size: 10px;
     font-weight: 600;
+    letter-spacing: 0.01em;
     transition: all 0.2s ease;
     font-family: 'JetBrains Mono', monospace;
     background: transparent;
     border: none;
     cursor: pointer;
+    min-width: 48px;
 }
+.mobile-nav-item .material-symbols-outlined { font-size: 22px; }
 .mobile-nav-item.active,
 .mobile-nav-item:hover { color: #00e476; }
 .mobile-nav-item.active .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+/* دکمه floating مرکزی */
+.mobile-nav-fab-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    top: -18px;
+}
+.mobile-nav-fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00b85e, #00e476);
+    box-shadow: 0 0 20px rgba(0,228,118,0.55), 0 4px 16px rgba(0,0,0,0.5);
+    border: 3px solid #0e141d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.mobile-nav-fab:active { transform: scale(0.92); }
+.mobile-nav-fab .material-symbols-outlined {
+    color: #003919;
+    font-size: 26px;
+    font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+.mobile-nav-fab-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #00e476;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.01em;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */
@@ -607,4 +649,55 @@ input:focus, textarea:focus, select:focus {
 }
 @media (max-width: 767px) {
     .hide-sm { display: none !important; }
+}
+
+/* ── Admin panel mobile ────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    /* جداول admin باید اسکرول شوند */
+    .admin-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+    .admin-table-wrap table { min-width: 600px; }
+
+    /* کارت‌های stats ادمین روی یک ستون */
+    .admin-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* فرم‌های دو ستونه ادمین یک ستون شوند */
+    .admin-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* header ادمین compact */
+    .admin-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .admin-page-header .admin-header-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .admin-page-header .admin-header-actions a,
+    .admin-page-header .admin-header-actions button {
+        flex: 1;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* کارت‌های show page ادمین */
+    .admin-show-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* badge‌ها و text کوچکتر */
+    .stitch-table td, .stitch-table th {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
 }
