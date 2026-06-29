@@ -99,9 +99,14 @@
                     <div class="flex flex-col md:flex-row items-center gap-6">
                         <div class="flex-1 flex items-center justify-center gap-6 w-full">
                             <div class="text-center">
-                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading text-white"
+                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden"
                                      style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                                    {{ $game->homeTeam->code }}
+                                    @if($game->homeTeam->flag_url)
+                                        <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                        <span class="text-sm font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->homeTeam->code }}</span>
+                                    @else
+                                        <span class="text-sm font-black font-heading text-white">{{ $game->homeTeam->code }}</span>
+                                    @endif
                                 </div>
                                 <p class="text-sm font-bold text-white">{{ $game->homeTeam->name_fa ?? $game->homeTeam->name }}</p>
                             </div>
@@ -115,9 +120,14 @@
                                 <span class="text-white/30 text-lg font-bold">vs</span>
                             </div>
                             <div class="text-center">
-                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading text-white"
+                                <div class="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden"
                                      style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                                    {{ $game->awayTeam->code }}
+                                    @if($game->awayTeam->flag_url)
+                                        <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                        <span class="text-sm font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->awayTeam->code }}</span>
+                                    @else
+                                        <span class="text-sm font-black font-heading text-white">{{ $game->awayTeam->code }}</span>
+                                    @endif
                                 </div>
                                 <p class="text-sm font-bold text-white">{{ $game->awayTeam->name_fa ?? $game->awayTeam->name }}</p>
                             </div>

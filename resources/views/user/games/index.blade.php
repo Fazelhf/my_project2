@@ -143,9 +143,14 @@ $stageLabels = [
                 <div class="flex items-center justify-between gap-2 mb-4">
 
                     <div class="flex-1 text-center">
-                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center text-xs font-black font-heading text-white"
+                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center overflow-hidden"
                              style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                            {{ $game->homeTeam->code }}
+                            @if($game->homeTeam->flag_url)
+                                <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <span class="text-xs font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->homeTeam->code }}</span>
+                            @else
+                                <span class="text-xs font-black font-heading text-white">{{ $game->homeTeam->code }}</span>
+                            @endif
                         </div>
                         <p class="text-xs font-bold text-white leading-tight">{{ $game->homeTeam->name_fa ?? $game->homeTeam->name }}</p>
                     </div>
@@ -167,9 +172,14 @@ $stageLabels = [
                     </div>
 
                     <div class="flex-1 text-center">
-                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center text-xs font-black font-heading text-white"
+                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center overflow-hidden"
                              style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                            {{ $game->awayTeam->code }}
+                            @if($game->awayTeam->flag_url)
+                                <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <span class="text-xs font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->awayTeam->code }}</span>
+                            @else
+                                <span class="text-xs font-black font-heading text-white">{{ $game->awayTeam->code }}</span>
+                            @endif
                         </div>
                         <p class="text-xs font-bold text-white leading-tight">{{ $game->awayTeam->name_fa ?? $game->awayTeam->name }}</p>
                     </div>
