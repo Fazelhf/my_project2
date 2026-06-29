@@ -146,6 +146,25 @@ $myPct     = $maxScore > 0 ? round(($myScore / $maxScore) * 100) : 0;
 </div>
 @endif
 
+{{-- ── Score Trend Chart ── --}}
+@if($finishedGames->count() > 0)
+<div class="liquid-glass rounded-2xl p-5 mb-6 reveal animate-slide-up stagger-3" style="border-color:rgba(77,159,255,0.15);">
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <h3 class="font-black text-sm font-heading text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-base" style="color:#FF6B6B;font-variation-settings:'FILL' 1;">trending_up</span>
+                نبض امتیازات شرکت‌کنندگان در مسابقات گذشته
+            </h3>
+            <p class="text-[11px] mt-0.5" style="color:rgba(185,203,185,0.5);">با کلیک روی پروفایل چپ، می‌توانید روند امتیازی لحظه‌ای خود را در نمودار زنده زوم کنید.</p>
+        </div>
+    </div>
+    <div style="position:relative;height:220px;">
+        <canvas id="trend-chart"></canvas>
+    </div>
+    <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-4" id="chart-legend"></div>
+</div>
+@endif
+
 {{-- ── Full Rankings Table ── --}}
 <div class="liquid-glass rounded-2xl overflow-hidden reveal animate-slide-up stagger-3">
 
@@ -346,7 +365,88 @@ $jsGames = $finishedGames->map(fn($g) => [
 @endphp
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+// ── Trend Chart ──────────────────────────────────────────────────────────────
+(function() {
+    const canvas = document.getElementById('trend-chart');
+    if (!canvas) return;
+
+    const CHART_DATA   = @json($chartData);
+    const CHART_LABELS = @json($chartLabels);
+    const ME_ID_CHART  = {{ $me->id }};
+
+    const PALETTE = [
+        '#FF6B6B','#4D9FFF','#F5A623','#A78BFA','#34D399','#FB923C',
+        '#F472B6','#60A5FA','#FBBF24','#4ADE80','#E879F9','#38BDF8',
+    ];
+
+    const datasets = CHART_DATA.map((u, i) => {
+        const isMe = u.id === ME_ID_CHART;
+        const color = isMe ? '#00e476' : PALETTE[i % PALETTE.length];
+        return {
+            label: u.name,
+            data: u.scores,
+            borderColor: color,
+            backgroundColor: color + '18',
+            borderWidth: isMe ? 3 : 1.5,
+            pointRadius: isMe ? 4 : 2,
+            pointHoverRadius: isMe ? 6 : 4,
+            tension: 0.4,
+            fill: false,
+            order: isMe ? 0 : 1,
+        };
+    });
+
+    new Chart(canvas, {
+        type: 'line',
+        data: { labels: CHART_LABELS, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(14,20,29,0.95)',
+                    borderColor: 'rgba(255,255,255,0.08)',
+                    borderWidth: 1,
+                    titleColor: 'rgba(185,203,185,0.7)',
+                    bodyColor: '#dde2f0',
+                    callbacks: {
+                        label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + ' pt',
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    ticks: { color: 'rgba(185,203,185,0.5)', font: { size: 11 } },
+                },
+                y: {
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    ticks: { color: 'rgba(185,203,185,0.5)', font: { size: 11 } },
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+
+    // Custom legend
+    const legend = document.getElementById('chart-legend');
+    if (legend) {
+        CHART_DATA.forEach((u, i) => {
+            const isMe = u.id === ME_ID_CHART;
+            const color = isMe ? '#00e476' : PALETTE[i % PALETTE.length];
+            const el = document.createElement('div');
+            el.style.cssText = 'display:flex;align-items:center;gap:5px;cursor:pointer;';
+            el.innerHTML = `<span style="width:20px;height:3px;border-radius:2px;background:${color};display:inline-block;flex-shrink:0;"></span><span style="font-size:11px;color:rgba(185,203,185,0.7);">${u.name}</span>`;
+            legend.appendChild(el);
+        });
+    }
+})();
+
+// ── Main JS ──────────────────────────────────────────────────────────────────
 const ME_ID     = {{ $me->id }};
 const ME_NAME   = '{{ addslashes($me->name) }}';
 const ALL_PREDS = @json($jsPreds);

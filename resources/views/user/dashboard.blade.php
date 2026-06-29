@@ -34,44 +34,47 @@
         </div>
     </div>
 
-    {{-- رتبه --}}
-    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-8 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-2" style="border-right:4px solid #00e476;">
+    {{-- رتبه در لیگ --}}
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-8 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-2" style="border-right:4px solid #4D9FFF;background:linear-gradient(135deg,rgba(77,159,255,0.05),rgba(14,20,29,0.8));">
         <div class="flex justify-between items-start">
             <div>
-                <p class="text-sm mb-1" style="color:rgba(185,203,185,0.6);">رتبه جهانی</p>
-                <h2 class="text-5xl font-black font-heading text-white">#{{ $rank }}</h2>
+                <p class="text-sm mb-1" style="color:rgba(185,203,185,0.6);">رتبه در لیگ</p>
+                <h2 class="text-5xl font-black font-heading" style="color:#4D9FFF;">#{{ $rank }}</h2>
             </div>
-            <div class="p-3 rounded-2xl" style="background:rgba(0,228,118,0.1);">
-                <span class="material-symbols-outlined text-3xl" style="color:#00e476;">leaderboard</span>
+            <div class="p-3 rounded-2xl" style="background:rgba(77,159,255,0.1);">
+                <span class="material-symbols-outlined text-3xl" style="color:#4D9FFF;">leaderboard</span>
             </div>
         </div>
-        <div class="flex gap-1 mt-2">
-            @for($i = 0; $i < 4; $i++)
-            <div class="h-1 flex-1 rounded-full" style="background:{{ $i < 3 ? '#00e476' : 'rgba(0,228,118,0.2)' }};"></div>
-            @endfor
+        <div>
+            <p class="text-xs mb-2" style="color:rgba(185,203,185,0.4);">جایگاه واقعی در جدول رده‌بندی</p>
+            <a href="{{ route('leaderboard') }}" class="text-xs font-bold flex items-center gap-1" style="color:#4D9FFF;">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>مشاهده جدول
+            </a>
         </div>
     </div>
 
-    {{-- آمار پیش‌بینی --}}
-    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-6 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-3">
-        <p class="text-sm mb-3" style="color:rgba(185,203,185,0.6);">آمار پیش‌بینی</p>
-        <div class="grid grid-cols-3 gap-2 flex-1">
-            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(255,255,255,0.04);">
-                <span class="text-2xl font-black font-heading" style="color:rgba(185,203,185,0.8);">{{ $totalPreds }}</span>
-                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(185,203,185,0.5);">کل<br>پیش‌بینی‌ها</span>
+    {{-- دقت پیش‌بینی --}}
+    @php
+        $accuracy = $totalPreds > 0 ? round(($correctPreds / $totalPreds) * 100) : 0;
+        $exactRate = $totalPreds > 0 ? round(($exactPreds / $totalPreds) * 100) : 0;
+    @endphp
+    <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-6 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-3" style="border-right:4px solid #F5A623;background:linear-gradient(135deg,rgba(245,166,35,0.05),rgba(14,20,29,0.8));">
+        <div class="flex justify-between items-start">
+            <p class="text-sm" style="color:rgba(185,203,185,0.6);">دقت پیش‌بینی</p>
+            <span class="material-symbols-outlined text-2xl" style="color:#F5A623;">target</span>
+        </div>
+        <div class="flex items-end gap-3">
+            <div>
+                <p class="text-4xl font-black font-heading" style="color:#F5A623;">{{ $accuracy }}<span class="text-xl">٪</span></p>
+                <p class="text-[10px] mt-0.5" style="color:rgba(185,203,185,0.5);">پیش‌بینی درست از کل</p>
             </div>
-            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(0,228,118,0.05);border:1px solid rgba(0,228,118,0.15);">
-                <span class="text-2xl font-black font-heading" style="color:#00e476;">{{ $correctPreds }}</span>
-                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(0,228,118,0.7);">پیش‌بینی<br>درست</span>
-            </div>
-            <div class="flex flex-col items-center justify-center text-center p-3 rounded-2xl" style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);">
-                <span class="text-2xl font-black font-heading" style="color:#F5A623;">{{ $exactPreds }}</span>
-                <span class="text-[10px] mt-1 leading-tight" style="color:rgba(245,166,35,0.7);">پیش‌بینی<br>دقیق</span>
+            <div class="pb-1">
+                <p class="text-2xl font-black font-heading" style="color:rgba(245,166,35,0.6);">{{ $exactRate }}<span class="text-sm">٪</span></p>
+                <p class="text-[10px]" style="color:rgba(185,203,185,0.4);">دقیق (نتیجه کامل)</p>
             </div>
         </div>
-        <div class="mt-3 flex gap-1 items-center text-xs" style="color:#00e476;">
-            <span class="w-2 h-2 rounded-full animate-pulse" style="background:#00e476;"></span>
-            {{ $user->department ?? 'کاربر فعال' }}
+        <div class="w-full h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.08);">
+            <div class="h-full rounded-full" style="width:{{ $accuracy }}%;background:linear-gradient(90deg,#D97706,#F5A623);transition:width 1s ease;"></div>
         </div>
     </div>
 
@@ -228,33 +231,54 @@
     {{-- Sidebar --}}
     <div class="lg:col-span-4 space-y-5">
 
-        {{-- آمار سریع --}}
-        <div class="liquid-glass rounded-3xl p-6 space-y-5">
-            <h3 class="font-bold font-heading text-white flex items-center gap-2">
+        {{-- کارت امتیازات --}}
+        <div class="liquid-glass rounded-3xl p-5 space-y-4" style="border-color:rgba(0,228,118,0.15);">
+            <h3 class="font-bold font-heading text-white flex items-center gap-2 text-sm">
                 <span class="material-symbols-outlined text-base" style="color:#00e476;">query_stats</span>
-                آمار عملکرد
+                خلاصه عملکرد
             </h3>
-            <div class="grid grid-cols-3 gap-2">
-                <div class="text-center p-3 rounded-2xl" style="background:rgba(255,255,255,0.04);">
-                    <p class="text-xl font-black font-heading" style="color:rgba(185,203,185,0.8);">{{ $totalPreds }}</p>
-                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(185,203,185,0.5);">کل<br>پیش‌بینی‌ها</p>
+
+            {{-- امتیاز و رتبه کنار هم --}}
+            <div class="grid grid-cols-2 gap-3">
+                <div class="p-4 rounded-2xl text-center" style="background:linear-gradient(135deg,rgba(0,228,118,0.08),rgba(0,228,118,0.03));border:1px solid rgba(0,228,118,0.15);">
+                    <p class="text-3xl font-black font-heading" style="color:#00e476;">{{ $user->total_score ?? 0 }}</p>
+                    <p class="text-[10px] mt-1" style="color:rgba(0,228,118,0.6);">امتیاز کل</p>
                 </div>
-                <div class="text-center p-3 rounded-2xl" style="background:rgba(0,228,118,0.05);border:1px solid rgba(0,228,118,0.15);">
-                    <p class="text-xl font-black font-heading" style="color:#00e476;">{{ $correctPreds }}</p>
-                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(0,228,118,0.6);">پیش‌بینی<br>درست</p>
-                </div>
-                <div class="text-center p-3 rounded-2xl" style="background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.15);">
-                    <p class="text-xl font-black font-heading" style="color:#F5A623;">{{ $exactPreds }}</p>
-                    <p class="text-[10px] mt-1 leading-tight" style="color:rgba(245,166,35,0.6);">پیش‌بینی<br>دقیق</p>
+                <div class="p-4 rounded-2xl text-center" style="background:linear-gradient(135deg,rgba(77,159,255,0.08),rgba(77,159,255,0.03));border:1px solid rgba(77,159,255,0.15);">
+                    <p class="text-3xl font-black font-heading" style="color:#4D9FFF;">#{{ $rank }}</p>
+                    <p class="text-[10px] mt-1" style="color:rgba(77,159,255,0.6);">رتبه در لیگ</p>
                 </div>
             </div>
+
+            {{-- نوارهای پیش‌بینی --}}
+            <div class="space-y-2.5">
+                @php
+                    $rows = [
+                        ['label'=>'کل پیش‌بینی‌ها','val'=>$totalPreds,'max'=>max($totalPreds,1),'color'=>'rgba(185,203,185,0.5)','bg'=>'rgba(255,255,255,0.06)'],
+                        ['label'=>'پیش‌بینی درست','val'=>$correctPreds,'max'=>max($totalPreds,1),'color'=>'#00e476','bg'=>'rgba(0,228,118,0.08)'],
+                        ['label'=>'پیش‌بینی دقیق','val'=>$exactPreds,'max'=>max($totalPreds,1),'color'=>'#F5A623','bg'=>'rgba(245,166,35,0.08)'],
+                    ];
+                @endphp
+                @foreach($rows as $row)
+                <div>
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span style="color:rgba(185,203,185,0.6);">{{ $row['label'] }}</span>
+                        <span class="font-mono font-bold" style="color:{{ $row['color'] }};">{{ $row['val'] }}</span>
+                    </div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.06);">
+                        <div class="h-full rounded-full transition-all duration-1000" style="width:{{ $row['max'] > 0 ? round($row['val']/$row['max']*100) : 0 }}%;background:{{ $row['color'] }};"></div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
             <a href="{{ route('leaderboard') }}"
-               class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all"
+               class="w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl font-bold text-sm transition-all"
                style="background:rgba(0,228,118,0.08);color:#00e476;border:1px solid rgba(0,228,118,0.2);"
                onmouseover="this.style.background='rgba(0,228,118,0.15)'"
                onmouseout="this.style.background='rgba(0,228,118,0.08)'">
                 <span class="material-symbols-outlined text-base">leaderboard</span>
-                مشاهده جدول رده‌بندی
+                جدول رده‌بندی
             </a>
         </div>
 
