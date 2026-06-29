@@ -15,12 +15,45 @@
 </div>
 @endif
 
-{{-- ── Step 1: انتخاب کاربر ──────────────────────────────────── --}}
+{{-- ── Step 1: انتخاب کاربر + JSON import ────────────────────── --}}
 <div class="liquid-glass rounded-2xl overflow-hidden mb-4">
-    <div class="px-5 py-4 flex items-center gap-3" style="border-bottom:1px solid rgba(255,255,255,0.08);">
-        <span class="material-symbols-outlined text-base" style="color:#A78BFA;">person</span>
-        <h2 class="font-black text-sm font-heading text-white">انتخاب کاربر</h2>
+    <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-base" style="color:#A78BFA;">person</span>
+            <h2 class="font-black text-sm font-heading text-white">انتخاب کاربر</h2>
+        </div>
+        @if(request('user_id'))
+        <button type="button" onclick="document.getElementById('jsonPanel').classList.toggle('hidden')"
+                class="text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                style="background:rgba(77,159,255,0.12);color:#4D9FFF;border:1px solid rgba(77,159,255,0.25);">
+            <span class="material-symbols-outlined text-sm">upload_file</span>
+            ایمپورت JSON
+        </button>
+        @endif
     </div>
+
+    {{-- JSON import panel --}}
+    @if(request('user_id'))
+    <div id="jsonPanel" class="hidden px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(77,159,255,0.04);">
+        <p class="text-xs mb-3" style="color:rgba(185,203,185,0.6);">
+            فرمت JSON: آرایه‌ای از <code style="color:#4D9FFF;">[{"game_id":1,"home_score":2,"away_score":1}, ...]</code>
+        </p>
+        <form method="POST" action="{{ route('admin.import.predictions.json') }}" enctype="multipart/form-data" class="flex flex-wrap items-end gap-3">
+            @csrf
+            <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+            <div>
+                <label class="text-xs font-bold mb-1.5 block" style="color:rgba(185,203,185,0.7);">فایل JSON</label>
+                <input type="file" name="json_file" accept=".json,application/json" required class="stitch-input text-xs px-3 py-2">
+            </div>
+            <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                    style="background:rgba(77,159,255,0.15);color:#4D9FFF;border:1px solid rgba(77,159,255,0.3);">
+                <span class="material-symbols-outlined text-sm">upload</span>
+                آپلود و ذخیره
+            </button>
+        </form>
+    </div>
+    @endif
+
     <div class="p-5">
         <form method="GET" action="{{ route('admin.import.predictions') }}" class="flex items-end gap-3 flex-wrap">
             <div class="flex-1 min-w-48">

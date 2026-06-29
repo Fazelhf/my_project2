@@ -311,8 +311,8 @@ class ImportExportController extends Controller
             $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
             $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
 
-            // ردیف‌های خالی رو رد کن
-            if ($homeScore === null && $awayScore === null) {
+            // اگه هر دو یا یکی خالی بود رد کن
+            if ($homeScore === null || $awayScore === null) {
                 continue;
             }
 
@@ -358,6 +358,73 @@ class ImportExportController extends Controller
 
         return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
             ->with('success', "پیش‌بینی‌های {$user->name}: {$created} جدید، {$updated} بروزرسانی شد.");
+    }
+
+    public function importPredictionsJson(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'user_id'   => 'required|exists:users,id',
+            'json_file' => ['required', 'file', 'mimes:json,txt', 'max:2048'],
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $data = json_decode($request->file('json_file')->get(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+            return back()->withErrors(['json_file' => 'فایل JSON معتبر نیست.'])->withInput();
+        }
+
+        $games   = Game::with('scoringRule')->get()->keyBy('id');
+        $scorer  = app(\App\Services\PredictionScoringService::class);
+        $created = 0;
+        $updated = 0;
+
+        foreach ($data as $row) {
+            $gameId    = $row['game_id'] ?? null;
+            $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
+            $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
+
+            if (!$gameId || $homeScore === null || $awayScore === null) {
+                continue;
+            }
+
+            $game   = $games->get($gameId);
+            $points = null;
+
+            if ($game && $game->isScorable()) {
+                $rule   = $game->scoringRule;
+                $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
+                $points = $rule
+                    ? $rule->calculatePoints($homeScore, $awayScore, $game->home_score, $game->away_score)
+                    : $dummy->calculatePoints($game->home_score, $game->away_score);
+            }
+
+            $existing = Prediction::where('user_id', $user->id)->where('game_id', $gameId)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'home_score' => $homeScore, 'away_score' => $awayScore,
+                    'points_earned' => $points, 'is_admin_edited' => true,
+                    'admin_note' => 'وارد شده از JSON',
+                ]);
+                $updated++;
+            } else {
+                Prediction::create([
+                    'user_id' => $user->id, 'game_id' => $gameId,
+                    'home_score' => $homeScore, 'away_score' => $awayScore,
+                    'points_earned' => $points, 'is_admin_edited' => true,
+                    'admin_note' => 'وارد شده از JSON',
+                ]);
+                $created++;
+            }
+        }
+
+        if ($created + $updated > 0) {
+            $scorer->recalculateUserScores();
+        }
+
+        return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
+            ->with('success', "JSON ایمپورت شد — {$user->name}: {$created} جدید، {$updated} بروزرسانی.");
     }
 
     public function exportLeaderboard(): Response

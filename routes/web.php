@@ -109,4 +109,5 @@ Route::middleware(['auth', 'admin'])
         Route::get('/export/user/{user}/predictions', [ImportExportController::class, 'exportUserPredictions'])->name('export.user.predictions');
         Route::get('/import/predictions', [ImportExportController::class, 'importPredictionsPage'])->name('import.predictions');
         Route::post('/import/predictions', [ImportExportController::class, 'importPredictions'])->name('import.predictions.store');
+        Route::post('/import/predictions/json', [ImportExportController::class, 'importPredictionsJson'])->name('import.predictions.json');
     });
