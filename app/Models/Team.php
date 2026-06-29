@@ -64,7 +64,74 @@ class Team extends Model
         return $query->orderBy('group_name')->orderBy('name');
     }
 
+    // ─── Flag file map (team name → public/flags filename) ───────────────────
+
+    private static array $flagFiles = [
+        'Algeria'                => 'Algeria.png',
+        'Argentina'              => 'Argentina.png',
+        'Australia'              => 'Australia.png',
+        'Austria'                => 'Austria.png',
+        'Belgium'                => 'Belgium.png',
+        'Bosnia and Herzegovina' => 'Bosnia and Herzegovina.png',
+        'Bosnia & Herzegovina'   => 'Bosnia and Herzegovina.png',
+        'Brazil'                 => 'Brazil.png',
+        'Canada'                 => 'Canada.png',
+        'Cape Verde'             => 'Cape Verde.png',
+        'Colombia'               => 'Colombia.png',
+        'Croatia'                => 'Croatia.png',
+        'Curaçao'                => 'Curaçao.png',
+        'Czech Republic'         => 'Czechia.png',
+        'DR Congo'               => 'DR Congo.png',
+        'Ecuador'                => 'Ecuador.png',
+        'Egypt'                  => 'Egypt.png',
+        'England'                => 'England.png',
+        'France'                 => 'France.png',
+        'Germany'                => 'Germany.png',
+        'Ghana'                  => 'Ghana.png',
+        'Haiti'                  => 'Haiti.png',
+        'Iran'                   => 'Iran.png',
+        'Iraq'                   => 'Iraq.png',
+        'Ivory Coast'            => 'Ivory Coast.png',
+        'Japan'                  => 'Japan.png',
+        'Jordan'                 => 'Jordan.png',
+        'Mexico'                 => 'Mexico.png',
+        'Morocco'                => 'Morocco.png',
+        'Netherlands'            => 'Netherlands.png',
+        'New Zealand'            => 'New Zealand.png',
+        'Norway'                 => 'Norway.png',
+        'Panama'                 => 'Panama.png',
+        'Paraguay'               => 'Paraguay.png',
+        'Portugal'               => 'Portugal.png',
+        'Qatar'                  => 'Qatar.png',
+        'Saudi Arabia'           => 'Saudi Arabia.png',
+        'Scotland'               => 'Scotland.png',
+        'Senegal'                => 'Senegal.png',
+        'South Africa'           => 'South Africa.png',
+        'South Korea'            => 'South Korea.png',
+        'Spain'                  => 'Spain.png',
+        'Sweden'                 => 'Sweden.png',
+        'Switzerland'            => 'Switzerland.png',
+        'Tunisia'                => 'Tunisia.png',
+        'Turkey'                 => 'Turkiye.png',
+        'United States'          => 'United States.png',
+        'USA'                    => 'United States.png',
+        'Uruguay'                => 'Uruguay.png',
+        'Uzbekistan'             => 'Uzbekistan.png',
+    ];
+
     // ─── Accessors ────────────────────────────────────────────────────────────
+
+    /**
+     * همیشه پرچم لوکال رو برمی‌گردونه اگر فایل وجود داشته باشه
+     */
+    public function getFlagUrlAttribute(?string $value): ?string
+    {
+        $file = self::$flagFiles[$this->name] ?? null;
+        if ($file) {
+            return '/flags/' . rawurlencode($file);
+        }
+        return $value;
+    }
 
     /**
      * تمام بازی‌های این تیم (میزبان + مهمان) به صورت ترکیب‌شده
