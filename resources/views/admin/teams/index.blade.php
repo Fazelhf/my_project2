@@ -43,7 +43,8 @@
             </h2>
         </div>
         <div class="liquid-glass rounded-2xl overflow-hidden">
-            <table class="w-full text-sm">
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm" style="min-width:520px;">
                 <thead>
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);">
                         <th class="px-5 py-3 text-right text-xs font-bold uppercase tracking-wider" style="color:rgba(185,203,185,0.6);">تیم</th>
@@ -111,6 +112,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>{{-- overflow-x-auto --}}
         </div>
     </div>
 @endforeach

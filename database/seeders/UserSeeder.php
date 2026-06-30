@@ -12,24 +12,17 @@ class UserSeeder extends Seeder
     {
         // ── ادمین ────────────────────────────────────────────────
         User::updateOrCreate(
-            ['email' => 'admin@worldcup.local'],
+            ['email' => 'fazel@admin'],
             [
-                'name'       => 'مدیر سیستم',
-                'password'   => Hash::make('admin1234'),
-                'department' => 'فناوری اطلاعات',
+                'name'       => 'admin',
+                'password'   => Hash::make('admin123'),
+                'department' => 'IT',
                 'is_admin'   => true,
                 'total_score' => 0,
             ]
         );
 
-        // ── کاربران نمونه ─────────────────────────────────────────
-        $users = [
-            ['name' => 'علی رضایی',    'email' => 'ali@worldcup.local',    'department' => 'فناوری اطلاعات'],
-            ['name' => 'سارا احمدی',   'email' => 'sara@worldcup.local',   'department' => 'مالی'],
-            ['name' => 'محمد کریمی',   'email' => 'mohammad@worldcup.local','department' => 'بازاریابی'],
-            ['name' => 'فاطمه نوری',   'email' => 'fateme@worldcup.local', 'department' => 'منابع انسانی'],
-            ['name' => 'رضا صادقی',    'email' => 'reza@worldcup.local',   'department' => 'عملیات'],
-        ];
+
 
         foreach ($users as $data) {
             User::updateOrCreate(

@@ -124,23 +124,32 @@
 <nav class="mobile-nav">
     <a href="{{ route('dashboard') }}"
        class="mobile-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-        <span class="material-symbols-outlined" style="font-size:22px;">home</span>
+        <span class="material-symbols-outlined">home</span>
         داشبورد
-    </a>
-    <a href="{{ route('games.index') }}"
-       class="mobile-nav-item {{ request()->routeIs('games.*') ? 'active' : '' }}">
-        <span class="material-symbols-outlined" style="font-size:22px;">sports_soccer</span>
-        پیش‌بینی
     </a>
     <a href="{{ route('results.index') }}"
        class="mobile-nav-item {{ request()->routeIs('results.*') ? 'active' : '' }}">
-        <span class="material-symbols-outlined" style="font-size:22px;">equalizer</span>
+        <span class="material-symbols-outlined">equalizer</span>
         نتایج
     </a>
+
+    {{-- دکمه مرکزی floating --}}
+    <div class="mobile-nav-fab-wrap">
+        <a href="{{ route('games.index') }}" class="mobile-nav-fab">
+            <span class="material-symbols-outlined">sports_soccer</span>
+        </a>
+        <span class="mobile-nav-fab-label">پیش‌بینی</span>
+    </div>
+
     <a href="{{ route('leaderboard') }}"
        class="mobile-nav-item {{ request()->routeIs('leaderboard') ? 'active' : '' }}">
-        <span class="material-symbols-outlined" style="font-size:22px;">leaderboard</span>
+        <span class="material-symbols-outlined">leaderboard</span>
         جدول
+    </a>
+    <a href="{{ route('profile.index') }}"
+       class="mobile-nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+        <span class="material-symbols-outlined">person</span>
+        پروفایل
     </a>
 </nav>
 
