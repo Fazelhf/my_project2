@@ -87,19 +87,64 @@
 
             {{-- Format hint --}}
             <div class="mt-4 p-3 rounded-xl" style="background:rgba(77,159,255,0.05);border:1px solid rgba(77,159,255,0.15);">
-                <p class="text-xs font-bold mb-1" style="color:#4D9FFF;">فرمت مورد انتظار:</p>
-                <pre class="text-[10px] font-mono leading-relaxed overflow-x-auto" style="color:rgba(185,203,185,0.7);">{"matches": [
-  {
-    "round": "Matchday 1",
-    "date": "2026-06-11",
-    "time": "13:00 UTC-6",
-    "team1": "Mexico",
-    "team2": "South Africa",
-    "score": {"ft": [2, 0]},
-    "group": "Group A",
-    "ground": "Mexico City"
-  }
-]}</pre>
+                <p class="text-xs font-bold mb-2" style="color:#4D9FFF;">World Cup 2026 - Expected JSON Format:</p>
+                <pre class="text-[10px] font-mono leading-relaxed overflow-x-auto" style="color:rgba(185,203,185,0.7);">{
+  "name": "World Cup 2026",
+  "matches": [
+    {
+      "round": "Matchday 1",
+      "date": "2026-06-11",
+      "time": "13:00 UTC-6",
+      "team1": "Mexico",
+      "team2": "South Africa",
+      "score": {
+        "ft": [2, 0],
+        "ht": [1, 0]
+      },
+      "goals1": [
+        {"name": "Julián Quiñones", "minute": "9"},
+        {"name": "Raúl Jiménez", "minute": "67"}
+      ],
+      "goals2": [],
+      "group": "Group A",
+      "num": 1,
+      "ground": "Mexico City"
+    },
+    {
+      "round": "Round of 32",
+      "date": "2026-06-28",
+      "time": "12:00 UTC-7",
+      "team1": "South Africa",
+      "team2": "Canada",
+      "score": {"ft": [0, 1]},
+      "goals1": [],
+      "goals2": [
+        {"name": "Stephan Eustáquio", "minute": "90+2"}
+      ],
+      "num": 73,
+      "ground": "Los Angeles"
+    },
+    {
+      "round": "Final",
+      "date": "2026-07-19",
+      "time": "15:00 UTC-4",
+      "team1": "W101",
+      "team2": "W102",
+      "num": 104,
+      "ground": "New York/New Jersey (East Rutherford)"
+    }
+  ]
+}</pre>
+                <p class="text-xs mt-2 mb-1" style="color:rgba(185,203,185,0.6);"><strong>Optional fields:</strong></p>
+                <p class="text-[10px]" style="color:rgba(185,203,185,0.5);">
+                  • <code>score.ht</code> — Half-time score [home, away]<br>
+                  • <code>score.et</code> — Extra time score [home, away]<br>
+                  • <code>score.p</code> — Penalties score [home, away]<br>
+                  • <code>goals1/goals2</code> — Array of {name, minute, penalty?, owngoal?}<br>
+                  • <code>group</code> — Group name for group stage<br>
+                  • <code>num</code> — Match number<br>
+                  • Omit score and goals for future fixtures (TBD teams like W101, L50, etc.)
+                </p>
             </div>
         </div>
     </div>
