@@ -34,19 +34,32 @@
 
     {{-- JSON import panel --}}
     @if(request('user_id'))
-    <div id="jsonPanel" class="hidden px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(77,159,255,0.04);">
-        <p class="text-xs mb-3" style="color:rgba(185,203,185,0.6);">
-            فرمت JSON: آرایه‌ای از <code style="color:#4D9FFF;">[{"game_id":1,"home_score":2,"away_score":1}, ...]</code>
-        </p>
+    <div id="jsonPanel" class="hidden px-5 py-4 space-y-4" style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(77,159,255,0.04);">
+        <div>
+            <p class="text-xs font-bold mb-2" style="color:#4D9FFF;">فرمت JSON (آرایه ساده):</p>
+            <pre class="text-[11px] font-mono p-3 rounded-lg bg-black/40 overflow-x-auto" style="color:rgba(185,203,185,0.8);">[
+  {"match_num": 1, "home_score": 2, "away_score": 1},
+  {"match_num": 2, "home_score": 0, "away_score": 0},
+  {"match_num": 73, "home_score": 1, "away_score": 2}
+]</pre>
+            <p class="text-xs mt-2" style="color:rgba(185,203,185,0.5);">
+                • استفاده کنید از <span style="color:#4D9FFF;font-weight:bold;">match_num</span> (شماره بازی)<br>
+                • هر سطر: یک بازی<br>
+                • خانه‌های خالی نیاز نیست، فقط match_num + scores وارد کنید
+            </p>
+        </div>
+
         <form method="POST" action="{{ route('admin.import.predictions.json') }}" enctype="multipart/form-data" class="flex flex-wrap items-end gap-3">
             @csrf
             <input type="hidden" name="user_id" value="{{ request('user_id') }}">
-            <div>
+            <div class="flex-1 min-w-48">
                 <label class="text-xs font-bold mb-1.5 block" style="color:rgba(185,203,185,0.7);">فایل JSON</label>
-                <input type="file" name="json_file" accept=".json,application/json" required class="stitch-input text-xs px-3 py-2">
+                <input type="file" name="json_file" accept=".json,.txt,application/json,text/plain" required class="stitch-input text-xs px-3 py-2">
             </div>
-            <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5"
-                    style="background:rgba(77,159,255,0.15);color:#4D9FFF;border:1px solid rgba(77,159,255,0.3);">
+            <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                    style="background:rgba(77,159,255,0.15);color:#4D9FFF;border:1px solid rgba(77,159,255,0.3);"
+                    onmouseover="this.style.background='rgba(77,159,255,0.25)'"
+                    onmouseout="this.style.background='rgba(77,159,255,0.15)'">
                 <span class="material-symbols-outlined text-sm">upload</span>
                 آپلود و ذخیره
             </button>

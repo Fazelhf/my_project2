@@ -374,24 +374,40 @@ class ImportExportController extends Controller
             return back()->withErrors(['json_file' => 'فایل JSON معتبر نیست.'])->withInput();
         }
 
-        $games   = Game::with('scoringRule')->get()->keyBy('id');
-        $scorer  = app(\App\Services\PredictionScoringService::class);
-        $created = 0;
-        $updated = 0;
+        $games      = Game::with('scoringRule')->get();
+        $gamesById  = $games->keyBy('id');
+        $gamesByNum = $games->keyBy('match_number');
+        $scorer     = app(\App\Services\PredictionScoringService::class);
+        $created    = 0;
+        $updated    = 0;
+        $skipped    = 0;
 
         foreach ($data as $row) {
-            $gameId    = $row['game_id'] ?? null;
             $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
             $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
 
-            if (!$gameId || $homeScore === null || $awayScore === null) {
+            if ($homeScore === null || $awayScore === null) {
+                $skipped++;
                 continue;
             }
 
-            $game   = $games->get($gameId);
+            // Try match_num first (preferred), fall back to game_id
+            $matchNum = $row['match_num'] ?? null;
+            $gameId   = $row['game_id'] ?? null;
+
+            if ($matchNum) {
+                $game = $gamesByNum->get($matchNum);
+            } elseif ($gameId) {
+                $game = $gamesById->get($gameId);
+            } else {
+                $skipped++;
+                continue;  // Skip if neither match_num nor game_id provided
+            }
+
             $points = null;
 
             if (!$game) {
+                $skipped++;
                 continue;  // Skip if game doesn't exist
             }
 
@@ -403,7 +419,7 @@ class ImportExportController extends Controller
                     : $dummy->calculatePoints($game->home_score, $game->away_score);
             }
 
-            $existing = Prediction::where('user_id', $user->id)->where('game_id', $gameId)->first();
+            $existing = Prediction::where('user_id', $user->id)->where('game_id', $game->id)->first();
 
             if ($existing) {
                 $existing->update([
@@ -414,7 +430,7 @@ class ImportExportController extends Controller
                 $updated++;
             } else {
                 Prediction::create([
-                    'user_id' => $user->id, 'game_id' => $gameId,
+                    'user_id' => $user->id, 'game_id' => $game->id,
                     'home_score' => $homeScore, 'away_score' => $awayScore,
                     'points_earned' => $points, 'is_admin_edited' => true,
                     'admin_note' => 'وارد شده از JSON',
@@ -427,8 +443,13 @@ class ImportExportController extends Controller
             $scorer->recalculateUserScores();
         }
 
+        $message = "{$user->name}: {$created} جدید، {$updated} بروزرسانی";
+        if ($skipped > 0) {
+            $message .= "، {$skipped} رد شده";
+        }
+
         return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
-            ->with('success', "JSON ایمپورت شد — {$user->name}: {$created} جدید، {$updated} بروزرسانی.");
+            ->with('success', "JSON ایمپورت شد — {$message}");
     }
 
     public function exportLeaderboard(): Response
