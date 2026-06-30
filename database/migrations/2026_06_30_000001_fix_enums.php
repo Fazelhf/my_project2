@@ -7,6 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement("ALTER TABLE games MODIFY COLUMN stage ENUM('group','round_of_32','round_of_16','quarter_final','semi_final','third_place','final') NOT NULL DEFAULT 'group'");
 
         DB::statement("ALTER TABLE admin_audit_logs MODIFY COLUMN action ENUM(
@@ -31,6 +35,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement("ALTER TABLE games MODIFY COLUMN stage ENUM('group','round_of_16','quarter_final','semi_final','third_place','final') NOT NULL DEFAULT 'group'");
     }
 };

@@ -112,7 +112,7 @@ class UserManagementController extends Controller
         $user->update($data);
 
         AdminAuditLog::record(
-            'user_note_updated',
+            'user_profile_updated',
             'User',
             $user->id,
             $before,
