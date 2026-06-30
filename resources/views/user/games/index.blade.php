@@ -143,20 +143,26 @@ $stageLabels = [
                 <div class="flex items-center justify-between gap-2 mb-4">
 
                     <div class="flex-1 text-center">
-                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center text-xs font-black font-heading text-white"
+                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center overflow-hidden"
                              style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                            {{ $game->homeTeam->code }}
+                            @if($game->homeTeam->flag_url)
+                                <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <span class="text-xs font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->homeTeam->code }}</span>
+                            @else
+                                <span class="text-xs font-black font-heading text-white">{{ $game->homeTeam->code }}</span>
+                            @endif
                         </div>
                         <p class="text-xs font-bold text-white leading-tight">{{ $game->homeTeam->name_fa ?? $game->homeTeam->name }}</p>
                     </div>
 
                     <div class="flex flex-col items-center gap-1 px-2">
                         @if($done)
-                            <div class="px-4 py-2 rounded-xl" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);">
+                            <a href="{{ route('games.show', $game) }}" class="px-4 py-2 rounded-xl transition-all" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);"
+                               onmouseover="this.style.borderColor='rgba(0,228,118,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
                                 <span class="font-black text-xl font-heading text-white">
                                     {{ $game->home_score }}<span style="color:rgba(255,255,255,0.3);" class="mx-1 text-sm">–</span>{{ $game->away_score }}
                                 </span>
-                            </div>
+                            </a>
                             <span class="text-xs font-mono" style="color:rgba(185,203,185,0.5);">نهایی</span>
                         @else
                             <div class="w-10 h-10 rounded-full flex items-center justify-center"
@@ -167,9 +173,14 @@ $stageLabels = [
                     </div>
 
                     <div class="flex-1 text-center">
-                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center text-xs font-black font-heading text-white"
+                        <div class="w-12 h-12 rounded-full mx-auto mb-1.5 flex items-center justify-center overflow-hidden"
                              style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);">
-                            {{ $game->awayTeam->code }}
+                            @if($game->awayTeam->flag_url)
+                                <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <span class="text-xs font-black font-heading text-white hidden w-full h-full items-center justify-center">{{ $game->awayTeam->code }}</span>
+                            @else
+                                <span class="text-xs font-black font-heading text-white">{{ $game->awayTeam->code }}</span>
+                            @endif
                         </div>
                         <p class="text-xs font-bold text-white leading-tight">{{ $game->awayTeam->name_fa ?? $game->awayTeam->name }}</p>
                     </div>
@@ -198,7 +209,10 @@ $stageLabels = [
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold" style="{{ $ptStyle }}">+{{ $pts }}</span>
                             @endif
                         </div>
-                        @if(!$locked && !$done)
+                        @if($done)
+                        <a href="{{ route('games.show', $game) }}" class="px-3 py-2 rounded-lg text-xs font-bold flex-shrink-0 transition-colors" style="background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.25);color:#4D9FFF;"
+                           onmouseover="this.style.background='rgba(77,159,255,0.2)'" onmouseout="this.style.background='rgba(77,159,255,0.1)'">جزئیات</a>
+                        @elseif(!$locked)
                         <form method="POST" action="{{ route('games.predict.update', $game) }}" class="flex items-center gap-1 flex-shrink-0">
                             @csrf @method('PUT')
                             <input type="number" name="home_score" value="{{ $pred->home_score }}" min="0" max="99"
@@ -235,9 +249,14 @@ $stageLabels = [
                     </form>
 
                     @else
-                    <p class="text-xs text-center py-2 font-semibold" style="color:rgba(185,203,185,0.4);">
-                        {{ $locked ? 'زمان پیش‌بینی پایان یافته' : 'بدون پیش‌بینی' }}
-                    </p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-semibold" style="color:rgba(185,203,185,0.4);">
+                            {{ $locked ? 'زمان پیش‌بینی پایان یافته' : 'بدون پیش‌بینی' }}</p>
+                        @if($done)
+                        <a href="{{ route('games.show', $game) }}" class="text-xs font-bold transition-colors" style="color:#4D9FFF;"
+                           onmouseover="this.style.color='#93c5fd'" onmouseout="this.style.color='#4D9FFF'">جزئیات</a>
+                        @endif
+                    </div>
                     @endif
                 </div>
             </div>

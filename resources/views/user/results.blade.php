@@ -24,9 +24,14 @@
         <div class="flex items-center justify-between gap-4">
             {{-- Home team --}}
             <div class="flex-1 text-center">
-                <div class="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading"
-                     style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F0F4FF;">
-                    {{ $game->homeTeam?->code ?? '?' }}
+                <div class="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center overflow-hidden"
+                     style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">
+                    @if($game->homeTeam?->flag_url)
+                        <img src="{{ $game->homeTeam->flag_url }}" alt="{{ $game->homeTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <span class="text-sm font-black font-heading hidden w-full h-full items-center justify-center" style="color:#F0F4FF;">{{ $game->homeTeam->code }}</span>
+                    @else
+                        <span class="text-sm font-black font-heading" style="color:#F0F4FF;">{{ $game->homeTeam?->code ?? '?' }}</span>
+                    @endif
                 </div>
                 <p class="text-xs font-bold text-brand-text">{{ $game->homeTeam?->name_fa ?? $game->homeTeam?->name }}</p>
             </div>
@@ -45,9 +50,14 @@
 
             {{-- Away team --}}
             <div class="flex-1 text-center">
-                <div class="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center text-sm font-black font-heading"
-                     style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F0F4FF;">
-                    {{ $game->awayTeam?->code ?? '?' }}
+                <div class="w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center overflow-hidden"
+                     style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);">
+                    @if($game->awayTeam?->flag_url)
+                        <img src="{{ $game->awayTeam->flag_url }}" alt="{{ $game->awayTeam->code }}" class="w-full h-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <span class="text-sm font-black font-heading hidden w-full h-full items-center justify-center" style="color:#F0F4FF;">{{ $game->awayTeam->code }}</span>
+                    @else
+                        <span class="text-sm font-black font-heading" style="color:#F0F4FF;">{{ $game->awayTeam?->code ?? '?' }}</span>
+                    @endif
                 </div>
                 <p class="text-xs font-bold text-brand-text">{{ $game->awayTeam?->name_fa ?? $game->awayTeam?->name }}</p>
             </div>

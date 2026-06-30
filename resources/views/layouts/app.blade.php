@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v={{ filemtime(public_path('favicon.ico')) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
@@ -49,6 +50,16 @@
                class="nav-pill {{ request()->routeIs('leaderboard') ? 'active' : '' }}">
                 <span class="material-symbols-outlined text-base">leaderboard</span>
                 <span>جدول</span>
+            </a>
+            <a href="{{ route('bracket') }}"
+               class="nav-pill {{ request()->routeIs('bracket') ? 'active' : '' }}">
+                <span class="material-symbols-outlined text-base">account_tree</span>
+                <span>حذفی</span>
+            </a>
+            <a href="{{ route('chat') }}"
+               class="nav-pill {{ request()->routeIs('chat') ? 'active' : '' }}">
+                <span class="material-symbols-outlined text-base">forum</span>
+                <span>چت</span>
             </a>
         </div>
 
@@ -103,6 +114,11 @@
 <main class="relative z-10 max-w-5xl mx-auto px-4 pt-24 pb-10 min-h-screen main-content page-enter">
     @yield('content')
 </main>
+
+{{-- ── Footer ──────────────────────────────────────────────────────────────── --}}
+<footer class="relative z-10 text-center py-4 pb-24 sm:pb-6">
+    <p class="text-xs" style="color:rgba(185,203,185,0.25);">ساخته شده با عشق در نمابر مهر</p>
+</footer>
 
 {{-- ── Mobile Bottom Nav ───────────────────────────────────────────────────── --}}
 <nav class="mobile-nav">

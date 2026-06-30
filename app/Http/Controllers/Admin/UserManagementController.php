@@ -79,6 +79,7 @@ class UserManagementController extends Controller
     {
         $request->validate([
             'name'       => 'required|string|max:255',
+            'username'   => 'nullable|string|alpha_num|min:3|max:50|unique:users,username,' . $user->id,
             'email'      => 'required|email|max:255|unique:users,email,' . $user->id,
             'department' => 'nullable|string|max:100',
             'password'   => 'nullable|string|min:8|confirmed',
@@ -86,6 +87,7 @@ class UserManagementController extends Controller
             'name.required'    => 'نام الزامی است.',
             'email.required'   => 'ایمیل الزامی است.',
             'email.unique'     => 'این ایمیل توسط کاربر دیگری استفاده شده.',
+            'username.unique'  => 'این نام کاربری توسط کاربر دیگری استفاده شده.',
             'password.min'     => 'رمز عبور باید حداقل ۸ کاراکتر باشد.',
             'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد.',
         ]);
@@ -98,6 +100,7 @@ class UserManagementController extends Controller
 
         $data = [
             'name'       => $request->name,
+            'username'   => $request->username ? strtolower($request->username) : $user->username,
             'email'      => $request->email,
             'department' => $request->department,
         ];
@@ -252,6 +255,32 @@ class UserManagementController extends Controller
         );
 
         return back()->with('success', 'امتیاز پیش‌بینی override شد.');
+    }
+
+    // ── حذف کاربر ────────────────────────────────────────────────────────────
+
+    public function destroy(User $user, Request $request): RedirectResponse
+    {
+        if ($user->is_admin) {
+            return back()->with('error', 'حذف کاربر ادمین امکان‌پذیر نیست.');
+        }
+
+        $name = $user->name;
+
+        AdminAuditLog::record(
+            'user_deleted',
+            'User',
+            $user->id,
+            ['name' => $name, 'email' => $user->email],
+            [],
+            $request->reason ?? 'حذف توسط ادمین'
+        );
+
+        $user->predictions()->delete();
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "کاربر «{$name}» و تمام پیش‌بینی‌هایش حذف شد.");
     }
 
     // ── عملیات گروهی ─────────────────────────────────────────────────────────

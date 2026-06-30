@@ -13,15 +13,19 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        $rank = User::where('total_score', '>', $user->total_score)->count() + 1;
+        // Live rank: count users with higher live score (points_override ?? points_earned)
+        $allScores = \App\Models\Prediction::selectRaw('user_id, SUM(COALESCE(points_override, points_earned, 0)) as live')
+            ->groupBy('user_id')
+            ->pluck('live', 'user_id');
+        $myLive = $allScores[$user->id] ?? 0;
+        $rank = \App\Models\User::regular()->get()->filter(fn($u) => ($allScores[$u->id] ?? 0) > $myLive)->count() + 1;
 
-        $scoredPredictions  = Prediction::where('user_id', $user->id)->whereNotNull('points_earned')->count();
-        $correctPredictions = Prediction::where('user_id', $user->id)->where('points_earned', '>=', 5)->count();
         $totalPredictions   = Prediction::where('user_id', $user->id)->count();
-        $accuracy           = $scoredPredictions > 0 ? round(($correctPredictions / $scoredPredictions) * 100, 1) : 0;
+        $correctPredictions = Prediction::where('user_id', $user->id)->where('points_earned', '>=', 5)->count();
+        $exactPredictions   = Prediction::where('user_id', $user->id)->where('points_earned', 10)->count();
 
         $upcomingGames = Game::with(['homeTeam', 'awayTeam'])
-            ->where('status', 'scheduled')
+            ->whereIn('status', ['upcoming', 'scheduled'])
             ->whereDoesntHave('predictions', fn ($q) => $q->where('user_id', $user->id))
             ->orderBy('scheduled_at')
             ->take(6)
@@ -34,7 +38,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('user.dashboard', compact(
-            'user', 'rank', 'accuracy', 'totalPredictions', 'predictions', 'upcomingGames'
+            'user', 'rank', 'totalPredictions', 'correctPredictions', 'exactPredictions', 'predictions', 'upcomingGames'
         ));
     }
 }

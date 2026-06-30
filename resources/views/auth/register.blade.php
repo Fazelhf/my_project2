@@ -27,6 +27,15 @@
     </div>
 
     <div class="relative floating-label-input">
+        <input type="text" id="username" name="username" value="{{ old('username') }}"
+               required placeholder=" " class="stitch-input" autocomplete="off" pattern="[a-zA-Z0-9]+" minlength="3" maxlength="50">
+        <label for="username" class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
+               style="color:rgba(185,203,185,0.5);">نام کاربری (فقط انگلیسی و عدد)</label>
+        <span class="absolute left-4 top-4 text-sm font-bold pointer-events-none"
+              style="color:rgba(185,203,185,0.4);">@</span>
+    </div>
+
+    <div class="relative floating-label-input">
         <input type="email" id="email" name="email" value="{{ old('email') }}"
                required placeholder=" " class="stitch-input">
         <label for="email" class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"

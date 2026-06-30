@@ -22,13 +22,13 @@
 <form action="{{ route('login.attempt') }}" method="POST" class="space-y-5" id="loginForm">
     @csrf
 
-    {{-- Email --}}
+    {{-- Login (email or username) --}}
     <div class="relative floating-label-input">
-        <input type="email" id="email" name="email" value="{{ old('email') }}"
+        <input type="text" id="login" name="login" value="{{ old('login') }}"
                required autofocus placeholder=" "
                class="stitch-input pr-12"
                style="padding-right:44px;">
-        <label for="email"
+        <label for="login"
                class="absolute right-4 top-4 text-sm pointer-events-none origin-right transition-all"
                style="color:rgba(185,203,185,0.5);">
             ایمیل یا نام کاربری
