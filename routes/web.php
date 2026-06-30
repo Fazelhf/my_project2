@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
 
     // پروفایل کاربر
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile-view', [ProfileController::class, 'edit'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // پیش‌بینی بازی‌ها
