@@ -16,12 +16,18 @@
         'final'         => 'فینال',
     ];
     $stageLabel = $stageLabels[$game->stage] ?? $game->stage;
-    $goals = $game->goals ?? [];
-    $homeGoals = array_filter($goals, fn($g) => ($g['team'] ?? '') === 'home' || (isset($g['side']) && $g['side'] === 'home'));
-    $awayGoals = array_filter($goals, fn($g) => ($g['team'] ?? '') === 'away' || (isset($g['side']) && $g['side'] === 'away'));
-    // Sort goals by JSON structure — goals array from JSON has home/away mixed
-    $homeGoals = collect($goals)->filter(fn($g) => ($g['team'] ?? $g['side'] ?? '') === 'home');
-    $awayGoals = collect($goals)->filter(fn($g) => ($g['team'] ?? $g['side'] ?? '') === 'away');
+    $goalsRaw = $game->goals;
+    if (is_string($goalsRaw)) $goalsRaw = json_decode($goalsRaw, true);
+    if (isset($goalsRaw['home'])) {
+        $homeGoals = collect($goalsRaw['home']);
+        $awayGoals = collect($goalsRaw['away'] ?? []);
+        $goals = $homeGoals->map(fn($g) => array_merge($g, ['team'=>'home']))
+                  ->concat($awayGoals->map(fn($g) => array_merge($g, ['team'=>'away'])));
+    } else {
+        $goals = collect($goalsRaw ?? []);
+        $homeGoals = $goals->filter(fn($g) => ($g['team'] ?? $g['side'] ?? '') === 'home');
+        $awayGoals = $goals->filter(fn($g) => ($g['team'] ?? $g['side'] ?? '') === 'away');
+    }
 @endphp
 
 {{-- Back button --}}

@@ -8,11 +8,12 @@
 @php
     $stageLabels = [
         'group'         => ['label' => 'مرحله گروهی',    'color' => '#4D9FFF'],
-        'round_of_16'   => ['label' => 'جام شانزدهم',    'color' => '#A78BFA'],
+        'round_of_32'   => ['label' => 'دور ۳۲ تیمی',    'color' => '#C084FC'],
+        'round_of_16'   => ['label' => 'دور ۱۶ تیمی',    'color' => '#A78BFA'],
         'quarter_final' => ['label' => 'ربع‌نهایی',      'color' => '#00e476'],
         'semi_final'    => ['label' => 'نیمه‌نهایی',     'color' => '#F59E0B'],
         'third_place'   => ['label' => 'رده‌بندی سوم',   'color' => '#FF8A8A'],
-        'final'         => ['label' => 'فینال',           'color' => '#F59E0B'],
+        'final'         => ['label' => 'فینال',           'color' => '#FFD700'],
     ];
 @endphp
 
@@ -48,7 +49,8 @@
                         </thead>
                         <tbody>
                             @foreach($games[$stage] as $game)
-                                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;"
+                                    onclick="window.location='{{ route('admin.games.show', $game) }}'"
                                     onmouseover="this.style.background='rgba(0,228,118,0.03)'"
                                     onmouseout="this.style.background=''">
                                     <td class="px-5 py-3">

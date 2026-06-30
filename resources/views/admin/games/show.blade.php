@@ -80,6 +80,54 @@
             </div>
         </div>
 
+        {{-- گل‌های بازی --}}
+        @php
+            $goalsData = is_array($game->goals) ? $game->goals : (is_string($game->goals) ? json_decode($game->goals, true) : null);
+            $homeGoals = $goalsData['home'] ?? [];
+            $awayGoals = $goalsData['away'] ?? [];
+        @endphp
+        @if(!empty($homeGoals) || !empty($awayGoals))
+        <div class="liquid-glass rounded-2xl p-4">
+            <p class="text-xs font-bold mb-3" style="color:rgba(185,203,185,0.5);">گل‌های بازی</p>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="space-y-1">
+                    <p class="font-bold text-white mb-1.5 text-[11px]">{{ $game->homeTeam->name }}</p>
+                    @forelse($homeGoals as $g)
+                        <div class="flex items-center gap-1.5" style="color:rgba(185,203,185,0.8);">
+                            <span style="color:#00e476;">⚽</span>
+                            <span>{{ $g['scorer'] ?? $g['name'] ?? '?' }}</span>
+                            @if(!empty($g['minute']))
+                                <span class="font-mono text-[10px]" style="color:rgba(185,203,185,0.4);">{{ $g['minute'] }}'</span>
+                            @endif
+                            @if(!empty($g['type']) && $g['type'] !== 'goal')
+                                <span class="text-[10px]" style="color:#F59E0B;">({{ $g['type'] }})</span>
+                            @endif
+                        </div>
+                    @empty
+                        <p style="color:rgba(185,203,185,0.3);">—</p>
+                    @endforelse
+                </div>
+                <div class="space-y-1">
+                    <p class="font-bold text-white mb-1.5 text-[11px]">{{ $game->awayTeam->name }}</p>
+                    @forelse($awayGoals as $g)
+                        <div class="flex items-center gap-1.5" style="color:rgba(185,203,185,0.8);">
+                            <span style="color:#00e476;">⚽</span>
+                            <span>{{ $g['scorer'] ?? $g['name'] ?? '?' }}</span>
+                            @if(!empty($g['minute']))
+                                <span class="font-mono text-[10px]" style="color:rgba(185,203,185,0.4);">{{ $g['minute'] }}'</span>
+                            @endif
+                            @if(!empty($g['type']) && $g['type'] !== 'goal')
+                                <span class="text-[10px]" style="color:#F59E0B;">({{ $g['type'] }})</span>
+                            @endif
+                        </div>
+                    @empty
+                        <p style="color:rgba(185,203,185,0.3);">—</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- ثبت / ویرایش نتیجه --}}
         <div class="liquid-glass rounded-2xl overflow-hidden">
             <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid rgba(255,255,255,0.07);">
