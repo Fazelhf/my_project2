@@ -216,13 +216,23 @@
         </div>
         @endif
 
-        <a href="{{ route('admin.games.index') }}"
-           class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
-           style="color:rgba(185,203,185,0.5);"
-           onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(185,203,185,0.5)'">
-            <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            بازگشت به لیست بازی‌ها
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.games.edit', $game) }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
+               style="background:rgba(0,228,118,0.1);border:1px solid rgba(0,228,118,0.25);color:#00e476;"
+               onmouseover="this.style.background='rgba(0,228,118,0.15)';this.style.borderColor='rgba(0,228,118,0.35)'"
+               onmouseout="this.style.background='rgba(0,228,118,0.1)';this.style.borderColor='rgba(0,228,118,0.25)'">
+                <span class="material-symbols-outlined text-sm">edit</span>
+                ویرایش بازی
+            </a>
+            <a href="{{ route('admin.games.index') }}"
+               class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
+               style="color:rgba(185,203,185,0.5);"
+               onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(185,203,185,0.5)'">
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                بازگشت به لیست بازی‌ها
+            </a>
+        </div>
     </div>
 
     {{-- ── ستون راست: پیش‌بینی‌ها ── --}}
