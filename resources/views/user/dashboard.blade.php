@@ -282,65 +282,10 @@
             </a>
         </div>
 
-        {{-- ── چت گروهی ── --}}
-        <div class="liquid-glass rounded-3xl overflow-hidden flex flex-col" style="border-color:rgba(77,159,255,0.15);height:340px;" x-data="dashChat()">
-            <div class="flex items-center justify-between px-4 py-3 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.07);">
-                <h3 class="font-bold font-heading text-white flex items-center gap-2 text-sm">
-                    <span class="material-symbols-outlined text-base" style="color:#4D9FFF;">forum</span>
-                    چت گروهی
-                </h3>
-                <a href="{{ route('chat') }}" class="text-[11px] font-bold flex items-center gap-1" style="color:rgba(77,159,255,0.7);">
-                    <span class="material-symbols-outlined text-sm">open_in_new</span>نمایش کامل
-                </a>
-            </div>
-
-            {{-- Messages --}}
-            <div class="flex-1 overflow-y-auto px-3 py-2 space-y-2" id="dash-chat-msgs">
-                @foreach($chatMessages as $msg)
-                @php $isMe = $msg->user_id === auth()->id(); @endphp
-                <div class="flex {{ $isMe ? 'justify-start' : 'justify-end' }} gap-2">
-                    @if(!$isMe)
-                    <div class="max-w-[80%]">
-                        <div class="rounded-2xl {{ $isMe ? 'rounded-tr-sm' : 'rounded-tl-sm' }} px-3 py-2 text-xs"
-                             style="background:{{ $isMe ? 'rgba(0,228,118,0.12)' : 'rgba(255,255,255,0.07)' }};color:rgba(221,226,240,0.9);">
-                            <p class="font-bold text-[10px] mb-1" style="color:{{ $isMe ? '#00e476' : '#4D9FFF' }};">{{ $msg->user->name }}</p>
-                            {{ $msg->body }}
-                        </div>
-                    </div>
-                    @else
-                    <div class="max-w-[80%]">
-                        <div class="rounded-2xl rounded-tr-sm px-3 py-2 text-xs" style="background:rgba(0,228,118,0.12);color:rgba(221,226,240,0.9);">
-                            <p class="font-bold text-[10px] mb-1" style="color:#00e476;">شما</p>
-                            {{ $msg->body }}
-                        </div>
-                    </div>
-                    @endif
-                </div>
-                @endforeach
-                @if($chatMessages->isEmpty())
-                <p class="text-center text-xs py-4" style="color:rgba(185,203,185,0.3);">اولین پیام را بفرست!</p>
-                @endif
-            </div>
-
-            {{-- Input --}}
-            <div class="flex items-center gap-2 px-3 py-2.5 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,0.07);">
-                <input type="text" x-model="body" @keydown.enter="send()"
-                       placeholder="پیام..." maxlength="200"
-                       class="flex-1 text-xs px-3 py-2 rounded-xl outline-none bg-transparent"
-                       style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#dde2f0;">
-                <button @click="send()" :disabled="!body.trim()"
-                        class="p-2 rounded-xl transition-all cursor-pointer flex-shrink-0"
-                        style="background:rgba(77,159,255,0.15);color:#4D9FFF;">
-                    <span class="material-symbols-outlined text-base">send</span>
-                </button>
-            </div>
-        </div>
-
         {{-- لینک سریع به پیش‌بینی قهرمان --}}
         <a href="{{ route('tournament.prediction') }}"
            class="relative rounded-3xl overflow-hidden block cursor-pointer group"
-           style="min-height:160px;">
-            {{-- عکس استادیوم (اگه فایل public/images/stadium.jpg باشه نشون میده) --}}
+           style="min-height:140px;">
             @if(file_exists(public_path('images/stadium.jpg')))
                 <img src="{{ asset('images/stadium.jpg') }}"
                      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -349,21 +294,73 @@
                 <div class="absolute inset-0"
                      style="background:linear-gradient(135deg,#001a0d 0%,#003919 40%,#001428 100%);">
                     <div class="absolute inset-0" style="background:radial-gradient(ellipse at 30% 50%,rgba(0,228,118,0.25) 0%,transparent 65%);"></div>
-                    {{-- نقطه‌های نور استادیوم --}}
                     <div class="absolute top-3 left-6 w-1.5 h-1.5 rounded-full opacity-70" style="background:#00e476;box-shadow:0 0 8px #00e476;"></div>
                     <div class="absolute top-5 left-16 w-1 h-1 rounded-full opacity-40" style="background:#00e476;"></div>
                     <div class="absolute top-2 right-8 w-1 h-1 rounded-full opacity-50" style="background:#ffe16d;box-shadow:0 0 6px #ffe16d;"></div>
                     <div class="absolute top-8 right-4 w-1.5 h-1.5 rounded-full opacity-30" style="background:#ffe16d;"></div>
                 </div>
             @endif
-            {{-- overlay + محتوا --}}
             <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
-            <div class="relative p-6 flex flex-col justify-end h-full" style="min-height:160px;">
+            <div class="relative p-5 flex flex-col justify-end h-full" style="min-height:140px;">
                 <p class="text-xs font-bold mb-1" style="color:#00e476;">مسابقه ویژه</p>
-                <h4 class="font-heading font-bold text-white text-lg leading-tight">قهرمان را پیش‌بینی کنید!</h4>
+                <h4 class="font-heading font-bold text-white text-base leading-tight">قهرمان را پیش‌بینی کنید!</h4>
                 <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6);">جایزه ویژه امتیازی در انتظار شماست</p>
             </div>
         </a>
+
+        {{-- ── چت گروهی ── --}}
+        <div class="liquid-glass rounded-3xl overflow-hidden flex flex-col" style="border-color:rgba(77,159,255,0.15);height:240px;" x-data="dashChat()">
+            <div class="flex items-center justify-between px-3 py-2 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                <h3 class="font-bold font-heading text-white flex items-center gap-2 text-xs">
+                    <span class="material-symbols-outlined text-sm" style="color:#4D9FFF;">forum</span>
+                    چت گروهی
+                </h3>
+                <a href="{{ route('chat') }}" class="text-[10px] font-bold flex items-center gap-1" style="color:rgba(77,159,255,0.7);">
+                    <span class="material-symbols-outlined text-xs">open_in_new</span>کامل
+                </a>
+            </div>
+
+            {{-- Messages --}}
+            <div class="flex-1 overflow-y-auto px-2 py-1.5 space-y-1.5" id="dash-chat-msgs">
+                @foreach($chatMessages as $msg)
+                @php $isMe = $msg->user_id === auth()->id(); @endphp
+                <div class="flex {{ $isMe ? 'justify-start' : 'justify-end' }} gap-1.5">
+                    @if(!$isMe)
+                    <div class="max-w-[85%]">
+                        <div class="rounded-xl px-2.5 py-1.5 text-[11px]"
+                             style="background:rgba(255,255,255,0.07);color:rgba(221,226,240,0.9);">
+                            <p class="font-bold text-[9px] mb-0.5" style="color:#4D9FFF;">{{ $msg->user->name }}</p>
+                            {{ $msg->body }}
+                        </div>
+                    </div>
+                    @else
+                    <div class="max-w-[85%]">
+                        <div class="rounded-xl px-2.5 py-1.5 text-[11px]" style="background:rgba(0,228,118,0.12);color:rgba(221,226,240,0.9);">
+                            <p class="font-bold text-[9px] mb-0.5" style="color:#00e476;">شما</p>
+                            {{ $msg->body }}
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                @endforeach
+                @if($chatMessages->isEmpty())
+                <p class="text-center text-[11px] py-3" style="color:rgba(185,203,185,0.3);">اولین پیام را بفرست!</p>
+                @endif
+            </div>
+
+            {{-- Input --}}
+            <div class="flex items-center gap-1.5 px-2 py-2 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,0.07);">
+                <input type="text" x-model="body" @keydown.enter="send()"
+                       placeholder="پیام..." maxlength="200"
+                       class="flex-1 text-[11px] px-2.5 py-1.5 rounded-lg outline-none"
+                       style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#dde2f0;">
+                <button @click="send()" :disabled="!body.trim()"
+                        class="p-1.5 rounded-lg transition-all cursor-pointer flex-shrink-0"
+                        style="background:rgba(77,159,255,0.15);color:#4D9FFF;">
+                    <span class="material-symbols-outlined text-sm">send</span>
+                </button>
+            </div>
+        </div>
 
     </div>
 
