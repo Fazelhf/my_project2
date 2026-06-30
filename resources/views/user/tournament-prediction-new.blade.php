@@ -130,7 +130,11 @@
             </label>
 
             {{-- Team search + select --}}
-            <div x-data="teamPicker('{{ $slot['field'] }}', {{ $prediction?->{Str::before($slot['field'],'_team_id') . '_team_id'} ?? 'null' }})" class="relative">
+            @php
+                $property = Str::before($slot['field'], '_team_id') . '_team_id';
+                $initialId = $prediction ? $prediction->{$property} : null;
+            @endphp
+            <div x-data="teamPicker('{{ $slot['field'] }}', {{ json_encode($initialId) }})" class="relative">
                 <input type="text" x-model="query" @input="filter()" @focus="open=true" @blur="setTimeout(()=>open=false,200)"
                        placeholder="جستجوی تیم..."
                        class="stitch-input w-full pr-4 pl-10"
@@ -181,7 +185,7 @@
 
 @push('scripts')
 <script>
-const ALL_TEAMS = @json($teams->map(function($t) { return ['id' => $t->id, 'name' => $t->name, 'name_fa' => $t->name_fa, 'code' => $t->code, 'flag_url' => $t->flag_url]; })->values());
+const ALL_TEAMS = {!! json_encode($teams->map(function($t) { return ['id' => $t->id, 'name' => $t->name, 'name_fa' => $t->name_fa, 'code' => $t->code, 'flag_url' => $t->flag_url]; })->values()) !!};
 
 function teamPicker(field, initialId) {
     return {
