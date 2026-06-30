@@ -13,7 +13,7 @@ $totalGames = $finishedGames->count();
 @endphp
 
 {{-- ── Page Header ── --}}
-<div class="flex items-center justify-between mb-6 reveal animate-slide-up">
+<div class="flex items-center justify-between mb-5 reveal animate-slide-up">
     <div>
         <h1 class="text-2xl font-black font-heading text-white flex items-center gap-3">
             <span class="material-symbols-outlined text-3xl" style="color:#F5A623;font-variation-settings:'FILL' 1;">emoji_events</span>
@@ -28,6 +28,23 @@ $totalGames = $finishedGames->count();
     </div>
     @endif
 </div>
+
+{{-- ── Tabs ── --}}
+<div class="flex gap-1 mb-6 p-1 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);" x-data="{ tab: 'leaderboard' }">
+    <button @click="tab='leaderboard'" :class="tab==='leaderboard' ? 'bg-white/10 text-white shadow' : 'text-white/50 hover:text-white/80'"
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined text-base">leaderboard</span>
+        جدول رده‌بندی
+    </button>
+    <button @click="tab='bracket'" :class="tab==='bracket' ? 'bg-white/10 text-white shadow' : 'text-white/50 hover:text-white/80'"
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined text-base">account_tree</span>
+        جدول حذفی
+    </button>
+</div>
+
+{{-- ══════════════════════════════════════════════ LEADERBOARD TAB ══ --}}
+<div x-show="tab==='leaderboard'" x-cloak>
 
 {{-- ── My Stats Bar ── --}}
 @php
@@ -342,6 +359,174 @@ $myPct     = $maxScore > 0 ? round(($myScore / $maxScore) * 100) : 0;
         </div>
     </div>
 </div>
+
+{{-- /leaderboard tab --}}
+</div>
+
+{{-- ══════════════════════════════════════════════ BRACKET TAB ══ --}}
+@php
+    $stageOrder  = ['round_of_32','round_of_16','quarter_final','semi_final','final'];
+    $stageLabels = ['round_of_32'=>'دور ۳۲','round_of_16'=>'دور ۱۶','quarter_final'=>'ربع‌نهایی','semi_final'=>'نیمه‌نهایی','final'=>'فینال'];
+    $bStages     = collect($stageOrder)->filter(fn($s)=>$knockoutGames->has($s))->values();
+    $finalGame   = $knockoutGames->get('final')?->first();
+    $thirdGame   = $knockoutGames->get('third_place')?->first();
+@endphp
+<div x-show="tab==='bracket'" x-cloak>
+
+    {{-- Champion Banner --}}
+    @if($finalGame && $finalGame->status==='finished' && $finalGame->winnerTeam)
+    <div class="liquid-glass rounded-3xl p-5 mb-5 flex items-center justify-center gap-4" style="border:1px solid rgba(255,215,0,0.3);background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(14,20,29,0.9));">
+        <span class="text-3xl">🏆</span>
+        @if($finalGame->winnerTeam->flag_url)
+            <img src="{{ $finalGame->winnerTeam->flag_url }}" alt="" class="w-10 h-7 object-cover rounded" onerror="this.style.display='none'">
+        @endif
+        <div>
+            <p class="text-[11px] font-bold" style="color:rgba(185,203,185,0.5);">قهرمان جهان ۲۰۲۶</p>
+            <p class="text-xl font-black font-heading" style="color:#FFD700;">{{ $finalGame->winnerTeam->name_fa ?? $finalGame->winnerTeam->name }}</p>
+        </div>
+    </div>
+    @endif
+
+    {{-- Bracket --}}
+    <div class="glass-card rounded-3xl p-4 md:p-6 overflow-x-auto">
+    <div style="min-width:{{ max($bStages->count()*170, 600) }}px;">
+    <div class="flex items-stretch gap-0" style="min-height:520px;">
+
+        @foreach($bStages as $si => $stage)
+        @php
+            $games   = $knockoutGames->get($stage, collect());
+            $isLast  = $si === $bStages->count()-1;
+            $count   = $games->count();
+        @endphp
+        <div class="flex flex-col flex-1" style="min-width:155px;">
+
+            {{-- Stage label --}}
+            <div class="text-center mb-3 px-1">
+                <span class="text-[11px] font-bold px-3 py-1 rounded-full"
+                      style="background:rgba(0,228,118,0.1);color:#00e476;border:1px solid rgba(0,228,118,0.2);">
+                    {{ $stageLabels[$stage] ?? $stage }}
+                </span>
+            </div>
+
+            {{-- Games column --}}
+            <div class="flex flex-col justify-around flex-1 gap-2 px-1.5">
+                @foreach($games as $game)
+                @php
+                    $fin   = $game->status==='finished';
+                    $win   = $game->winnerTeam ?? null;
+                    $homeW = $win && $win->id===$game->home_team_id;
+                    $awayW = $win && $win->id===$game->away_team_id;
+                @endphp
+                <a href="{{ route('games.show', $game) }}"
+                   class="block group transition-transform duration-200 hover:scale-[1.02]"
+                   style="text-decoration:none;">
+                    <div class="rounded-2xl overflow-hidden"
+                         style="background:rgba(255,255,255,0.04);border:1px solid {{ $fin ? 'rgba(0,228,118,0.2)' : 'rgba(255,255,255,0.08)' }};">
+
+                        {{-- Home --}}
+                        <div class="flex items-center gap-2 px-2.5 py-2"
+                             style="{{ $homeW ? 'background:rgba(0,228,118,0.12);' : '' }}">
+                            @if($game->homeTeam->flag_url)
+                                <img src="{{ $game->homeTeam->flag_url }}" alt="" class="w-6 h-4 object-cover rounded flex-shrink-0" onerror="this.style.display='none'">
+                            @else
+                                <span class="text-[9px] font-black w-6 text-center flex-shrink-0" style="color:rgba(185,203,185,0.6);">{{ $game->homeTeam->code }}</span>
+                            @endif
+                            <span class="text-[11px] font-semibold flex-1 truncate" style="{{ $homeW ? 'color:#00e476;font-weight:800;' : 'color:rgba(185,203,185,0.85);' }}">
+                                {{ $game->homeTeam->name_fa ?? $game->homeTeam->code }}
+                            </span>
+                            @if($fin)
+                            <span class="text-sm font-black flex-shrink-0 ml-1" style="{{ $homeW ? 'color:#00e476;' : 'color:rgba(185,203,185,0.5);' }}">{{ $game->home_score }}</span>
+                            @endif
+                        </div>
+
+                        {{-- Divider --}}
+                        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 8px;"></div>
+
+                        {{-- Away --}}
+                        <div class="flex items-center gap-2 px-2.5 py-2"
+                             style="{{ $awayW ? 'background:rgba(0,228,118,0.12);' : '' }}">
+                            @if($game->awayTeam->flag_url)
+                                <img src="{{ $game->awayTeam->flag_url }}" alt="" class="w-6 h-4 object-cover rounded flex-shrink-0" onerror="this.style.display='none'">
+                            @else
+                                <span class="text-[9px] font-black w-6 text-center flex-shrink-0" style="color:rgba(185,203,185,0.6);">{{ $game->awayTeam->code }}</span>
+                            @endif
+                            <span class="text-[11px] font-semibold flex-1 truncate" style="{{ $awayW ? 'color:#00e476;font-weight:800;' : 'color:rgba(185,203,185,0.85);' }}">
+                                {{ $game->awayTeam->name_fa ?? $game->awayTeam->code }}
+                            </span>
+                            @if($fin)
+                            <span class="text-sm font-black flex-shrink-0 ml-1" style="{{ $awayW ? 'color:#00e476;' : 'color:rgba(185,203,185,0.5);' }}">{{ $game->away_score }}</span>
+                            @endif
+                        </div>
+
+                        {{-- Time/Status footer --}}
+                        @if(!$fin)
+                        <div class="px-2.5 py-1" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15);">
+                            <span class="text-[10px] font-mono" style="color:rgba(185,203,185,0.4);">
+                                {{ $game->scheduled_at?->timezone('Asia/Tehran')->format('j M · H:i') ?? '—' }}
+                            </span>
+                        </div>
+                        @endif
+
+                    </div>
+                </a>
+                @endforeach
+
+                @if($games->isEmpty())
+                <div class="flex-1 flex items-center justify-center px-1.5">
+                    <div class="w-full rounded-2xl py-6 text-center" style="background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);">
+                        <span class="text-[11px]" style="color:rgba(185,203,185,0.25);">مشخص نشده</span>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Connector --}}
+        @if(!$isLast)
+        <div class="flex items-center self-stretch" style="width:18px;flex-shrink:0;">
+            <div style="width:100%;height:2px;background:linear-gradient(90deg,rgba(0,228,118,0.25),rgba(0,228,118,0.05));"></div>
+        </div>
+        @endif
+
+        @endforeach
+    </div>
+    </div>
+    </div>
+
+    {{-- Third place --}}
+    @if($thirdGame)
+    @php $tg=$thirdGame; $tgFin=$tg->status==='finished'; @endphp
+    <a href="{{ route('games.show', $tg) }}"
+       class="glass-card rounded-3xl p-4 mt-4 flex items-center justify-between gap-4 hover:scale-[1.01] transition-transform duration-200"
+       style="text-decoration:none;border:1px solid rgba(205,127,50,0.2);background:linear-gradient(135deg,rgba(205,127,50,0.04),rgba(14,20,29,0.9));">
+        <div class="flex items-center gap-3">
+            <span class="text-xl">🥉</span>
+            @if($tg->homeTeam->flag_url)
+                <img src="{{ $tg->homeTeam->flag_url }}" alt="" class="w-8 h-5 object-cover rounded" onerror="this.style.display='none'">
+            @endif
+            <span class="font-bold text-sm text-white">{{ $tg->homeTeam->name_fa ?? $tg->homeTeam->name }}</span>
+        </div>
+        <div class="text-base font-black font-heading" style="color:{{ $tgFin ? '#CD7F32' : 'rgba(185,203,185,0.4)' }};">
+            {{ $tgFin ? $tg->home_score.' – '.$tg->away_score : 'رده‌بندی سوم' }}
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="font-bold text-sm text-white">{{ $tg->awayTeam->name_fa ?? $tg->awayTeam->name }}</span>
+            @if($tg->awayTeam->flag_url)
+                <img src="{{ $tg->awayTeam->flag_url }}" alt="" class="w-8 h-5 object-cover rounded" onerror="this.style.display='none'">
+            @endif
+        </div>
+    </a>
+    @endif
+
+    <div class="mt-4 text-center">
+        <a href="{{ route('tournament.prediction') }}" class="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm">
+            <span class="material-symbols-outlined text-base">emoji_events</span>
+            پیش‌بینی قهرمان
+        </a>
+    </div>
+
+</div>
+{{-- /bracket tab --}}
 
 @php
 $jsPreds = [];

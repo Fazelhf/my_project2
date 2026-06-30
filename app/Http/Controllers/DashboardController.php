@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatMessage;
 use App\Models\Game;
 use App\Models\Prediction;
 use App\Models\User;
@@ -37,8 +38,16 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
+        $chatMessages = ChatMessage::with('user')
+            ->where('is_deleted', false)
+            ->latest()
+            ->take(30)
+            ->get()
+            ->reverse()
+            ->values();
+
         return view('user.dashboard', compact(
-            'user', 'rank', 'totalPredictions', 'correctPredictions', 'exactPredictions', 'predictions', 'upcomingGames'
+            'user', 'rank', 'totalPredictions', 'correctPredictions', 'exactPredictions', 'predictions', 'upcomingGames', 'chatMessages'
         ));
     }
 }

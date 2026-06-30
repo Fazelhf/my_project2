@@ -282,6 +282,60 @@
             </a>
         </div>
 
+        {{-- ── چت گروهی ── --}}
+        <div class="liquid-glass rounded-3xl overflow-hidden flex flex-col" style="border-color:rgba(77,159,255,0.15);height:340px;" x-data="dashChat()">
+            <div class="flex items-center justify-between px-4 py-3 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                <h3 class="font-bold font-heading text-white flex items-center gap-2 text-sm">
+                    <span class="material-symbols-outlined text-base" style="color:#4D9FFF;">forum</span>
+                    چت گروهی
+                </h3>
+                <a href="{{ route('chat') }}" class="text-[11px] font-bold flex items-center gap-1" style="color:rgba(77,159,255,0.7);">
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>نمایش کامل
+                </a>
+            </div>
+
+            {{-- Messages --}}
+            <div class="flex-1 overflow-y-auto px-3 py-2 space-y-2" id="dash-chat-msgs">
+                @foreach($chatMessages as $msg)
+                @php $isMe = $msg->user_id === auth()->id(); @endphp
+                <div class="flex {{ $isMe ? 'justify-start' : 'justify-end' }} gap-2">
+                    @if(!$isMe)
+                    <div class="max-w-[80%]">
+                        <div class="rounded-2xl {{ $isMe ? 'rounded-tr-sm' : 'rounded-tl-sm' }} px-3 py-2 text-xs"
+                             style="background:{{ $isMe ? 'rgba(0,228,118,0.12)' : 'rgba(255,255,255,0.07)' }};color:rgba(221,226,240,0.9);">
+                            <p class="font-bold text-[10px] mb-1" style="color:{{ $isMe ? '#00e476' : '#4D9FFF' }};">{{ $msg->user->name }}</p>
+                            {{ $msg->body }}
+                        </div>
+                    </div>
+                    @else
+                    <div class="max-w-[80%]">
+                        <div class="rounded-2xl rounded-tr-sm px-3 py-2 text-xs" style="background:rgba(0,228,118,0.12);color:rgba(221,226,240,0.9);">
+                            <p class="font-bold text-[10px] mb-1" style="color:#00e476;">شما</p>
+                            {{ $msg->body }}
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                @endforeach
+                @if($chatMessages->isEmpty())
+                <p class="text-center text-xs py-4" style="color:rgba(185,203,185,0.3);">اولین پیام را بفرست!</p>
+                @endif
+            </div>
+
+            {{-- Input --}}
+            <div class="flex items-center gap-2 px-3 py-2.5 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,0.07);">
+                <input type="text" x-model="body" @keydown.enter="send()"
+                       placeholder="پیام..." maxlength="200"
+                       class="flex-1 text-xs px-3 py-2 rounded-xl outline-none bg-transparent"
+                       style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#dde2f0;">
+                <button @click="send()" :disabled="!body.trim()"
+                        class="p-2 rounded-xl transition-all cursor-pointer flex-shrink-0"
+                        style="background:rgba(77,159,255,0.15);color:#4D9FFF;">
+                    <span class="material-symbols-outlined text-base">send</span>
+                </button>
+            </div>
+        </div>
+
         {{-- لینک سریع به پیش‌بینی --}}
         <a href="{{ route('games.index') }}"
            class="relative rounded-3xl overflow-hidden block cursor-pointer group"
@@ -314,5 +368,59 @@
     </div>
 
 </section>
+
+@push('scripts')
+<script>
+function dashChat() {
+    return {
+        body: '',
+        lastId: {{ $chatMessages->last()?->id ?? 0 }},
+        async send() {
+            const msg = this.body.trim();
+            if (!msg) return;
+            this.body = '';
+            try {
+                const res = await fetch('{{ route('chat.store') }}', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content},
+                    body: JSON.stringify({body: msg})
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    this.appendMsg({body:msg, name:'شما', isMe:true});
+                    this.lastId = data.message?.id ?? this.lastId;
+                }
+            } catch(e) {}
+        },
+        appendMsg({body, name, isMe}) {
+            const wrap = document.getElementById('dash-chat-msgs');
+            const div = document.createElement('div');
+            div.className = 'flex ' + (isMe ? 'justify-start' : 'justify-end') + ' gap-2';
+            div.innerHTML = `<div class="max-w-[80%]"><div class="rounded-2xl px-3 py-2 text-xs" style="background:${isMe?'rgba(0,228,118,0.12)':'rgba(255,255,255,0.07)'};color:rgba(221,226,240,0.9);"><p class="font-bold text-[10px] mb-1" style="color:${isMe?'#00e476':'#4D9FFF'};">${name}</p>${body}</div></div>`;
+            wrap.appendChild(div);
+            wrap.scrollTop = wrap.scrollHeight;
+        },
+        init() {
+            const wrap = document.getElementById('dash-chat-msgs');
+            if (wrap) wrap.scrollTop = wrap.scrollHeight;
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`{{ route('chat.messages') }}?since=${this.lastId}`);
+                    const data = await res.json();
+                    data.messages?.forEach(m => {
+                        if (!m.is_me) {
+                            this.appendMsg({body: m.body, name: m.user_name, isMe: false});
+                            this.lastId = m.id;
+                        } else {
+                            this.lastId = Math.max(this.lastId, m.id);
+                        }
+                    });
+                } catch(e) {}
+            }, 5000);
+        }
+    };
+}
+</script>
+@endpush
 
 @endsection

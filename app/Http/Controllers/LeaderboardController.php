@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Prediction;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\View\View;
 
@@ -47,6 +48,12 @@ class LeaderboardController extends Controller
         }
         $chartLabels = array_merge(['شروع'], $finishedGames->map(fn($g, $i) => 'م' . ($i + 1))->toArray());
 
-        return view('user.leaderboard', compact('users', 'finishedGames', 'predictions', 'chartData', 'chartLabels'));
+        $knockoutGames = Game::with(['homeTeam', 'awayTeam', 'winnerTeam'])
+            ->whereIn('stage', Game::KNOCKOUT_STAGES)
+            ->orderBy('scheduled_at')
+            ->get()
+            ->groupBy('stage');
+
+        return view('user.leaderboard', compact('users', 'finishedGames', 'predictions', 'chartData', 'chartLabels', 'knockoutGames'));
     }
 }
