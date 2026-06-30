@@ -225,6 +225,17 @@
                 <span class="material-symbols-outlined text-sm">edit</span>
                 ویرایش بازی
             </a>
+            <form id="deleteForm" method="POST" action="{{ route('admin.games.destroy', $game) }}" style="display:inline;">
+                @csrf @method('DELETE')
+                <button type="button" onclick="confirmDelete()"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
+                        style="background:rgba(255,90,90,0.1);border:1px solid rgba(255,90,90,0.25);color:#FF8A8A;"
+                        onmouseover="this.style.background='rgba(255,90,90,0.15)';this.style.borderColor='rgba(255,90,90,0.35)'"
+                        onmouseout="this.style.background='rgba(255,90,90,0.1)';this.style.borderColor='rgba(255,90,90,0.25)'">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                    حذف
+                </button>
+            </form>
             <a href="{{ route('admin.games.index') }}"
                class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
                style="color:rgba(185,203,185,0.5);"
@@ -233,6 +244,14 @@
                 بازگشت به لیست بازی‌ها
             </a>
         </div>
+
+        <script>
+        function confirmDelete() {
+            if (confirm('آیا مطمئن هستی که می‌خوای این بازی را حذف کنی؟\n\nاین عملیات قابل بازگشت نیست!')) {
+                document.getElementById('deleteForm').submit();
+            }
+        }
+        </script>
     </div>
 
     {{-- ── ستون راست: پیش‌بینی‌ها ── --}}
