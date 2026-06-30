@@ -181,7 +181,7 @@
 
 @push('scripts')
 <script>
-const ALL_TEAMS = @json($teams->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'name_fa' => $t->name_fa, 'code' => $t->code, 'flag_url' => $t->flag_url]));
+const ALL_TEAMS = @json($teams->map(function($t) { return ['id' => $t->id, 'name' => $t->name, 'name_fa' => $t->name_fa, 'code' => $t->code, 'flag_url' => $t->flag_url]; })->values());
 
 function teamPicker(field, initialId) {
     return {
