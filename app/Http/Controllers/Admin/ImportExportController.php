@@ -391,7 +391,11 @@ class ImportExportController extends Controller
             $game   = $games->get($gameId);
             $points = null;
 
-            if ($game && $game->isScorable()) {
+            if (!$game) {
+                continue;  // Skip if game doesn't exist
+            }
+
+            if ($game->isScorable()) {
                 $rule   = $game->scoringRule;
                 $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
                 $points = $rule
