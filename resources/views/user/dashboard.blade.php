@@ -336,8 +336,8 @@
             </div>
         </div>
 
-        {{-- لینک سریع به پیش‌بینی --}}
-        <a href="{{ route('games.index') }}"
+        {{-- لینک سریع به پیش‌بینی قهرمان --}}
+        <a href="{{ route('tournament.prediction') }}"
            class="relative rounded-3xl overflow-hidden block cursor-pointer group"
            style="min-height:160px;">
             {{-- عکس استادیوم (اگه فایل public/images/stadium.jpg باشه نشون میده) --}}
