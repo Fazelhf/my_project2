@@ -39,6 +39,6 @@ class TournamentPrediction extends Model
 
     public function getTotalPointsAttribute(): int
     {
-        return $this->champion_points + $this->runner_up_points + $this->third_place_points;
+        return ($this->champion_points ?? 0) + ($this->runner_up_points ?? 0) + ($this->third_place_points ?? 0);
     }
 }

@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $exactPredictions   = Prediction::where('user_id', $user->id)->where('points_earned', 10)->count();
 
         $upcomingGames = Game::with(['homeTeam', 'awayTeam'])
-            ->whereIn('status', ['upcoming', 'scheduled'])
+            ->whereIn('status', ['upcoming'])
             ->whereDoesntHave('predictions', fn ($q) => $q->where('user_id', $user->id))
             ->orderBy('scheduled_at')
             ->take(6)

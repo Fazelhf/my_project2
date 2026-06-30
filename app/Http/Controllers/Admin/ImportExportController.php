@@ -128,7 +128,7 @@ class ImportExportController extends Controller
         $hasScore  = isset($m['score']['ft']);
         $homeScore = $hasScore ? $m['score']['ft'][0] : null;
         $awayScore = $hasScore ? $m['score']['ft'][1] : null;
-        $status    = $hasScore ? 'finished' : 'scheduled';
+        $status    = $hasScore ? 'finished' : 'upcoming';
 
         $payload = [
             'home_team_id'  => $homeTeam->id,
