@@ -40,9 +40,9 @@ class GameController extends Controller
             'home_team_id'   => ['required', 'exists:teams,id'],
             'away_team_id'   => ['required', 'exists:teams,id', 'different:home_team_id'],
             'stage'          => ['required', Rule::in(array_keys(Game::STAGES))],
-            'match_number'   => ['nullable', 'integer', 'min:1', 'max:64'],
+            'match_number'   => ['nullable', 'integer', 'min:1', 'max:999'],
             'group_name'     => ['nullable', 'string', 'size:1', Rule::in(['A','B','C','D','E','F','G','H'])],
-            'scheduled_at'   => ['required', 'date', 'after:now'],
+            'scheduled_at'   => ['required', 'date'],
             'venue'          => ['nullable', 'string', 'max:150'],
         ], [
             'home_team_id.required'    => 'تیم اول را انتخاب کنید.',
@@ -50,7 +50,6 @@ class GameController extends Controller
             'away_team_id.different'   => 'تیم اول و دوم نباید یکسان باشند.',
             'stage.required'           => 'مرحله بازی را انتخاب کنید.',
             'scheduled_at.required'    => 'تاریخ و ساعت بازی الزامی است.',
-            'scheduled_at.after'       => 'زمان بازی باید در آینده باشد.',
         ]);
 
         Game::create($validated);
@@ -79,7 +78,7 @@ class GameController extends Controller
             'home_team_id'   => ['required', 'exists:teams,id'],
             'away_team_id'   => ['required', 'exists:teams,id', 'different:home_team_id'],
             'stage'          => ['required', Rule::in(array_keys(Game::STAGES))],
-            'match_number'   => ['nullable', 'integer', 'min:1', 'max:64'],
+            'match_number'   => ['nullable', 'integer', 'min:1', 'max:999'],
             'group_name'     => ['nullable', 'string', 'size:1', Rule::in(['A','B','C','D','E','F','G','H'])],
             'scheduled_at'   => ['required', 'date'],
             'venue'          => ['nullable', 'string', 'max:150'],

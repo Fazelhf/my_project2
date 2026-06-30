@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'پیش‌بینی بازی‌ها')
+@section('title', 'پیش‌بینی جام جهانی')
 
 @section('content')
 
