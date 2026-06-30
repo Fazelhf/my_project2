@@ -97,7 +97,7 @@
             </div>
             <div class="space-y-4">
                 @foreach($upcomingGames->take(3) as $game)
-                <div class="liquid-glass card-glow rounded-2xl p-5" style="border-right:4px solid #00e476;">
+                <a href="{{ route('games.show', $game) }}" class="block liquid-glass card-glow rounded-2xl p-5 transition-all" style="border-right:4px solid #00e476;cursor:pointer;" onmouseover="this.style.borderColor='#00ff85'" onmouseout="this.style.borderColor='#00e476'">
                     <div class="flex flex-col md:flex-row items-center gap-6">
                         <div class="flex-1 flex items-center justify-center gap-6 w-full">
                             <div class="text-center">
@@ -135,16 +135,13 @@
                             </div>
                         </div>
                         <div class="flex-shrink-0">
-                            <a href="{{ route('games.index') }}"
-                               class="block text-center px-6 py-2.5 rounded-xl font-bold text-sm transition-all"
-                               style="background:#00e476;color:#003919;"
-                               onmouseover="this.style.boxShadow='0 0 20px rgba(0,228,118,0.4)'"
-                               onmouseout="this.style.boxShadow=''">
+                            <span class="block text-center px-6 py-2.5 rounded-xl font-bold text-sm"
+                               style="background:#00e476;color:#003919;">
                                 ثبت پیش‌بینی
-                            </a>
+                            </span>
                         </div>
                     </div>
-                </div>
+                </a>
                 @endforeach
             </div>
         </div>
