@@ -160,10 +160,6 @@ class GameController extends Controller
 
     public function destroy(Game $game): RedirectResponse
     {
-        if ($game->status === 'finished') {
-            return back()->with('error', 'بازی‌های پایان‌یافته قابل حذف نیستند.');
-        }
-
         $game->delete();
 
         return redirect()->route('admin.games.index')

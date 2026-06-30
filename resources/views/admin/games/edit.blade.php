@@ -125,7 +125,28 @@
                 </a>
             </div>
         </form>
+
+        {{-- Delete Button --}}
+        <form id="deleteForm" method="POST" action="{{ route('admin.games.destroy', $game) }}"
+              class="mt-6 pt-6 border-t border-brand-border">
+            @csrf @method('DELETE')
+            <button type="button" onclick="confirmDelete()"
+                    class="px-5 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-colors
+                           bg-red-950/30 border border-red-800/50 text-red-400 hover:bg-red-950/50 hover:border-red-700/70">
+                <span class="material-symbols-outlined text-sm align-middle">delete</span>
+                حذف بازی
+            </button>
+            <p class="text-xs mt-2" style="color:rgba(255,90,90,0.7);">این عملیات قابل بازگشت نیست</p>
+        </form>
     </div>
 </div>
+
+<script>
+function confirmDelete() {
+    if (confirm('آیا مطمئن هستی که می‌خوای این بازی را حذف کنی؟\n\nاین عملیات قابل بازگشت نیست!')) {
+        document.getElementById('deleteForm').submit();
+    }
+}
+</script>
 
 @endsection
