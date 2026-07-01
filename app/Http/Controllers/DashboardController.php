@@ -25,7 +25,7 @@ class DashboardController extends Controller
 
         // Calculate rank based on live score with adjustment
         $users = \App\Models\User::regular()->get();
-        $rank = $users->filter(function($u) use ($allScores) {
+        $rank = $users->filter(function($u) use ($allScores, $myLive) {
             $earned = $allScores[$u->id] ?? 0;
             $live = max(0, $earned + ($u->score_adjustment ?? 0));
             return $live > $myLive;
