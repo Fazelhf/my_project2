@@ -303,23 +303,41 @@ class ImportExportController extends Controller
 
         $user    = User::findOrFail($request->user_id);
         $games   = Game::with('scoringRule')->get()->keyBy('id');
-        $scorer  = app(\App\Services\PredictionScoringService::class);
+        $scorer  = app(PredictionScoringService::class);
         $created = 0;
         $updated = 0;
+        $skipped = 0;
+        $errors  = [];
 
         foreach ($request->predictions as $gameId => $row) {
             $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
             $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
 
-            // اگه هر دو یا یکی خالی بود رد کن
-            if ($homeScore === null || $awayScore === null) {
+            // اگر هردو امتیاز خالی باشه رد کن (خطا نیست)
+            if ($homeScore === null && $awayScore === null) {
+                $skipped++;
                 continue;
             }
 
-            $game   = $games->get($gameId);
+            // اگر فقط یکی خالی باشه خطا است
+            if ($homeScore === null || $awayScore === null) {
+                $errors[] = "بازی #$gameId: هر دو امتیاز باید پر شوند";
+                $skipped++;
+                continue;
+            }
+
+            // بازی موجود؟
+            $game = $games->get($gameId);
+            if (!$game) {
+                $errors[] = "بازی #$gameId: یافت نشد";
+                $skipped++;
+                continue;
+            }
+
             $points = null;
 
-            if ($game && $game->isScorable()) {
+            // امتیاز دهی خودکار اگر بازی تمام شده باشد
+            if ($game->isScorable()) {
                 $rule   = $game->scoringRule;
                 $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
                 $points = $rule
@@ -335,7 +353,7 @@ class ImportExportController extends Controller
                     'away_score'      => $awayScore,
                     'points_earned'   => $points,
                     'is_admin_edited' => true,
-                    'admin_note'      => 'وارد شده از سیستم قدیم',
+                    'admin_note'      => 'وارد شده دستی',
                 ]);
                 $updated++;
             } else {
@@ -346,7 +364,7 @@ class ImportExportController extends Controller
                     'away_score'      => $awayScore,
                     'points_earned'   => $points,
                     'is_admin_edited' => true,
-                    'admin_note'      => 'وارد شده از سیستم قدیم',
+                    'admin_note'      => 'وارد شده دستی',
                 ]);
                 $created++;
             }
@@ -356,8 +374,19 @@ class ImportExportController extends Controller
             $scorer->recalculateUserScores();
         }
 
-        return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
-            ->with('success', "پیش‌بینی‌های {$user->name}: {$created} جدید، {$updated} بروزرسانی شد.");
+        $message = "پیش‌بینی‌های {$user->name}: {$created} جدید، {$updated} بروزرسانی";
+        if ($skipped > 0) {
+            $message .= "، {$skipped} رد شده";
+        }
+
+        $redirect = redirect()->route('admin.import.predictions', ['user_id' => $user->id])
+            ->with('success', $message);
+
+        if ($errors) {
+            $redirect->with('import_errors', array_slice($errors, 0, 20));
+        }
+
+        return $redirect;
     }
 
     public function importPredictionsJson(Request $request): RedirectResponse
