@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
+    <title>@yield('title', 'جام جهانی ۲۰۲۶') — wc2026</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico?v={{ filemtime(public_path('favicon.ico')) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
