@@ -137,7 +137,7 @@ class ImportExportController extends Controller
             'group_name'    => $group,
             'scheduled_at'  => $scheduledAt,
             'venue'         => $m['ground'] ?? null,
-            'match_number'  => $m['num'] ?? null,
+            'match_number'  => $m['match_id'] ?? $m['num'] ?? null,
             'home_score'    => $homeScore,
             'away_score'    => $awayScore,
             'status'        => $status,
@@ -229,6 +229,7 @@ class ImportExportController extends Controller
 
         $data = $games->map(fn ($g) => [
             'id'         => $g->id,
+            'match_id'   => $g->match_number,
             'stage'      => $g->stage,
             'group'      => $g->group_name,
             'home_team'  => $g->homeTeam?->name,
@@ -413,8 +414,8 @@ class ImportExportController extends Controller
 
         $errors  = [];
         foreach ($data as $row) {
-            // Try match_num first (preferred), fall back to game_id
-            $matchNum = $row['match_num'] ?? null;
+            // Try match_id first (from export), then match_num, fall back to game_id
+            $matchNum = $row['match_id'] ?? $row['match_num'] ?? null;
             $gameId   = $row['game_id'] ?? null;
 
             if ($matchNum) {
