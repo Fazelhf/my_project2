@@ -13,6 +13,11 @@ class Game extends Model
 {
     use HasFactory;
 
+    public function getRouteKeyName(): string
+    {
+        return 'match_number';
+    }
+
     protected $fillable = [
         'home_team_id',
         'away_team_id',
