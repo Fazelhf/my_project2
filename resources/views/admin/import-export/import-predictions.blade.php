@@ -9,6 +9,18 @@
     {{ session('success') }}
 </div>
 @endif
+
+@if(session('import_errors'))
+<div class="mb-4 px-4 py-3 rounded-xl text-sm" style="background:rgba(255,150,90,0.1);border:1px solid rgba(255,150,90,0.25);">
+    <div class="font-bold mb-2" style="color:#FF9656;">خطاهای ایمپورت:</div>
+    <div style="color:#FFB380;">
+        @foreach(session('import_errors') as $error)
+        <div class="text-xs mb-1">• {{ $error }}</div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 @if($errors->any())
 <div class="mb-4 px-4 py-3 rounded-xl text-sm" style="background:rgba(255,90,90,0.1);border:1px solid rgba(255,90,90,0.25);color:#FF8A8A;">
     @foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach
