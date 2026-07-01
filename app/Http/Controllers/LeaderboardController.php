@@ -17,7 +17,6 @@ class LeaderboardController extends Controller
         $finishedGames = Game::finished()->with(['homeTeam', 'awayTeam'])->orderBy('scheduled_at')->get();
 
         $predictions = Prediction::whereIn('user_id', $users->pluck('id'))
-            ->with('game')
             ->get()
             ->groupBy('user_id');
 
@@ -37,11 +36,11 @@ class LeaderboardController extends Controller
         // Cumulative score history per user for the trend chart
         $chartData = [];
         foreach ($users as $u) {
-            $userPreds = $predictions->get($u->id, collect())->keyBy(fn($p) => $p->game->match_number);
+            $userPreds = $predictions->get($u->id, collect())->keyBy('game_id');
             $cumulative = 0;
             $scores = [0];
             foreach ($finishedGames as $game) {
-                $pred = $userPreds->get($game->match_number);
+                $pred = $userPreds->get($game->id);
                 $cumulative += $pred ? ($pred->points_override ?? $pred->points_earned ?? 0) : 0;
                 $scores[] = $cumulative;
             }

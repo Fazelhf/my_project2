@@ -532,7 +532,7 @@ $myPct     = $maxScore > 0 ? round(($myScore / $maxScore) * 100) : 0;
 $jsPreds = [];
 foreach($predictions as $userId => $gamePreds) {
     foreach($gamePreds as $pred) {
-        $jsPreds[$userId][$pred->game->match_number] = [
+        $jsPreds[$userId][$pred->game_id] = [
             'h'   => $pred->home_score,
             'a'   => $pred->away_score,
             'pts' => $pred->points_earned ?? 0,
@@ -540,7 +540,7 @@ foreach($predictions as $userId => $gamePreds) {
     }
 }
 $jsGames = $finishedGames->map(fn($g) => [
-    'id'   => $g->match_number,
+    'id'   => $g->id,
     'home' => $g->homeTeam?->code ?? '?',
     'away' => $g->awayTeam?->code ?? '?',
     'rh'   => $g->home_score,
