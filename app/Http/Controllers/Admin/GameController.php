@@ -78,7 +78,7 @@ class GameController extends Controller
             'home_team_id'   => ['required', 'exists:teams,id'],
             'away_team_id'   => ['required', 'exists:teams,id', 'different:home_team_id'],
             'stage'          => ['required', Rule::in(array_keys(Game::STAGES))],
-            'match_number'   => ['nullable', 'integer', 'min:1', 'max:999'],
+            'match_number'   => ['nullable', 'integer', 'min:1', 'max:999', Rule::unique('games', 'match_number')->ignore($game->id)],
             'group_name'     => ['nullable', 'string', 'size:1', Rule::in(['A','B','C','D','E','F','G','H'])],
             'scheduled_at'   => ['required', 'date'],
             'venue'          => ['nullable', 'string', 'max:150'],

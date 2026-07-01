@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">مرحله</label>
                     <select name="stage" required
@@ -54,6 +54,14 @@
                             <option value="{{ $key }}" {{ old('stage', $game->stage) === $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">شماره بازی</label>
+                    <input type="number" name="match_number"
+                           value="{{ old('match_number', $game->match_number) }}"
+                           min="1" max="999"
+                           class="w-full px-4 py-2.5 rounded-xl text-sm bg-brand-card border border-brand-border text-brand-text
+                                  outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition-all">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">گروه</label>
