@@ -21,7 +21,7 @@
     <div class="md:col-span-4 liquid-glass bento-card rounded-3xl p-8 flex flex-col justify-between h-[200px] reveal animate-slide-up stagger-1">
         <div>
             <p class="text-sm mb-1" style="color:rgba(185,203,185,0.6);">امتیاز کل</p>
-            <h2 class="text-5xl font-black font-heading" style="color:#00e476;">{{ $user->effective_score ?? 0 }}</h2>
+            <h2 class="text-5xl font-black font-heading" style="color:#00e476;">{{ $myLive ?? 0 }}</h2>
         </div>
         <div class="space-y-2">
             <div class="flex items-center gap-2 text-sm font-bold" style="color:#00e476;">
@@ -29,7 +29,7 @@
                 <span>خوش آمدی، {{ $user->name }}</span>
             </div>
             <div class="w-full h-1.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,0.1);">
-                <div class="h-full rounded-full shadow-[0_0_10px_#00e476]" style="width:{{ min(($user->effective_score ?? 0) / 20, 100) }}%;background:#00e476;"></div>
+                <div class="h-full rounded-full shadow-[0_0_10px_#00e476]" style="width:{{ min(($myLive ?? 0) / 20, 100) }}%;background:#00e476;"></div>
             </div>
         </div>
     </div>
@@ -238,7 +238,7 @@
             {{-- امتیاز و رتبه کنار هم --}}
             <div class="grid grid-cols-2 gap-3">
                 <div class="p-4 rounded-2xl text-center" style="background:linear-gradient(135deg,rgba(0,228,118,0.08),rgba(0,228,118,0.03));border:1px solid rgba(0,228,118,0.15);">
-                    <p class="text-3xl font-black font-heading" style="color:#00e476;">{{ $user->effective_score ?? 0 }}</p>
+                    <p class="text-3xl font-black font-heading" style="color:#00e476;">{{ $myLive ?? 0 }}</p>
                     <p class="text-[10px] mt-1" style="color:rgba(0,228,118,0.6);">امتیاز کل</p>
                 </div>
                 <div class="p-4 rounded-2xl text-center" style="background:linear-gradient(135deg,rgba(77,159,255,0.08),rgba(77,159,255,0.03));border:1px solid rgba(77,159,255,0.15);">
