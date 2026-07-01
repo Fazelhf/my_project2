@@ -1,18 +1,16 @@
 const CACHE_NAME = 'wc2026-v1';
 const ASSETS_TO_CACHE = [
   '/',
-  '/index.php',
-  '/build/assets/',
 ];
 
-// Installation: Cache essential assets
+// Installation: Cache essential assets only
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch(() => {
-        // Some assets might fail to cache, but that's okay
-        return cache.add('/');
-      });
+      // Only cache the root page - assets will be cached dynamically
+      return cache.addAll(ASSETS_TO_CACHE);
+    }).catch((error) => {
+      console.error('Service Worker install failed:', error);
     })
   );
   self.skipWaiting();
@@ -34,87 +32,83 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: Serve from cache first, fallback to network
+// Fetch: Smart caching strategy
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
+  // Only handle GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Skip API calls - always fetch from network
-  if (event.request.url.includes('/api/')) {
+  const url = new URL(event.request.url);
+
+  // Skip external requests
+  if (url.origin !== location.origin) {
+    return;
+  }
+
+  // API calls - Network only, never cache
+  if (url.pathname.startsWith('/api/')) {
     event.respondWith(fetch(event.request));
     return;
   }
 
-  // Network-first strategy for HTML
-  if (event.request.destination === 'document') {
+  // HTML pages - Network first, fallback to cache
+  if (event.request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          if (!response || response.status !== 200 || response.type === 'error') {
+          if (!response || response.status !== 200) {
             return response;
           }
-          // Clone the response
+
+          // Cache successful HTML responses
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
+
           return response;
         })
         .catch(() => {
-          return caches.match(event.request).then((response) => {
-            return response || caches.match('/');
+          // Network failed - return cached version
+          return caches.match(event.request).then((cached) => {
+            return cached || caches.match('/');
           });
         })
     );
     return;
   }
 
-  // Cache-first strategy for other assets
+  // Static assets (CSS, JS, images, fonts) - Cache first
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
+    caches.match(event.request).then((cached) => {
+      if (cached) {
+        return cached;
       }
 
       return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === 'error') {
+        // Only cache successful responses
+        if (!response || response.status !== 200) {
           return response;
         }
 
-        // Clone the response
+        // Cache the response
         const responseClone = response.clone();
-
-        // Cache successful responses
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseClone);
         });
 
         return response;
       }).catch(() => {
-        // Offline fallback
+        // Network failed and not in cache
+        // For images, return a placeholder
+        if (event.request.destination === 'image') {
+          return caches.match('/build/assets/placeholder.png').catch(() => {
+            return new Response('', { status: 404 });
+          });
+        }
         return caches.match(event.request);
       });
     })
   );
 });
-
-// Handle background sync for offline actions
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-predictions') {
-    event.waitUntil(syncPredictions());
-  }
-});
-
-async function syncPredictions() {
-  try {
-    const response = await fetch('/api/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    return response.ok;
-  } catch (error) {
-    throw error;
-  }
-}
