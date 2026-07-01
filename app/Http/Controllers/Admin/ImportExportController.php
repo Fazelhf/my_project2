@@ -383,14 +383,6 @@ class ImportExportController extends Controller
         $skipped    = 0;
 
         foreach ($data as $row) {
-            $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
-            $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
-
-            if ($homeScore === null || $awayScore === null) {
-                $skipped++;
-                continue;
-            }
-
             // Try match_num first (preferred), fall back to game_id
             $matchNum = $row['match_num'] ?? null;
             $gameId   = $row['game_id'] ?? null;
@@ -404,14 +396,19 @@ class ImportExportController extends Controller
                 continue;  // Skip if neither match_num nor game_id provided
             }
 
-            $points = null;
-
             if (!$game) {
                 $skipped++;
                 continue;  // Skip if game doesn't exist
             }
 
-            if ($game->isScorable()) {
+            // Parse scores (allow null for future matches)
+            $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
+            $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
+
+            $points = null;
+
+            // Only calculate points if both scores are available and game is scorable
+            if ($homeScore !== null && $awayScore !== null && $game->isScorable()) {
                 $rule   = $game->scoringRule;
                 $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
                 $points = $rule
