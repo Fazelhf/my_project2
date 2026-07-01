@@ -56,7 +56,7 @@
         {{-- User area --}}
         <div class="flex items-center gap-2 flex-shrink-0">
             <div class="hidden sm:flex items-center gap-2">
-                <span class="badge badge-green font-mono text-xs">{{ auth()->user()->total_score ?? 0 }} pt</span>
+                <span class="badge badge-green font-mono text-xs">{{ auth()->user()->effective_score ?? 0 }} pt</span>
                 <span class="text-xs max-w-[80px] truncate" style="color:rgba(221,226,240,0.7);">{{ auth()->user()->name }}</span>
             </div>
 

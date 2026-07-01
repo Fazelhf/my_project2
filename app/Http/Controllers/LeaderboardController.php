@@ -21,9 +21,10 @@ class LeaderboardController extends Controller
             ->groupBy('user_id');
 
         $users->each(function (User $user) use ($predictions) {
-            $user->live_score = $predictions->get($user->id, collect())->sum(function ($p) {
+            $predictionScore = $predictions->get($user->id, collect())->sum(function ($p) {
                 return $p->points_override ?? $p->points_earned ?? 0;
             });
+            $user->live_score = max(0, $predictionScore + ($user->score_adjustment ?? 0));
         });
 
         $users = $users->sort(function ($a, $b) {
@@ -37,12 +38,12 @@ class LeaderboardController extends Controller
         $chartData = [];
         foreach ($users as $u) {
             $userPreds = $predictions->get($u->id, collect())->keyBy('game_id');
-            $cumulative = 0;
-            $scores = [0];
+            $cumulative = $u->score_adjustment ?? 0;
+            $scores = [$cumulative];
             foreach ($finishedGames as $game) {
                 $pred = $userPreds->get($game->id);
                 $cumulative += $pred ? ($pred->points_override ?? $pred->points_earned ?? 0) : 0;
-                $scores[] = $cumulative;
+                $scores[] = max(0, $cumulative);
             }
             $chartData[] = ['id' => $u->id, 'name' => $u->name, 'scores' => $scores];
         }
