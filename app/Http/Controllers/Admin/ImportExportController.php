@@ -411,6 +411,7 @@ class ImportExportController extends Controller
         $updated    = 0;
         $skipped    = 0;
 
+        $errors  = [];
         foreach ($data as $row) {
             // Try match_num first (preferred), fall back to game_id
             $matchNum = $row['match_num'] ?? null;
@@ -434,10 +435,23 @@ class ImportExportController extends Controller
             $homeScore = isset($row['home_score']) && $row['home_score'] !== '' ? (int) $row['home_score'] : null;
             $awayScore = isset($row['away_score']) && $row['away_score'] !== '' ? (int) $row['away_score'] : null;
 
+            // اگر هردو خالی باشه رد کن
+            if ($homeScore === null && $awayScore === null) {
+                $skipped++;
+                continue;
+            }
+
+            // اگر فقط یکی خالی باشه خطا
+            if ($homeScore === null || $awayScore === null) {
+                $errors[] = "بازی #{$game->id}: هر دو امتیاز باید پر شوند";
+                $skipped++;
+                continue;
+            }
+
             $points = null;
 
             // Only calculate points if both scores are available and game is scorable
-            if ($homeScore !== null && $awayScore !== null && $game->isScorable()) {
+            if ($game->isScorable()) {
                 $rule   = $game->scoringRule;
                 $dummy  = new Prediction(['home_score' => $homeScore, 'away_score' => $awayScore]);
                 $points = $rule
@@ -474,8 +488,14 @@ class ImportExportController extends Controller
             $message .= "، {$skipped} رد شده";
         }
 
-        return redirect()->route('admin.import.predictions', ['user_id' => $user->id])
+        $redirect = redirect()->route('admin.import.predictions', ['user_id' => $user->id])
             ->with('success', "JSON ایمپورت شد — {$message}");
+
+        if ($errors) {
+            $redirect->with('import_errors', array_slice($errors, 0, 20));
+        }
+
+        return $redirect;
     }
 
     public function exportLeaderboard(): Response
