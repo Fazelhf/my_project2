@@ -4,7 +4,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import '../css/app.css';
 
 createInertiaApp({
-    title: (title) => title ? `${title} — پیش‌بینی‌چی` : 'پیش‌بینی‌چی WC2026',
+    title: (title) => title ? `${title} — wc2026` : 'wc2026',
     resolve: (name) =>
         resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
     setup({ el, App, props }) {
