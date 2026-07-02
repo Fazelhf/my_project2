@@ -70,7 +70,7 @@
         </div>
         @endif
 
-        <p class="text-[10px]" style="color:rgba(185,203,185,0.2);">پیش‌بینی‌چی — WorldCup 2026</p>
+        <p class="text-[10px]" style="color:rgba(185,203,185,0.2);">wc2026 — WorldCup 2026</p>
     </div>
 
     {{-- Actions --}}
