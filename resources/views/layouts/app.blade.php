@@ -4,8 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'جام جهانی ۲۰۲۶') — پیش‌بینی‌چی</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico?v={{ filemtime(public_path('favicon.ico')) }}">
+    <title>@yield('title', 'جام جهانی ۲۰۲۶') — wc2026</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#0e141d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="wc2026">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
@@ -198,6 +206,26 @@
     window.addEventListener('touchmove',e=>{const t=e.touches[0];pmx=mx;pmy=my;mx=t.clientX/window.innerWidth;my=1-t.clientY/window.innerHeight;col=hsv(Math.random(),1,1);moved=true;},{passive:true});
     loop();
 })();
+</script>
+
+{{-- PWA Service Worker --}}
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+        // Service worker registration failed, app will work in normal mode
+    });
+}
+
+// iOS install prompt
+if (navigator.standalone === undefined) {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+        document.addEventListener('DOMContentLoaded', () => {
+            // User can see the banner or we can add a custom prompt
+            console.log('PWA is ready on iOS. Use Share → Add to Home Screen');
+        });
+    }
+}
 </script>
 
 @stack('scripts')
